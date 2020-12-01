@@ -1,22 +1,27 @@
 
-def pair(nums: [int]) -> int:
-    for i in range(0, len(nums)):
-        for j in range(i+1, len(nums)):
-            if nums[i] + nums[j] == 2020:
-                return nums[i] * nums[j]
+# O(n)
+def pair(nums: [int], target: int) -> int:
+    prev_vals = set()
+    for num in nums:
+        if (target - num) in prev_vals:
+            return num * (target - num)
+        else:
+            prev_vals.add(num)
     return -1
 
-def trips(nums: [int]) -> int:
+#O(n^2)
+def trips(nums: [int], target: int) -> int:
     for i in range(0, len(nums)):
-        for j in range(i+1, len(nums)):
-            for k in range(j+1, len(nums)):
-                if nums[i] + nums[j] + nums[k] == 2020:
-                    return nums[i] * nums[j] * nums[k]
-    
+        num = nums[i]
+        rem = target - num
+        pairs = pair(nums[i+1:], rem)
+        if pairs != -1:
+            return num * pairs
     return -1
-
-
 
 def run(file, part_2: bool = False) -> int:
     nums = [int(line) for line in file]
-    return trips(nums) if part_2 else pair(nums)
+    if part_2:
+        return trips(nums, 2020) 
+    else:
+        return pair(nums, 2020)
