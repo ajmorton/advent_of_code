@@ -12,8 +12,7 @@ def xor_policy(line: str) -> bool:
     (pos_a, pos_b, char, password) = split(line)
     return (password[pos_a - 1] == char) ^ (password[pos_b - 1] == char)
 
-def run(file, part_2: bool = False) -> int:
-    if part_2:
-        return len([line for line in file if xor_policy(line)])
-    else:
-        return len([line for line in file if freq_policy(line)])
+def run(file, part_2: bool = False) -> (int, int):
+    lines = [line for line in file]
+    apply = lambda f: len(list(filter(f, lines)))
+    return apply(freq_policy), apply(xor_policy)

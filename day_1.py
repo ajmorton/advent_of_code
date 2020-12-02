@@ -19,9 +19,6 @@ def trips(nums: [int], target: int) -> int:
             return num * pairs
     return -1
 
-def run(file, part_2: bool = False) -> int:
+def run(file) -> (int, int):
     nums = [int(line) for line in file]
-    if part_2:
-        return trips(nums, 2020) 
-    else:
-        return pair(nums, 2020)
+    return pair(nums, 2020), trips(nums, 2020)
