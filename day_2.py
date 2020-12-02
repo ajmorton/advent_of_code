@@ -1,29 +1,19 @@
+import re
 
-def freq_policy(min_freq: int, max_freq: int, char: str, password: str) -> bool:
-    num_occurences = len([c for c in password if c == char])
-    return num_occurences >= int(min_freq) and num_occurences <= int(max_freq)
+def split(line: str) -> (int, int, str, str):
+    (left, right, char, password) = re.search(r"(\d+)-(\d+) ([a-z]): ([a-z]+)", line).groups()
+    return (int(left), int(right), char, password)
 
-def xor_policy(pos_a: int, pos_b: int, char: str, password: str) -> bool:
-    return (password[int(pos_a) - 1] == char) != (password[int(pos_b) - 1] == char)
+def freq_policy(line: str) -> bool:
+    (min_freq, max_freq, char, password) = split(line)
+    return min_freq <= password.count(char) <= max_freq
 
-def check_pass(entries: [str], use_xor_policy: bool) -> int:
-    num_valid = 0
-    for entry in entries:
-        (policy, password) = entry.split(':')
-        password = password.strip()
-
-        (ranges, char) = policy.split(' ')
-        (left, right) = ranges.split('-')
-
-        if use_xor_policy:
-            if xor_policy(left, right, char, password):
-                num_valid += 1
-        else:
-            if freq_policy(left, right, char, password):
-                num_valid += 1
-
-    return num_valid
+def xor_policy(line: str) -> bool:
+    (pos_a, pos_b, char, password) = split(line)
+    return (password[pos_a - 1] == char) ^ (password[pos_b - 1] == char)
 
 def run(file, part_2: bool = False) -> int:
-    entries = [entry for entry in file]
-    return check_pass(entries, part_2)
+    if part_2:
+        return len([line for line in file if xor_policy(line)])
+    else:
+        return len([line for line in file if freq_policy(line)])
