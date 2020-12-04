@@ -19,6 +19,10 @@ def trips(nums: [int], target: int) -> int:
             return num * pairs
     return -1
 
-def run(file) -> (int, int):
-    nums = [int(line) for line in file]
-    return pair(nums, 2020), trips(nums, 2020)
+def run() -> (int, int):
+    with open("input/1.txt") as file:
+        nums = [int(line) for line in file]
+        return pair(nums, 2020), trips(nums, 2020)
+
+if __name__ == "__main__":
+    print(run())
