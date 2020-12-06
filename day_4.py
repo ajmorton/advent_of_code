@@ -1,4 +1,5 @@
 import re
+import read_as
 
 def has_valid_fields(p: dict) -> bool:
     try:
@@ -21,14 +22,13 @@ def has_fields(passport: dict) -> bool:
 
 def run() -> (int, int):
 
-    with open("input/4.txt") as file:
-        lines = [line.replace('\n', ' ') for line in file.read().split("\n\n")]
-        passports = [ dict(val.split(":") for val in line.split()) 
-                     for line in lines ]
-        all_fields = [p for p in passports if has_fields(p)]
-        valid_fields = [p for p in passports if has_valid_fields(p)] 
+    lines = [" ".join(group) for group in read_as.groups("input/4.txt")]
+    passports = [ dict(val.split(":") for val in line.split()) 
+                    for line in lines ]
+    all_fields = [p for p in passports if has_fields(p)]
+    valid_fields = [p for p in passports if has_valid_fields(p)] 
 
-        return len(all_fields), len(valid_fields)
+    return len(all_fields), len(valid_fields)
 
 if __name__ == "__main__":
     print(run())

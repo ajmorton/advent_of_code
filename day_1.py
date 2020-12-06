@@ -1,3 +1,4 @@
+import read_as
 
 # O(n)
 def pair(nums: [int], target: int) -> int:
@@ -20,9 +21,8 @@ def trips(nums: [int], target: int) -> int:
     return -1
 
 def run() -> (int, int):
-    with open("input/1.txt") as file:
-        nums = [int(line) for line in file]
-        return pair(nums, 2020), trips(nums, 2020)
+    nums = [int(line) for line in read_as.lines("input/1.txt")]
+    return pair(nums, 2020), trips(nums, 2020)
 
 if __name__ == "__main__":
     print(run())
