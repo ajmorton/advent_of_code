@@ -1,23 +1,13 @@
+from functools import reduce
+
 def run() -> (int, int):
 
     with open("input/6.txt") as file:
         groups = [line.split('\n') for line in file.read().rstrip('\n').split("\n\n")]
+        answer_sets = [[set(answer) for answer in group] for group in groups]
 
-        sum_any = 0
-        sum_all = 0
-        for group in groups:
-            answer_set = [set(answer) for answer in group]
-
-            any_answers = answer_set[0]
-            common_answers = answer_set[0]
-            for i in range(1, len(answer_set)):
-                any_answers = any_answers.union(answer_set[i])
-                common_answers = common_answers.intersection(answer_set[i])
-
-            sum_any += len(any_answers)
-            sum_all += len(common_answers)
-
-
+        sum_any = sum([len(reduce(lambda x, y: x.union(y), answer_set)) for answer_set in answer_sets])
+        sum_all = sum([len(reduce(lambda x, y: x.intersection(y), answer_set)) for answer_set in answer_sets])
         return(sum_any, sum_all)
 
 if __name__ == "__main__":
