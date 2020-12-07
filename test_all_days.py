@@ -1,5 +1,5 @@
 import unittest
-import day_1, day_2, day_3, day_4, day_5, day_6
+import day_1, day_2, day_3, day_4, day_5, day_6, day_7
 
 # Run with `python -m unittest`
 
@@ -21,3 +21,6 @@ class Tests(unittest.TestCase):
 
     def test_day_6(self):
         self.assertEqual(day_6.run(), (6742, 3447))
+
+    def test_day_7(self):
+        self.assertEqual(day_7.run(), (224, 1488))

@@ -1,4 +1,3 @@
-from functools import reduce
 import read_as
 
 def run() -> (int, int):
@@ -6,8 +5,8 @@ def run() -> (int, int):
 
     sum_any, sum_all = 0, 0
     for answer_set in answer_sets:
-        sum_any += len(reduce(set.union, answer_set))
-        sum_all += len(reduce(set.intersection, answer_set))
+        sum_any += len(set.union(*answer_set))
+        sum_all += len(set.intersection(*answer_set))
 
     return(sum_any, sum_all)
 
