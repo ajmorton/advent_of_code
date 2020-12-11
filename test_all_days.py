@@ -35,4 +35,4 @@ class Tests(unittest.TestCase):
         self.assertEqual(day_10.run(), (2232, 173625106649344))
 
     def test_day_11(self):
-        self.assertEqual(day_11.run(), (False, False))
+        self.assertEqual(day_11.run(), (2093, 1862))

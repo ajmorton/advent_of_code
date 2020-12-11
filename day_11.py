@@ -1,74 +1,42 @@
 import read_as
-import re
-from collections import defaultdict
+import copy
+from itertools import *
 
-def get_surrounds(r, c, graph):
-    occupied = 0
-    for m in [-1, 0, 1]:
-        if 0 <= r + m < len(graph):
-            for n in [-1, 0, 1]:
-                if 0 <= c + n < len(graph[0]):
-                    if m == 0 and n == 0:
-                        continue
-                    occupied += graph[r+m][c+n] == "#"
-
-    return occupied
-
-def get_surrounds_see(r, c, graph):
-    occupied = 0
-    for m in [-1, 0, 1]:
-        for n in [-1, 0, 1]:
-            if m != 0 or n != 0:
-                rr = r
-                cc = c
-                while True:
-                    rr = rr + m
-                    cc = cc + n
-                    if rr < 0 or rr >= len(graph):
-                        break
-                    elif cc < 0 or cc >= len(graph[0]):
-                        break
-                    elif graph[rr][cc] == ".":
-                        continue
-                    else:
-                        occupied += graph[rr][cc] == "#"
-                        break
-
-    return occupied
-
-
-def update(graph):
-    new_graph = [["X" for c in row] for row in graph]
-
-    for r in range(len(graph)):
-        for c in range(len(graph[r])):
-            if graph[r][c] == ".":
-                new_graph[r][c] = "."
-            elif graph[r][c] == "L":
-                if get_surrounds_see(r, c, graph) == 0: # was get_surrounds
-                    new_graph[r][c] = "#"
+def get_neighbours(r, c, grid, ignore_floor):
+    neighbours = []
+    for m, n in product([-1, 0, 1], repeat=2):
+        if m != 0 or n != 0:
+            rr, cc = r + m, c + n
+            while 0 <= rr < len(grid) and 0 <= cc < len(grid[0]):
+                if grid[rr][cc] == "." and ignore_floor:
+                    rr, cc = rr + m, cc + n
                 else:
-                    new_graph[r][c] = "L"
-            else:
-                if get_surrounds_see(r,c,graph) >= 5: #was get_surrounds_see, was 4
-                    new_graph[r][c] = "L"
-                else:
-                    new_graph[r][c] = "#"
+                    neighbours.append((rr, cc))
+                    break
+    return neighbours
 
-    return new_graph
+def update(grid, neighbours, leave_threshold):
+    new_grid = copy.deepcopy(grid)
+
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == "L":
+                new_grid[r][c] = "#" if sum(grid[rr][cc] == "#" for (rr, cc) in neighbours[(r,c)]) == 0 else "L"
+            elif grid[r][c] == "#":
+                new_grid[r][c] = "L" if sum(grid[rr][cc] == "#" for (rr, cc) in neighbours[(r,c)]) >= leave_threshold else "#"
+    return new_grid
+
+def occupied_counts(grid, ignore_floor, leave_threshold):
+    neighbours = {(r, c) : get_neighbours(r, c, grid, ignore_floor) for r in range(len(grid)) for c in range(len(grid[0]))}
+    new_grid = update(grid, neighbours, leave_threshold)
+    while grid != new_grid:
+        grid, new_grid = new_grid, update(new_grid, neighbours, leave_threshold)
+
+    return sum(row.count("#") for row in grid)
 
 def run() -> (int, int):
-    rows = read_as.lines("input/11.txt")
-    graph = [[c for c in row] for row in rows]
-
-    new_graph = update(graph)
-    while graph != new_graph:
-        graph = new_graph
-        new_graph = update(new_graph)
-
-    print(sum(row.count("#") for row in graph))
-
-    return(False, False)
+    grid = read_as.grid("input/11.txt")
+    return(occupied_counts(grid, False, 4), occupied_counts(grid, True, 5))
 
 if __name__ == "__main__":
     print(run())

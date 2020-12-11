@@ -6,3 +6,7 @@ def groups(filepath: str) -> [str]:
 def lines(filepath: str) -> [str]:
     with open(filepath) as f:
         return [line.rstrip('\n') for line in f]
+
+def grid(filepath: str) -> [[str]]:
+    with open(filepath) as f:
+        return [[x for x in line.rstrip('\n')] for line in f]
