@@ -1,78 +1,33 @@
 import read_as
-import copy
-from itertools import *
 
 class Ship():
-    def __init__(self):
-        self.heading = 1 # NESW == {0,1,2,3}
-        self.posx = 0
-        self.posy = 0
+    def __init__(self, ref_pt, use_wp):
+        self.pos = 0 + 0j
+        self.reference = ref_pt
+        self.use_wp = use_wp
 
     def move(self, command, val):
-        if command == "N":
-            self.posy += val
-        elif command == "E":
-            self.posx += val
-        elif command == "S":
-            self.posy -= val
-        elif command == 'W':
-            self.posx -= val
-        elif command == "L":
-            to_turn = val // 90
-            self.heading -= to_turn
-            if self.heading < 0:
-                self.heading = 4 + self.heading
-        elif command == "R":
-            to_turn = val // 90
-            self.heading = (self.heading + to_turn) % 4
+        if command in "NSEW":
+            if self.use_wp:
+                self.reference += {"N": 1j, "S": -1j, "E": 1, "W": -1}[command] * val
+            else:
+                self.pos += {"N": 1j, "S": -1j, "E": 1, "W": -1}[command] * val
+        elif command in "LR":
+            self.reference *= {"L": 1j, "R": -1j}[command] ** (val // 90)
         elif command == "F":
-            direction = {0:"N", 1:"E", 2:"S", 3:"W"}[self.heading]
-            self.move(direction, val)
-        else:
-            print("ERROR")
+            self.pos += self.reference * val
 
-class ShipWP():
-    def __init__(self):
-        self.heading = 1 # NESW == {0,1,2,3}
-        self.posx = 0
-        self.posy = 0
-        self.wpx = 10
-        self.wpy = 1
-
-    def move(self, command, val):
-        if command == "N":
-            self.wpy += val
-        elif command == "E":
-            self.wpx += val
-        elif command == "S":
-            self.wpy -= val
-        elif command == 'W':
-            self.wpx -= val
-        elif command == "L":
-            for i in range(val // 90):
-                tmpx = self.wpx
-                self.wpx = -self.wpy
-                self.wpy = tmpx
-        elif command == "R":
-            for i in range(val // 90):
-                tmpx = self.wpx
-                self.wpx = self.wpy
-                self.wpy = -tmpx
-        elif command == "F":
-            self.posx += val * self.wpx
-            self.posy += val * self.wpy
-        else:
-            print("ERROR")
+    def manhattan(self):
+        return int(abs(self.pos.real) + abs(self.pos.imag))
 
 def run() -> (int, int):
-    lines = read_as.lines("input/12.txt")
-    ship = Ship()
-    ship_wp = ShipWP()
-    for instr in lines:
+    ship = Ship(1 + 0j, False)
+    ship_wp = Ship(10 + 1j, True)
+    for instr in read_as.lines("input/12.txt"):
         command, val = instr[0], int(instr[1:])
         ship.move(command, val) 
         ship_wp.move(command, val)
-    return (abs(ship.posx) + abs(ship.posy), abs(ship_wp.posx) + abs(ship_wp.posy))
+    return (ship.manhattan(), ship_wp.manhattan())
 
 if __name__ == "__main__":
     print(run())
