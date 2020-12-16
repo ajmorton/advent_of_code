@@ -1,43 +1,23 @@
 import read_as
 import re
+from math import inf
 
 def run() -> (int, int):
-    groups = read_as.groups("input/16.txt")
-    rules, my_ticket, other_tickets = groups
+    rules, my_ticket, other_tickets = read_as.groups("input/16.txt")
 
     ruleset = {}
-
     for rule in rules:
-        rule_name = rule.split(":")[0]
-        ranges = re.findall(r"[0-9]+", rule)
-        min_1, max_1, min_2, max_2 = int(ranges[0]), int(ranges[1]), int(ranges[2]), int(ranges[3])
+        name, a, b, c, d = re.search(r"([a-z ]+): (\d+)-(\d+) or (\d+)-(\d+)", rule).groups()
+        ruleset[name] = (int(a), int(b), int(c), int(d))
 
-        ruleset[rule_name] = (min_1, max_1, min_2, max_2)
+    field_val = lambda field: any(a <= int(field) <= b or c <= int(field) <= d for (a,b,c,d) in ruleset.values())
+    ticket_val = lambda ticket: all(field_val(field) for field in ticket.split(","))
 
-    scanning_rate = 0
-    valid_other_tickets = []
-    for other_ticket in other_tickets[1:]:
-        all_valid = True
-        for value in other_ticket.split(","):
-            val = int(value)
-            is_valid = False
-            for rule in ruleset:
-                (min_1, max_1, min_2, max_2) = ruleset[rule]
-                if min_1 <= val <= max_1 or min_2 <= val <= max_2:
-                    is_valid = True
-                    break
-            if not is_valid:
-                scanning_rate += val
-                all_valid = False
-
-        if all_valid:
-            valid_other_tickets.append(other_ticket)
-
+    scanning_rate = sum(int(field) for ticket in other_tickets[1:] for field in ticket.split(",") if not field_val(field))
+    valid_other_tickets = [ticket for ticket in other_tickets[1:] if ticket_val(ticket)]
     
     # P2
-    rule_indices = {}
-    for rule in ruleset:
-        rule_indices[rule] = set(i for i in range(len(rules)))
+    rule_indices = {rule: set(i for i in range(len(ruleset))) for rule in ruleset}
 
     for valid_ticket in valid_other_tickets:
         for (index, field) in enumerate(valid_ticket.split(",")):
