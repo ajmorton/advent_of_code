@@ -1,23 +1,20 @@
 import read_as
 import re
-from collections import defaultdict
 
-def contains_shiny_gold(bag: str, bag_map: dict) -> int:
-    # faster without memo ¯\_(ツ)_/¯
-    return bag == "shiny gold" or any([contains_shiny_gold(sub_bag[1], bag_map) for sub_bag in bag_map[bag]])
+def contains_shiny_gold(colour: str, bags: dict) -> int:
+    return colour == "shiny gold" or any(contains_shiny_gold(colour, bags) for _, colour in bags[colour])
     
-def contains(bag: str, bag_map: dict) -> int:
-    return 1 + sum([int(num) * contains(bag, bag_map) for (num, bag) in bag_map[bag]])
+def num_contents(colour: str, bags: dict) -> int:
+    return 1 + sum([int(num) * num_contents(colour, bags) for (num, colour) in bags[colour]])
 
 def run() -> (int, int):
-    bag_map = defaultdict(list)
+    bags = {}
     for line in read_as.lines("input/7.txt"):
-        (container, contents) = line.split(" bags contain ")
-        contents = re.findall(r"([0-9]+) ([a-z ]+) bags?[,.]", contents)
-        bag_map[container].extend(contents)
+        (colour, contents) = line.split(" bags contain ")
+        bags[colour] = re.findall(r"([0-9]+) ([a-z ]+) bags?[,.]", contents)
 
-    bags_containing = [bag for bag in bag_map if bag != "shiny gold" and contains_shiny_gold(bag, bag_map)]
-    return(len(bags_containing), contains("shiny gold", bag_map) - 1)
+    bags_containing = sum([contains_shiny_gold(colour, bags) for colour in bags if colour != "shiny gold"])
+    return(bags_containing, num_contents("shiny gold", bags) - 1)
 
 if __name__ == "__main__":
     print(run())

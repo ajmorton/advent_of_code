@@ -8,7 +8,6 @@ def run() -> (int, int):
 
     r = 0
     for row in read_as.lines("input/3.txt"):
-        row = row.strip()
         for i in range(0, len(trees)):
             if r % down[i] == 0:
                 trees[i] += row[(r * right[i] // down[i]) % len(row)] == "#"

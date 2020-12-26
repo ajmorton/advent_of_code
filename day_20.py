@@ -11,19 +11,15 @@ left_col = lambda tile: "".join([row[0] for row in tile])
 rot_r = lambda tile: ["".join([tile[x][y] for x in reversed(range(len(tile[0]))) ])  for y in range(len(tile)) ]
 
 def rot_and_flip_while_cond(tile, conditions):
-
+    tile_flipped = [row[::-1] for row in tile]
     for _ in range(4):
         tile = rot_r(tile)
         if all(cond(tile) for cond in conditions):
             yield tile
 
-    #flip
-    tile = [row[::-1] for row in tile]
-
-    for _ in range(4):
-        tile = rot_r(tile)
-        if all(cond(tile) for cond in conditions):
-            yield tile
+        tile_flipped = rot_r(tile_flipped)
+        if all(cond(tile_flipped) for cond in conditions):
+                yield tile_flipped
 
 def pop_grid(top_left, tiles, matching_edges, matches):
     grid = defaultdict(lambda: None)
@@ -73,16 +69,15 @@ def run() -> (int, int):
 
     matching_edges = set()
     matches = defaultdict(lambda: defaultdict(list))
-    for t in tile_edges:
-        for i in range(len(tile_edges[t])):
-            edge = tile_edges[t][i]
-            for other_t in tile_edges:
-                if other_t != t:
-                    for j in range(len(tile_edges[other_t])):
-                        other_edge = tile_edges[other_t][j]
-                        if edge == other_edge or edge == other_edge[::-1]:
-                            matches[t][i] = other_t
-                            matching_edges.add(edge)
+    for t, other_t in it.product(tile_edges, repeat=2):
+        if other_t != t:
+            for i in range(len(tile_edges[t])):
+                edge = tile_edges[t][i]
+                for j in range(len(tile_edges[other_t])):
+                    other_edge = tile_edges[other_t][j]
+                    if edge == other_edge or edge == other_edge[::-1]:
+                        matches[t][i] = other_t
+                        matching_edges.add(edge)
 
     corners = [tile for tile in tiles if len(matches[tile]) == 2]
     prod_corners = math.prod(c for c in corners)
@@ -100,9 +95,6 @@ def run() -> (int, int):
                 row_str += grid[(r,c)][1][sub_r][1:-1]
             grid_stripped.append(row_str)
 
-    grid_rots = rot_and_flip_while_cond(grid_stripped, {lambda x: True})
-
-
     monster = [
         "                  # ",
         "#    ##    ##    ###",
@@ -110,18 +102,13 @@ def run() -> (int, int):
     ]
 
     rollover = len(grid_stripped[0]) - len(monster[0])
-    monster_regex = ("."*rollover).join(monster).replace(' ', ".")
+    monster_regex = "(?=" + ("."*rollover).join(monster).replace(' ', ".") + ")"
 
-    max_monsters, roughness = 0, 0
-    for g in grid_rots:
-        grid_str = "".join(g)
-        num_monsters = 0
-        for i in range(len(grid_str)):
-            num_monsters += 1 if re.match(monster_regex, grid_str[i:]) else 0
-        if num_monsters > max_monsters:
-            max_monsters = num_monsters
-            roughness = grid_str.count("#") - num_monsters * monster_regex.count("#")
-        
+    grid_rots = rot_and_flip_while_cond(grid_stripped, {lambda x: True})
+    max_monsters = max([len(re.findall(monster_regex, "".join(g))) for g in grid_rots])
+
+    roughness = "".join(grid_stripped).count("#") - max_monsters * monster_regex.count("#")
+
     return (prod_corners, roughness)
 
 if __name__ == "__main__":

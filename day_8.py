@@ -1,27 +1,19 @@
 import read_as
 
 def execute(prog):
-    ptr, acc = 0, 0
-    visited = set()
+    ptr, acc, visited = 0, 0, set()
 
-    while True:
-        if ptr == len(prog):
-            return True, acc
-        elif ptr < 0 or ptr > len(prog) or ptr in visited:
-            return False, acc
-        else:
-            cur_instr, val = prog[ptr]
-            visited.add(ptr)
-            if cur_instr == "nop":
-                ptr += 1
-            elif cur_instr == "jmp":
-                ptr += val
-            elif cur_instr == "acc":
-                acc += val
-                ptr += 1
-            else:
-                print("ERROR")
+    while 0 <= ptr < len(prog) and ptr not in visited: 
+        cur_instr, val = prog[ptr]
+        visited.add(ptr)
 
+        acc, ptr = {
+            "nop" : (acc,       ptr + 1),
+            "jmp" : (acc,       ptr + val),
+            "acc" : (acc + val, ptr + 1)
+        }[cur_instr]
+
+    return ptr == len(prog), acc
 
 def run() -> (int, int):
 
@@ -30,7 +22,7 @@ def run() -> (int, int):
 
     _, p1 = execute(prog)
 
-    for i in range(0, len(prog)):
+    for i in range(len(prog)):
         new_instr = None
         if prog[i][0] == "jmp":
             new_instr = ("nop", prog[i][1])
@@ -41,9 +33,8 @@ def run() -> (int, int):
             new_prog = prog.copy()
             new_prog[i] = new_instr
 
-            result = execute(new_prog)
-            if result[0] == True:
-                p2 = result[1]
+            success, p2 = execute(new_prog)
+            if success == True:
                 break
 
     return(p1, p2)

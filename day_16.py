@@ -1,6 +1,6 @@
 import read_as
 import re
-from math import inf
+from math import inf, prod
 
 def run() -> (int, int):
     rules, my_ticket, other_tickets = read_as.groups("input/16.txt")
@@ -8,50 +8,30 @@ def run() -> (int, int):
     ruleset = {}
     for rule in rules:
         name, a, b, c, d = re.search(r"([a-z ]+): (\d+)-(\d+) or (\d+)-(\d+)", rule).groups()
-        ruleset[name] = (int(a), int(b), int(c), int(d))
+        ruleset[name] = [ range(int(a), int(b) + 1), range(int(c), int(d) + 1)]
 
-    field_val = lambda field: any(a <= int(field) <= b or c <= int(field) <= d for (a,b,c,d) in ruleset.values())
-    ticket_val = lambda ticket: all(field_val(field) for field in ticket.split(","))
+    matches_rule = lambda field, ranges: int(field) in ranges[0] or int(field) in ranges[1]
+    field_valid = lambda field: any(matches_rule(field, ranges) for ranges in ruleset.values())
+    ticket_valid = lambda ticket: all(field_valid(field) for field in ticket.split(","))
 
-    scanning_rate = sum(int(field) for ticket in other_tickets[1:] for field in ticket.split(",") if not field_val(field))
-    valid_other_tickets = [ticket for ticket in other_tickets[1:] if ticket_val(ticket)]
+    scanning_rate = sum(int(field) for ticket in other_tickets[1:] for field in ticket.split(",") if not field_valid(field))
     
     # P2
-    rule_indices = {rule: set(i for i in range(len(ruleset))) for rule in ruleset}
+    valid_other_tickets = [ticket for ticket in other_tickets[1:] if ticket_valid(ticket)]
 
+    rule_indices = {rule: set(i for i in range(len(ruleset))) for rule in ruleset}
     for valid_ticket in valid_other_tickets:
         for (index, field) in enumerate(valid_ticket.split(",")):
-            field = int(field)
-
             for rule in ruleset:
-                (min_1, max_1, min_2, max_2) = ruleset[rule]
-                if not (min_1 <= field <= max_1 or min_2 <= field <= max_2):
+                if not ( matches_rule(field, ruleset[rule]) ):
                     rule_indices[rule].remove(index)
 
-    ordered_indices = {}
-    while len(rule_indices) > 0:
-        next_rule = None
-        correct_index = -1
-        for (rule, indices) in rule_indices.items():
-            if len(indices) == 1:
-                correct_index = list(indices)[0]
-                ordered_indices[rule] = correct_index
-                break
-        
-        rule_indices.pop(rule)
-        for rule in rule_indices:
-            try:
-                rule_indices[rule].remove(correct_index)
-            except:
-                pass
+    known_indices = {}
+    for r, v in sorted(rule_indices.items(), key=lambda x: len(x[1])):
+        known_indices[r] = {x for x in v if x not in known_indices.values()}.pop()
 
-
-    prod_of_fields = 1
     my_fields = [int(field) for field in my_ticket[1].split(",")]
-    for (rule, index) in ordered_indices.items():
-        if rule.startswith("departure"):
-            prod_of_fields *= my_fields[index]
-
+    prod_of_fields = prod([my_fields[index] for rule, index in known_indices.items() if rule.startswith("departure")])
 
     return (scanning_rate, prod_of_fields)
 
