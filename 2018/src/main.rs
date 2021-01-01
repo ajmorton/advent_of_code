@@ -98,3 +98,44 @@ fn day_04() {
 fn day_05() {
     assert_eq!(day_05::run(), (11540, 6918));
 }
+
+#[test]
+fn day_06() {
+    assert_eq!(day_06::run(), (3894, 39398));
+}
+
+#[test]
+fn day_07() {
+    assert_eq!(
+        day_07::run(),
+        (String::from("BFKEGNOVATIHXYZRMCJDLSUPWQ"), 1020)
+    );
+}
+
+#[test]
+fn day_08() {
+    assert_eq!(day_08::run(), (45210, 22793));
+}
+
+#[test]
+fn day_09() {
+    assert_eq!(day_09::run(), (398242, 3273842452));
+}
+
+#[test]
+fn day_10() {
+    let stars = concat!(
+        "  ##    #    #  ######  #       #        ####     ##    #     \n",
+        " #  #   #    #       #  #       #       #    #   #  #   #     \n",
+        "#    #  #    #       #  #       #       #       #    #  #     \n",
+        "#    #  #    #      #   #       #       #       #    #  #     \n",
+        "#    #  ######     #    #       #       #       #    #  #     \n",
+        "######  #    #    #     #       #       #       ######  #     \n",
+        "#    #  #    #   #      #       #       #       #    #  #     \n",
+        "#    #  #    #  #       #       #       #       #    #  #     \n",
+        "#    #  #    #  #       #       #       #    #  #    #  #     \n",
+        "#    #  #    #  ######  ######  ######   ####   #    #  ######\n"
+    )
+    .to_string();
+    assert_eq!(day_10::run(), (stars, 10333));
+}
