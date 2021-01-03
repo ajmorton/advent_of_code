@@ -139,3 +139,28 @@ fn day_10() {
     .to_string();
     assert_eq!(day_10::run(), (stars, 10333));
 }
+
+#[test]
+fn day_11() {
+    assert_eq!(day_11::run(), ((33, 54), (232, 289, 8)));
+}
+
+#[test]
+fn day_12() {
+    assert_eq!(day_12::run(), (3793, 4300000002414));
+}
+
+#[test]
+fn day_13() {
+    assert_eq!(day_13::run(), ((118, 66), (70, 129)));
+}
+
+#[test]
+fn day_14() {
+    assert_eq!(day_14::run(), (6107101544, 20291131));
+}
+
+#[test]
+fn day_15() {
+    assert_eq!(day_15::run(), (206720, 37992));
+}
