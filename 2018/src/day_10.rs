@@ -26,20 +26,19 @@ fn starmap_string(starmap: HashSet<(isize, isize)>) -> String {
     for r in min_pos_r..=max_pos_r {
         for c in min_pos_c..=max_pos_c {
             if starmap.contains(&(r, c)) {
-                stars_string.push_str("#");
+                stars_string.push('#');
             } else {
-                stars_string.push_str(" ");
+                stars_string.push(' ');
             }
         }
-        stars_string.push_str("\n");
+        stars_string.push('\n');
     }
     stars_string
 }
 
 pub fn run() -> (String, isize) {
     let input = include_str!("../input/10.txt").trim().split('\n');
-    let pattern =
-        Regex::new(r"position=< *(-?\d+), *(-?\d+)> velocity=< *(-?\d+), *(-?\d+)>").unwrap();
+    let pattern = Regex::new(r"position=< *(-?\d+), *(-?\d+)> velocity=< *(-?\d+), *(-?\d+)>").unwrap();
 
     let mut stars = Vec::new();
 

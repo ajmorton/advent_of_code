@@ -1,7 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
 type Pos = (usize, usize);
-type Map = Vec<Vec<char>>;
+type Map = [Vec<char>];
+type CartID = usize;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
 enum Direction {
@@ -46,7 +47,6 @@ fn next_turn(turn: Turn) -> Turn {
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
 struct Cart {
-    id: usize,
     r: usize,
     c: usize,
     direction: Direction,
@@ -89,30 +89,27 @@ impl Cart {
     }
 }
 
-fn run_carts(carts: HashMap<usize, Cart>, map: &Map, end_on_first_crash: bool) -> Pos {
+fn run_carts(carts: HashMap<CartID, Cart>, map: &Map, end_on_first_crash: bool) -> Pos {
     let mut carts = carts;
     let mut positions: HashSet<Pos> = HashSet::new();
-    let mut crashed: HashSet<usize> = HashSet::new();
+    let mut crashed: HashSet<CartID> = HashSet::new();
 
     for tick in 0.. {
-        carts = carts
-            .into_iter()
-            .filter(|(id, _c)| !crashed.contains(id))
-            .collect();
+        carts = carts.into_iter().filter(|(id, _c)| !crashed.contains(id)).collect();
         if carts.iter().len() == 1 {
             let last_cart = carts.into_iter().next().unwrap().1;
             return (last_cart.c, last_cart.r); // flipped to match puzzle coords
         }
 
         let mut exec_order = carts.iter().collect::<Vec<(&usize, &Cart)>>();
-        exec_order.sort_by_key(|(_id, c)| (c.r, c.c));
-        let exec_order: Vec<usize> = exec_order.iter().map(|(&id, _cart)| id).collect();
+        exec_order.sort_by_key(|(_id, cart)| (cart.r, cart.c));
+        let exec_order: Vec<CartID> = exec_order.iter().map(|(&id, _cart)| id).collect();
 
         for cart_id in exec_order {
             if crashed.contains(&cart_id) {
                 continue;
             }
-            let mut cart = carts.get(&cart_id).unwrap().clone();
+            let mut cart = *carts.get(&cart_id).unwrap();
             positions.remove(&(cart.r, cart.c));
             cart = cart.update(&map);
 
@@ -126,11 +123,7 @@ fn run_carts(carts: HashMap<usize, Cart>, map: &Map, end_on_first_crash: bool) -
                     positions.remove(&new_position);
                     crashed.insert(cart_id);
                     let cl = carts.clone();
-                    let other_cart = cl
-                        .iter()
-                        .find(|(&_id, &c)| c.r == cart.r && c.c == cart.c)
-                        .unwrap()
-                        .0;
+                    let other_cart = cl.iter().find(|(&_id, &c)| c.r == cart.r && c.c == cart.c).unwrap().0;
                     crashed.insert(*other_cart);
                 }
             } else {
@@ -139,7 +132,35 @@ fn run_carts(carts: HashMap<usize, Cart>, map: &Map, end_on_first_crash: bool) -
             }
         }
     }
-    return (0, 0);
+    panic!("unreachable");
+}
+
+fn parse_carts(map: &Map) -> HashMap<CartID, Cart> {
+    let mut carts = Vec::new();
+
+    // parse carts
+    for (r, row) in map.iter().enumerate() {
+        for (c, cell) in row.iter().enumerate() {
+            let direction = match cell {
+                '<' => Some(Direction::W),
+                'v' => Some(Direction::S),
+                '>' => Some(Direction::E),
+                '^' => Some(Direction::N),
+                _ => None,
+            };
+
+            if let Some(direction) = direction {
+                carts.push(Cart {
+                    r,
+                    c,
+                    direction,
+                    next_turn: Turn::Left,
+                });
+            }
+        }
+    }
+
+    carts.into_iter().enumerate().collect()
 }
 
 pub fn run() -> (Pos, Pos) {
@@ -147,41 +168,11 @@ pub fn run() -> (Pos, Pos) {
     let rows: Vec<&str> = input.split('\n').collect();
     let map: Vec<Vec<char>> = rows.iter().map(|&r| r.chars().collect()).collect();
 
-    let height = map.len();
-    let width = map[0].len();
-
-    let cart_icons = vec!['<', 'v', '>', '^'];
-    let mut carts = Vec::new();
-
-    // parse carts
-    let mut id = 0;
-    for r in 0..height {
-        for c in 0..width {
-            if cart_icons.contains(&map[r][c]) {
-                let direction = match map[r][c] {
-                    '<' => Direction::W,
-                    'v' => Direction::S,
-                    '>' => Direction::E,
-                    '^' => Direction::N,
-                    _ => panic!("Cart Direction can't be determined"),
-                };
-                carts.push(Cart {
-                    id,
-                    r,
-                    c,
-                    direction,
-                    next_turn: Turn::Left,
-                });
-                id += 1;
-            }
-        }
-    }
-
-    let carts: HashMap<usize, Cart> = carts.into_iter().map(|c| (c.id, c)).collect();
+    let carts = parse_carts(&map);
 
     // run
     let crash = run_carts(carts.clone(), &map, true);
-    let last_cart = run_carts(carts.clone(), &map, false);
+    let last_cart = run_carts(carts, &map, false);
 
     (crash, last_cart)
 }

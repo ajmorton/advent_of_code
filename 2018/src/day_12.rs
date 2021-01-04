@@ -10,10 +10,7 @@ fn meets_rules(i: &isize, plants: &HashSet<isize>, ruleset: &HashSet<String>) ->
 }
 
 pub fn run() -> (isize, isize) {
-    let input: Vec<&str> = include_str!("../input/12.txt")
-        .trim()
-        .split("\n\n")
-        .collect();
+    let input: Vec<&str> = include_str!("../input/12.txt").trim().split("\n\n").collect();
 
     let mut plants: HashSet<isize> = input[0]
         .to_string()
@@ -29,10 +26,11 @@ pub fn run() -> (isize, isize) {
     let mut ruleset: HashSet<String> = HashSet::new();
     for rule in rules {
         let caps = pattern.captures(rule);
-        if caps.is_none() {
-            continue;
+
+        if let Some(caps) = caps {
+            ruleset.insert(caps[1].to_string().clone());
         } else {
-            ruleset.insert(caps.unwrap()[1].to_string().clone());
+            continue;
         }
     }
 

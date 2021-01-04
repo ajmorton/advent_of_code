@@ -7,7 +7,7 @@ struct Pos {
     r: usize,
     c: usize,
 }
-#[derive(Clone, Debug, PartialEq, PartialOrd, Copy)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Eq, Ord, Copy)]
 enum Move {
     Up,
     Left,
@@ -63,10 +63,7 @@ fn parse_input(input_str: &str) -> (Map, HashMap<Pos, Unit>, State) {
         }
     }
 
-    let state = State {
-        num_elves,
-        num_goblins,
-    };
+    let state = State { num_elves, num_goblins };
     (map, units, state)
 }
 
@@ -93,10 +90,7 @@ fn manhattan_dist(p1: &Pos, p2: &Pos) -> usize {
 
 fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
     let mut paths: Vec<(Pos, Vec<Move>)> = Vec::new();
-    let mut visited: Vec<Vec<bool>> = map
-        .iter()
-        .map(|r| r.iter().map(|_c| false).collect())
-        .collect();
+    let mut visited: Vec<Vec<bool>> = map.iter().map(|r| r.iter().map(|_c| false).collect()).collect();
 
     let open_tiles = vec!['.', 'X'];
 
@@ -104,32 +98,17 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
 
     loop {
         paths.sort_by(|a, b| {
-            let len_cmp = a.1.len().partial_cmp(&b.1.len()).unwrap().reverse();
-            match len_cmp {
-                std::cmp::Ordering::Equal => {
-                    let pos_cmp = a.0.partial_cmp(&b.0).unwrap().reverse();
-                    match pos_cmp {
-                        std::cmp::Ordering::Equal => {
-                            let path_cmp = a.1.partial_cmp(&b.1).unwrap().reverse();
-                            match path_cmp {
-                                std::cmp::Ordering::Equal => panic!(),
-                                _ => path_cmp,
-                            }
-                        }
-                        _ => pos_cmp,
-                    }
-                }
-                _ => len_cmp,
-            }
+            let aa = (a.1.len(), a.0, &a.1);
+            let bb = (b.1.len(), b.0, &b.1);
+            aa.cmp(&bb)
         });
 
-        let next_path = paths.pop();
-        if next_path.is_none() {
+        if paths.is_empty() {
             break;
         }
 
-        let (cur_pos, path_to) = next_path.unwrap();
-        if visited[cur_pos.r][cur_pos.c] == true {
+        let (cur_pos, path_to) = paths.remove(0);
+        if visited[cur_pos.r][cur_pos.c] {
             continue;
         }
 
@@ -143,8 +122,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
             return Some(path_to);
         }
 
-        if open_tiles.contains(&map[cur_pos.r - 1][cur_pos.c]) && !visited[cur_pos.r - 1][cur_pos.c]
-        {
+        if open_tiles.contains(&map[cur_pos.r - 1][cur_pos.c]) && !visited[cur_pos.r - 1][cur_pos.c] {
             let mut new_path = path_to.clone();
             new_path.push(Move::Up);
             paths.push((
@@ -156,8 +134,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
             ));
         }
 
-        if open_tiles.contains(&map[cur_pos.r][cur_pos.c - 1]) && !visited[cur_pos.r][cur_pos.c - 1]
-        {
+        if open_tiles.contains(&map[cur_pos.r][cur_pos.c - 1]) && !visited[cur_pos.r][cur_pos.c - 1] {
             let mut new_path = path_to.clone();
             new_path.push(Move::Left);
             paths.push((
@@ -169,8 +146,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
             ));
         }
 
-        if open_tiles.contains(&map[cur_pos.r][cur_pos.c + 1]) && !visited[cur_pos.r][cur_pos.c + 1]
-        {
+        if open_tiles.contains(&map[cur_pos.r][cur_pos.c + 1]) && !visited[cur_pos.r][cur_pos.c + 1] {
             let mut new_path = path_to.clone();
             new_path.push(Move::Right);
             paths.push((
@@ -182,8 +158,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
             ));
         }
 
-        if open_tiles.contains(&map[cur_pos.r + 1][cur_pos.c]) && !visited[cur_pos.r + 1][cur_pos.c]
-        {
+        if open_tiles.contains(&map[cur_pos.r + 1][cur_pos.c]) && !visited[cur_pos.r + 1][cur_pos.c] {
             let mut new_path = path_to.clone();
             new_path.push(Move::Down);
             paths.push((
@@ -202,15 +177,15 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
 fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize, usize) {
     let mut map = map.clone();
     let mut units = units.clone();
-    let mut state = state.clone();
+    let mut state = *state;
 
     for t in 0.. {
-        let foo = units.clone();
-        let mut positions_to_update: Vec<&Pos> = foo.keys().into_iter().collect();
-        positions_to_update.sort_by(|a, b| a.partial_cmp(&b).unwrap().reverse());
+        let units_copy = units.clone();
+        let mut positions_to_update: Vec<&Pos> = units_copy.keys().into_iter().collect();
+        positions_to_update.sort_by(|a, b| a.cmp(&b).reverse());
 
-        while positions_to_update.len() > 0 {
-            let mut cur_pos = positions_to_update.pop().unwrap().clone();
+        while !positions_to_update.is_empty() {
+            let mut cur_pos = *positions_to_update.pop().unwrap();
             let bar = units.clone();
             let cur_unit = bar.get(&cur_pos);
             if cur_unit.is_none() {
@@ -220,13 +195,7 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
 
             let enemy_positions: Vec<Pos> = units
                 .iter()
-                .filter_map(|(&pos, u)| {
-                    if u.race != cur_unit.race {
-                        Some(pos)
-                    } else {
-                        None
-                    }
-                })
+                .filter_map(|(&pos, u)| if u.race != cur_unit.race { Some(pos) } else { None })
                 .collect();
 
             let enemy = if cur_unit.race == 'G' { 'E' } else { 'G' };
@@ -236,7 +205,7 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
             }
             let shortest_path = shortest_path.unwrap();
 
-            if shortest_path.len() > 0 {
+            if !shortest_path.is_empty() {
                 let next_move = shortest_path[0];
 
                 //move
@@ -274,20 +243,11 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
                 .iter()
                 .filter(|&enemy_pos| manhattan_dist(&cur_pos, enemy_pos) == 1)
                 .collect();
-            adjacent_enemies.sort_by(|&a, &b| {
-                let health_a = units.get(a).unwrap().health;
-                let health_b = units.get(b).unwrap().health;
-                let health_cmp = health_a.cmp(&health_b).reverse();
-                match health_cmp {
-                    std::cmp::Ordering::Equal => a.cmp(&b).reverse(),
-                    _ => health_cmp,
-                }
-            });
 
-            let weakest_enemy_pos = adjacent_enemies.pop();
+            adjacent_enemies.sort_by_key(|&pos| (units.get(pos).unwrap().health, pos));
 
-            if weakest_enemy_pos.is_some() {
-                let weakest_enemy_pos = weakest_enemy_pos.unwrap();
+            if !adjacent_enemies.is_empty() {
+                let weakest_enemy_pos = adjacent_enemies.remove(0);
                 let enemy = units.get_mut(weakest_enemy_pos).unwrap();
                 enemy.health -= cur_unit.attack as isize;
                 if enemy.health <= 0 {
@@ -304,20 +264,12 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
                     if state.num_elves == 0 || state.num_goblins == 0 {
                         let remaining_health: isize = units.iter().map(|(_pos, u)| u.health).sum();
                         let mut num_full_turns = t;
-                        if positions_to_update.len() == 0 {
+                        if positions_to_update.is_empty() {
                             // all moves made in this round
                             num_full_turns += 1;
                         }
-                        let num_remaining_elves = units
-                            .iter()
-                            .filter(|(_pos, unit)| unit.race == 'E')
-                            .collect::<Vec<_>>()
-                            .len();
-                        return (
-                            num_full_turns,
-                            remaining_health as usize,
-                            num_remaining_elves,
-                        );
+                        let num_remaining_elves = units.iter().filter(|(_pos, unit)| unit.race == 'E').count();
+                        return (num_full_turns, remaining_health as usize, num_remaining_elves);
                     }
                 }
             };
@@ -332,6 +284,47 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
     panic!("unreachable");
 }
 
+fn find_first_survivable_conflict(map: &Map, units: HashMap<Pos, Unit>, state: &State) -> usize {
+    let num_elves_start = units.iter().filter(|(_pos, unit)| unit.race == 'E').count();
+
+    let mut updated_units = units;
+
+    let update_attack_power = |atk, units: HashMap<Pos, Unit>| {
+        units
+            .into_iter()
+            .map(|mut it| {
+                if it.1.race == 'E' {
+                    it.1.attack = atk;
+                }
+                it
+            })
+            .collect()
+    };
+
+    // exp backoff
+    let mut attack_power = 4;
+    loop {
+        updated_units = update_attack_power(attack_power, updated_units);
+
+        let (_tick, _remaining_health, num_elves_remaining) = fight(&map, &updated_units, &state);
+        if num_elves_remaining == num_elves_start {
+            break; // return tick * remaining_health;
+        }
+        attack_power *= 2;
+    }
+
+    for attack_power in attack_power / 2 + 1..attack_power {
+        updated_units = update_attack_power(attack_power, updated_units);
+
+        let (tick, remaining_health, num_elves_remaining) = fight(&map, &updated_units, &state);
+        if num_elves_remaining == num_elves_start {
+            return tick * remaining_health;
+        }
+    }
+
+    panic!("unreachable");
+}
+
 pub fn run() -> (usize, usize) {
     let input_str = include_str!("../input/15.txt");
     let (map, units, state) = parse_input(input_str);
@@ -340,122 +333,47 @@ pub fn run() -> (usize, usize) {
     let p1 = tick * remaining_health;
 
     // P2
-    let num_elves_start = units
-        .iter()
-        .filter(|(_pos, unit)| unit.race == 'E')
-        .collect::<Vec<_>>()
-        .len();
-
-    let mut p2 = 0;
-    let mut updated_units = units.clone();
-    for attack_power in 4.. {
-        updated_units = updated_units
-            .into_iter()
-            .map(|mut it| {
-                if it.1.race == 'E' {
-                    it.1.attack = attack_power;
-                }
-                it
-            })
-            .collect();
-
-        let (tick, remaining_health, num_elves_remaining) = fight(&map, &updated_units, &state);
-        if num_elves_remaining == num_elves_start {
-            p2 = tick * remaining_health;
-            break;
-        }
-    }
-    (p1, p2)
+    (p1, find_first_survivable_conflict(&map, units, &state))
 }
 
 #[test]
 fn scen_1() {
-    let input_str = concat!(
-        "#######\n",
-        "#.G...#\n",
-        "#...EG#\n",
-        "#.#.#G#\n",
-        "#..G#E#\n",
-        "#.....#\n",
-        "#######\n"
-    );
+    let input_str = include_str!("../input/15.test_1.txt");
     let (map, units, state) = parse_input(input_str);
     assert_eq!(fight(&map, &units, &state), (47, 590, 0));
 }
 
 #[test]
 fn scen_2() {
-    let input_str = concat!(
-        "#######\n",
-        "#G..#E#\n",
-        "#E#E.E#\n",
-        "#G.##.#\n",
-        "#...#E#\n",
-        "#...E.#\n",
-        "#######\n"
-    );
+    let input_str = include_str!("../input/15.test_2.txt");
     let (map, units, state) = parse_input(input_str);
     assert_eq!(fight(&map, &units, &state), (37, 982, 5));
 }
 
 #[test]
 fn scen_3() {
-    let input_str = concat!(
-        "#######\n",
-        "#E..EG#\n",
-        "#.#G.E#\n",
-        "#E.##E#\n",
-        "#G..#.#\n",
-        "#..E#.#\n",
-        "#######\n"
-    );
+    let input_str = include_str!("../input/15.test_3.txt");
     let (map, units, state) = parse_input(input_str);
     assert_eq!(fight(&map, &units, &state), (46, 859, 5));
 }
 
 #[test]
 fn scen_4() {
-    let input_str = concat!(
-        "#######\n",
-        "#E.G#.#\n",
-        "#.#G..#\n",
-        "#G.#.G#\n",
-        "#G..#.#\n",
-        "#...E.#\n",
-        "#######\n"
-    );
+    let input_str = include_str!("../input/15.test_4.txt");
     let (map, units, state) = parse_input(input_str);
     assert_eq!(fight(&map, &units, &state), (35, 793, 0));
 }
 
 #[test]
 fn scen_5() {
-    let input_str = concat!(
-        "#######\n",
-        "#.E...#\n",
-        "#.#..G#\n",
-        "#.###.#\n",
-        "#E#G#G#\n",
-        "#...#G#\n",
-        "#######\n"
-    );
+    let input_str = include_str!("../input/15.test_5.txt");
     let (map, units, state) = parse_input(input_str);
     assert_eq!(fight(&map, &units, &state), (54, 536, 0));
 }
 
 #[test]
 fn scen_6() {
-    let input_str = concat!(
-        "#########\n",
-        "#G......#\n",
-        "#.E.#...#\n",
-        "#..##..G#\n",
-        "#...##..#\n",
-        "#...#...#\n",
-        "#.G...G.#\n",
-        "#.....G.#\n",
-        "#########\n"
-    );
+    let input_str = include_str!("../input/15.test_6.txt");
     let (map, units, state) = parse_input(input_str);
     assert_eq!(fight(&map, &units, &state), (20, 937, 0));
 }

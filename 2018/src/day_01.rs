@@ -6,7 +6,7 @@ fn first_repeated_freq(nums: Vec<isize>) -> Option<isize> {
     nums.iter()
         .cycle()
         .scan(0, |x, y| {
-            *x = *x + y;
+            *x += y;
             Some(*x)
         })
         .find(|freq| !seen.insert(*freq))
@@ -18,10 +18,7 @@ pub fn run() -> (isize, isize) {
         .split('\n')
         .map(|x| x.parse().unwrap())
         .collect();
-    (
-        nums.iter().sum::<isize>(),
-        first_repeated_freq(nums).unwrap(),
-    )
+    (nums.iter().sum::<isize>(), first_repeated_freq(nums).unwrap())
 }
 
 #[test]

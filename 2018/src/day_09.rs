@@ -1,8 +1,11 @@
 use regex::Regex;
 use std::collections::{HashMap, VecDeque};
 
-fn play(num_players: usize, num_marbles: usize) -> (usize, usize) {
-    let mut scores: HashMap<usize, usize> = HashMap::new();
+type Player = usize;
+type Score = usize;
+
+fn play(num_players: usize, num_marbles: usize) -> (Player, Score) {
+    let mut scores: HashMap<Player, Score> = HashMap::new();
     let mut cur_player: usize = 0;
 
     let mut marbles = VecDeque::new();
@@ -30,8 +33,8 @@ fn play(num_players: usize, num_marbles: usize) -> (usize, usize) {
         }
     }
 
-    let winner = scores.into_iter().max_by_key(|p| p.1).unwrap();
-    winner
+    // winner
+    scores.into_iter().max_by_key(|p| p.1).unwrap()
 }
 
 pub fn run() -> (usize, usize) {
@@ -41,10 +44,7 @@ pub fn run() -> (usize, usize) {
     let num_players = caps[1].parse::<usize>().unwrap();
     let num_marbles = caps[2].parse::<usize>().unwrap();
 
-    (
-        play(num_players, num_marbles).1,
-        play(num_players, num_marbles * 100).1,
-    )
+    (play(num_players, num_marbles).1, play(num_players, num_marbles * 100).1)
 }
 
 #[test]

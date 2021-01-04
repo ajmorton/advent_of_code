@@ -3,6 +3,8 @@ use regex::*;
 use std::collections::{HashMap, HashSet};
 use std::str::FromStr;
 
+type Pos = (usize, usize);
+
 #[derive(Debug)]
 struct Request {
     id: usize,
@@ -17,10 +19,9 @@ impl FromStr for Request {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         lazy_static! {
-            static ref REQUEST_REGEX: Regex =
-                Regex::new(r"#(\d+) @ (\d+),(\d+): (\d+)x(\d+)").unwrap();
+            static ref REQUEST_REGEX: Regex = Regex::new(r"#(\d+) @ (\d+),(\d+): (\d+)x(\d+)").unwrap();
         }
-        let captures = REQUEST_REGEX.captures(s).unwrap();
+        let captures: Captures = REQUEST_REGEX.captures(s).unwrap();
         Ok(Request {
             id: captures[1].parse().unwrap(),
             c: captures[2].parse().unwrap(),
@@ -37,9 +38,10 @@ pub fn run() -> (usize, usize) {
         .map(Request::from_str)
         .map(Result::unwrap)
         .collect();
-    let mut claimed: HashMap<(usize, usize), usize> = HashMap::new();
+
+    let mut claimed: HashMap<Pos, usize> = HashMap::new();
     let mut all_claims: HashSet<usize> = requests.iter().map(|r| r.id).collect();
-    let mut conflicts: HashSet<(usize, usize)> = HashSet::new();
+    let mut conflicts: HashSet<Pos> = HashSet::new();
 
     for req in requests {
         let rows = req.r..req.r + req.height;

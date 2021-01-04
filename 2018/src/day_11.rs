@@ -17,7 +17,7 @@ fn power_level(r: isize, c: isize, serial_number: isize) -> Power {
     power_level - 5
 }
 
-fn find_subcell<I>(partial_sums: &Vec<Vec<Power>>, size_range: I) -> Result
+fn find_subcell<I>(partial_sums: &[Vec<Power>], size_range: I) -> Result
 where
     I: Iterator<Item = Size>,
 {
@@ -52,10 +52,9 @@ fn build_partial_sums(serial_number: isize) -> Vec<Vec<Power>> {
 
     for r in 1..=GRID_SIZE {
         for c in 1..=GRID_SIZE {
-            partial_sums[r][c] = power_level(r as isize, c as isize, serial_number)
-                + partial_sums[r][c - 1]
-                + partial_sums[r - 1][c]
-                - partial_sums[r - 1][c - 1];
+            partial_sums[r][c] =
+                power_level(r as isize, c as isize, serial_number) + partial_sums[r][c - 1] + partial_sums[r - 1][c]
+                    - partial_sums[r - 1][c - 1];
         }
     }
     partial_sums

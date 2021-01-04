@@ -3,7 +3,7 @@ use itertools::*;
 pub fn run() -> (isize, String) {
     let lines: Vec<&str> = include_str!("../input/2.txt").lines().collect();
 
-    let counts = |lines: &Vec<&str>, num| {
+    let counts = |lines: &[&str], num| {
         lines
             .iter()
             .filter(|line| line.chars().counts().values().any(|v| *v == num))
@@ -13,23 +13,18 @@ pub fn run() -> (isize, String) {
     let threes = counts(&lines, 3);
     let p1 = (twos * threes) as isize;
 
-    let foo = lines
-        .clone()
+    let p2 = lines
         .into_iter()
         .combinations(2)
         .map(|pair| {
-            let a = &pair.get(0).unwrap();
-            let b = &pair.get(1).unwrap();
-            a.chars()
-                .zip(b.chars())
-                .filter(|x| x.0 == x.1)
-                .map(|x| x.0)
-                .collect::<Vec<char>>()
+            let a = pair[0].chars();
+            let b = pair[1].chars();
+            a.zip(b)
+                .filter_map(|(a, b)| if a == b { Some(a) } else { None })
+                .collect::<String>()
         })
-        .into_iter()
-        .max_by_key(|x| x.iter().count());
-
-    let p2: String = foo.unwrap().into_iter().collect();
+        .max_by_key(String::len)
+        .unwrap();
 
     (p1, p2)
 }

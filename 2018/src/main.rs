@@ -1,3 +1,5 @@
+#![warn(clippy::all)]
+
 use std::env;
 #[macro_use]
 extern crate lazy_static;
@@ -79,10 +81,7 @@ fn day_01() {
 }
 #[test]
 fn day_02() {
-    assert_eq!(
-        day_02::run(),
-        (6175, String::from("asgwjcmzredihqoutcylvzinx"))
-    );
+    assert_eq!(day_02::run(), (6175, String::from("asgwjcmzredihqoutcylvzinx")));
 }
 
 #[test]
@@ -106,10 +105,7 @@ fn day_06() {
 
 #[test]
 fn day_07() {
-    assert_eq!(
-        day_07::run(),
-        (String::from("BFKEGNOVATIHXYZRMCJDLSUPWQ"), 1020)
-    );
+    assert_eq!(day_07::run(), (String::from("BFKEGNOVATIHXYZRMCJDLSUPWQ"), 1020));
 }
 
 #[test]

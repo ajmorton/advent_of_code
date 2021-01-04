@@ -31,14 +31,12 @@ pub fn run() -> (usize, usize) {
         }
 
         if recipes_len > 10 {
-            if num_new_recipes == 2
-                && &recipes[recipes_len - 1 - input_len..recipes_len - 1] == input
-            {
+            if num_new_recipes == 2 && recipes[recipes_len - 1 - input_len..recipes_len - 1] == input {
                 recipes_len -= 1;
                 break;
             }
 
-            if &recipes[recipes_len - input_len..recipes_len] == input {
+            if recipes[recipes_len - input_len..recipes_len] == input {
                 break;
             }
         }

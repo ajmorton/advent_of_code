@@ -32,20 +32,19 @@ pub fn run() -> (usize, isize) {
             let mut closest_dist = isize::MAX;
             for point in &points {
                 let dist = manhattan(point.1, &(r, c));
-                if dist == closest_dist {
-                    closest_point = None;
-                } else if dist < closest_dist {
-                    closest_point = Some(point.0);
-                    closest_dist = dist;
+                match dist.cmp(&closest_dist) {
+                    std::cmp::Ordering::Equal => closest_point = None,
+                    std::cmp::Ordering::Less => {
+                        closest_point = Some(point.0);
+                        closest_dist = dist;
+                    }
+                    std::cmp::Ordering::Greater => {}
                 }
             }
 
             closest.insert((r, c), closest_point);
-            if closest_point.is_some() {
-                closest_cells
-                    .entry(closest_point.unwrap())
-                    .or_default()
-                    .push((r, c));
+            if let Some(closest_point) = closest_point {
+                closest_cells.entry(closest_point).or_default().push((r, c));
             }
         }
     }
@@ -53,9 +52,7 @@ pub fn run() -> (usize, isize) {
     let edges: HashSet<&usize> = closest
         .iter()
         .filter_map(|(p, closest)| {
-            if closest.is_some()
-                && (p.0 == min_r - 1 || p.0 == max_r + 1 || p.1 == min_c - 1 || p.1 == max_c + 1)
-            {
+            if closest.is_some() && (p.0 == min_r - 1 || p.0 == max_r + 1 || p.1 == min_c - 1 || p.1 == max_c + 1) {
                 closest.as_ref()
             } else {
                 None
@@ -71,12 +68,7 @@ pub fn run() -> (usize, isize) {
     let mut count = 0;
     for r in min_r - 1..=max_r + 1 {
         for c in min_c - 1..=max_c + 1 {
-            if points
-                .iter()
-                .map(|p| manhattan(p.1, &(r, c)))
-                .sum::<isize>()
-                < 10000
-            {
+            if points.iter().map(|p| manhattan(p.1, &(r, c))).sum::<isize>() < 10000 {
                 count += 1;
             }
         }

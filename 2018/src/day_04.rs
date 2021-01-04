@@ -2,11 +2,8 @@ use regex::Regex;
 use std::collections::HashMap;
 
 pub fn run() -> (usize, usize) {
-    let mut lines: Vec<&str> = include_str!("../input/4.txt")
-        .trim_end()
-        .split('\n')
-        .collect();
-    lines.sort();
+    let mut lines: Vec<&str> = include_str!("../input/4.txt").trim_end().split('\n').collect();
+    lines.sort_unstable();
 
     let line_pattern = Regex::new(r"\[\d+-\d+-\d+ \d+:(\d+)\] (.*)").unwrap();
 
@@ -24,17 +21,13 @@ pub fn run() -> (usize, usize) {
 
         if event.contains("begins shift") {
             let split: Vec<&str> = event.split_whitespace().collect();
-            cur_guard = split[1]
-                .trim_start_matches('#')
-                .to_string()
-                .parse::<usize>()
-                .unwrap();
+            cur_guard = split[1].trim_start_matches('#').to_string().parse::<usize>().unwrap();
 
-            guard_schedules.entry(cur_guard.clone()).or_insert([0; 60]);
+            guard_schedules.entry(cur_guard).or_insert([0; 60]);
         } else if event == "wakes up" {
-            guard_schedules.entry(cur_guard.clone()).and_modify(|x| {
-                for m in sleep_start..minute {
-                    x[m] += 1;
+            guard_schedules.entry(cur_guard).and_modify(|shift| {
+                for min in &mut shift[sleep_start..minute] {
+                    *min += 1;
                 }
             });
         } else if event == "falls asleep" {

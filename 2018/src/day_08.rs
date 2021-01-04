@@ -5,16 +5,11 @@ struct Node {
 
 impl Node {
     fn sum_metadata(&self) -> usize {
-        return self.metadata.iter().sum::<usize>()
-            + self
-                .children
-                .iter()
-                .map(|c| c.sum_metadata())
-                .sum::<usize>();
+        return self.metadata.iter().sum::<usize>() + self.children.iter().map(|c| c.sum_metadata()).sum::<usize>();
     }
 
     fn get_value(&self) -> usize {
-        if self.children.len() == 0 {
+        if self.children.is_empty() {
             self.metadata.iter().sum()
         } else {
             self.metadata

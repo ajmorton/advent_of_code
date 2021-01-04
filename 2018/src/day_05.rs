@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 fn reduce(polymer: Vec<char>) -> Vec<char> {
-    let mut p = polymer.clone();
+    let mut p = polymer;
     loop {
         let mut new_polymer = vec![];
         for c in p.iter() {
