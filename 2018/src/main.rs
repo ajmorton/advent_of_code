@@ -4,6 +4,8 @@ use std::env;
 #[macro_use]
 extern crate lazy_static;
 
+mod computer;
+
 mod day_01;
 mod day_02;
 mod day_03;

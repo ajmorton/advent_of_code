@@ -1,27 +1,7 @@
 use regex::Regex;
-use std::{collections::HashMap, iter::FromIterator};
+use std::collections::HashMap;
 
-type Regs = Vec<usize>;
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-enum Opcode {
-    Addr,
-    Addi,
-    Mulr,
-    Muli,
-    Banr,
-    Bani,
-    Borr,
-    Bori,
-    Setr,
-    Seti,
-    Gtir,
-    Gtri,
-    Gtrr,
-    Eqir,
-    Eqri,
-    Eqrr,
-}
+use crate::computer::{Computer, Instruction, Opcode, Prog, Regs, UnknownInstruction};
 
 const ALL_OPS: [Opcode; 16] = [
     Opcode::Addr,
@@ -43,96 +23,25 @@ const ALL_OPS: [Opcode; 16] = [
 ];
 
 #[derive(Debug)]
-struct Instruction {
-    op: usize,
-    a: usize,
-    b: usize,
-    c: usize,
-}
-
-impl FromIterator<usize> for Instruction {
-    fn from_iter<I: IntoIterator<Item = usize>>(iter: I) -> Self {
-        let mut it = iter.into_iter();
-        let op = it.next().unwrap();
-        let a = it.next().unwrap();
-        let b = it.next().unwrap();
-        let c = it.next().unwrap();
-        Instruction { op, a, b, c }
-    }
-}
-
-#[derive(Debug)]
 struct Execution {
     before: Regs,
-    instr: Instruction,
+    instr: UnknownInstruction,
     after: Regs,
-}
-
-fn execute_instr(regs: &Regs, instr: &Instruction, opcode: &Opcode) -> Regs {
-    let mut result = regs.clone();
-    result[instr.c] = match opcode {
-        Opcode::Addr => regs[instr.a] + regs[instr.b],
-        Opcode::Addi => regs[instr.a] + instr.b,
-        Opcode::Mulr => regs[instr.a] * regs[instr.b],
-        Opcode::Muli => regs[instr.a] * instr.b,
-        Opcode::Banr => regs[instr.a] & regs[instr.b],
-        Opcode::Bani => regs[instr.a] & instr.b,
-        Opcode::Borr => regs[instr.a] | regs[instr.b],
-        Opcode::Bori => regs[instr.a] | instr.b,
-        Opcode::Setr => regs[instr.a],
-        Opcode::Seti => instr.a,
-        Opcode::Gtir => {
-            if instr.a > regs[instr.b] {
-                1
-            } else {
-                0
-            }
-        }
-        Opcode::Gtri => {
-            if regs[instr.a] > instr.b {
-                1
-            } else {
-                0
-            }
-        }
-        Opcode::Gtrr => {
-            if regs[instr.a] > regs[instr.b] {
-                1
-            } else {
-                0
-            }
-        }
-        Opcode::Eqir => {
-            if instr.a == regs[instr.b] {
-                1
-            } else {
-                0
-            }
-        }
-        Opcode::Eqri => {
-            if regs[instr.a] == instr.b {
-                1
-            } else {
-                0
-            }
-        }
-        Opcode::Eqrr => {
-            if regs[instr.a] == regs[instr.b] {
-                1
-            } else {
-                0
-            }
-        }
-    };
-
-    result
 }
 
 fn matches_opcodes(exec: &Execution) -> Vec<Opcode> {
     ALL_OPS
         .iter()
         .filter_map(|&op| {
-            if execute_instr(&exec.before, &exec.instr, &op) == exec.after {
+            let instr = Instruction {
+                op,
+                a: exec.instr.a,
+                b: exec.instr.b,
+                c: exec.instr.c,
+            };
+            let mut regs = exec.before.clone();
+            Computer::execute(&mut regs, &instr);
+            if regs == exec.after {
                 Some(op)
             } else {
                 None
@@ -208,7 +117,15 @@ pub fn run() -> (usize, usize) {
 
         let mut i = 0;
         while i != pos_opcodes.len() {
-            if execute_instr(&exec.before, &exec.instr, pos_opcodes[i]) == exec.after {
+            let instr = Instruction {
+                op: *pos_opcodes[i],
+                a: exec.instr.a,
+                b: exec.instr.b,
+                c: exec.instr.c,
+            };
+            let mut regs = exec.before.clone();
+            Computer::execute(&mut regs, &instr);
+            if regs == exec.after {
                 i += 1;
             } else {
                 pos_opcodes.remove(i);
@@ -240,7 +157,7 @@ pub fn run() -> (usize, usize) {
     }
 
     let program_regex = Regex::new(r"(\d+ \d+ \d+ \d+)").unwrap();
-    let program: Vec<Instruction> = program_regex
+    let program: Vec<UnknownInstruction> = program_regex
         .captures_iter(program)
         .map(|caps| {
             caps[1]
@@ -252,19 +169,27 @@ pub fn run() -> (usize, usize) {
         })
         .collect();
 
-    let mut state: Regs = vec![0, 0, 0, 0];
-    for instr in program {
-        state = execute_instr(&state, &instr, opcode_mapping.get(&instr.op).unwrap());
-    }
+    let program_known: Prog = program
+        .iter()
+        .map(|unknown_instr| Instruction {
+            op: *opcode_mapping[&unknown_instr.op],
+            a: unknown_instr.a,
+            b: unknown_instr.b,
+            c: unknown_instr.c,
+        })
+        .collect();
 
-    (three_plus_possible_opcodes, state[0])
+    let mut computer = Computer::new(5, 4, program_known);
+    let p2 = computer.run();
+
+    (three_plus_possible_opcodes, p2)
 }
 
 #[test]
 fn check_opcode_matches() {
     let exec = Execution {
         before: vec![3, 2, 1, 1],
-        instr: Instruction {
+        instr: UnknownInstruction {
             op: 9,
             a: 2,
             b: 1,
