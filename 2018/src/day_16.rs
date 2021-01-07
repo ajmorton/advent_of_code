@@ -179,8 +179,9 @@ pub fn run() -> (usize, usize) {
         })
         .collect();
 
-    let mut computer = Computer::new(5, 4, program_known);
-    let p2 = computer.run();
+    let init_regs = vec![0; 5];
+    let mut computer = Computer::new(init_regs, 4, program_known);
+    let p2 = computer.run(false);
 
     (three_plus_possible_opcodes, p2)
 }

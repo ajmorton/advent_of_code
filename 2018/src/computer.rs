@@ -1,4 +1,4 @@
-use std::iter::FromIterator;
+use std::{iter::FromIterator, str::FromStr};
 
 pub type Regs = Vec<usize>;
 
@@ -22,7 +22,33 @@ pub enum Opcode {
     Eqrr,
 }
 
-#[derive(Debug)]
+impl FromStr for Opcode {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "addr" => Ok(Opcode::Addr),
+            "addi" => Ok(Opcode::Addi),
+            "mulr" => Ok(Opcode::Mulr),
+            "muli" => Ok(Opcode::Muli),
+            "banr" => Ok(Opcode::Banr),
+            "bani" => Ok(Opcode::Bani),
+            "borr" => Ok(Opcode::Borr),
+            "bori" => Ok(Opcode::Bori),
+            "setr" => Ok(Opcode::Setr),
+            "seti" => Ok(Opcode::Seti),
+            "gtir" => Ok(Opcode::Gtir),
+            "gtri" => Ok(Opcode::Gtri),
+            "gtrr" => Ok(Opcode::Gtrr),
+            "eqir" => Ok(Opcode::Eqir),
+            "eqri" => Ok(Opcode::Eqri),
+            "eqrr" => Ok(Opcode::Eqrr),
+            _ => Err(()),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
 pub struct Instruction {
     pub op: Opcode,
     pub a: usize,
@@ -58,12 +84,8 @@ pub struct Computer {
 }
 
 impl Computer {
-    pub fn new(num_regs: usize, ip_reg: usize, prog: Prog) -> Self {
-        Computer {
-            ip_reg,
-            regs: vec![0; num_regs],
-            prog,
-        }
+    pub fn new(regs: Vec<usize>, ip_reg: usize, prog: Prog) -> Self {
+        Computer { ip_reg, regs, prog }
     }
 
     pub fn execute(regs: &mut Regs, instr: &Instruction) {
@@ -123,17 +145,31 @@ impl Computer {
         };
     }
 
-    pub fn run(&mut self) -> usize {
+    pub fn run(&mut self, opt_for_19: bool) -> usize {
         let mut state = self.regs.clone();
+        let mut ip = 0;
         loop {
-            let ip = state[self.ip_reg];
+            // opt
+            if opt_for_19 {
+                if ip == 2 {
+                    // prog is sum of factors
+                    let target = state[5];
+                    let root = f64::sqrt(state[5] as f64).floor() as usize;
+
+                    return (1..=root)
+                        .filter_map(|n| if target % n == 0 { Some(n + target / n) } else { None })
+                        .sum();
+                }
+            }
+
             if ip >= self.prog.len() {
                 break;
             }
+            state[self.ip_reg] = ip;
 
             let instr = &self.prog[ip];
             Computer::execute(&mut state, instr);
-            state[self.ip_reg] += 1;
+            ip = state[self.ip_reg] + 1;
         }
         self.regs = state;
         self.regs[0]
