@@ -1,4 +1,6 @@
 use std::{iter::FromIterator, str::FromStr};
+use std::fs::read_to_string;
+use regex::Regex;
 
 pub type Regs = Vec<usize>;
 
@@ -48,6 +50,9 @@ impl FromStr for Opcode {
     }
 }
 
+#[derive(PartialEq)]
+pub enum SolveFor {Day16, Day19, Day21Part1, Day21Part2}
+
 #[derive(Debug, Clone, Copy)]
 pub struct Instruction {
     pub op: Opcode,
@@ -75,6 +80,27 @@ impl FromIterator<usize> for UnknownInstruction {
         let c = it.next().unwrap();
         UnknownInstruction { op, a, b, c }
     }
+}
+
+pub fn read_prog(filepath: &str) -> (Prog, usize) {
+    let input = read_to_string(filepath).unwrap();
+    let mut input = input.trim_end_matches('\n').split('\n');
+
+    let ip_reg = input.next().unwrap().trim_start_matches("#ip ").parse().unwrap();
+
+    let pattern = Regex::new(r"([a-z]+) (\d+) (\d+) (\d+)").unwrap();
+
+    let mut prog: Prog = vec![];
+    for line in input {
+        let caps = pattern.captures(line).unwrap();
+        let op: Opcode = caps[1].to_string().parse().unwrap();
+        let a: usize = caps[2].parse().unwrap();
+        let b: usize = caps[3].parse().unwrap();
+        let c: usize = caps[4].parse().unwrap();
+        prog.push(Instruction { op, a, b, c });
+    }
+
+    (prog, ip_reg)
 }
 
 pub struct Computer {
@@ -145,20 +171,47 @@ impl Computer {
         };
     }
 
-    pub fn run(&mut self, opt_for_19: bool) -> usize {
+    pub fn run(&mut self, solve_for: SolveFor) -> usize {
         let mut state = self.regs.clone();
         let mut ip = 0;
+        
+        // used for day 21
+        let mut last_val_in_reg_5 = 0;
+        let mut prev_seen = std::collections::HashSet::new();
+
         loop {
             // opt
-            if opt_for_19 {
-                if ip == 2 {
-                    // prog is sum of factors
-                    let target = state[5];
-                    let root = f64::sqrt(state[5] as f64).floor() as usize;
-
-                    return (1..=root)
-                        .filter_map(|n| if target % n == 0 { Some(n + target / n) } else { None })
-                        .sum();
+            match solve_for {
+                SolveFor::Day16 => {}
+                SolveFor::Day19 => {
+                    if ip == 2 {
+                        // prog is sum of factors
+                        let target = state[5];
+                        let root = f64::sqrt(state[5] as f64).floor() as usize;
+    
+                        return (1..=root)
+                            .filter_map(|n| if target % n == 0 { Some(n + target / n) } else { None })
+                            .sum();
+                    }    
+                }
+                SolveFor::Day21Part1 => {
+                    // ip 28 is the only instruction using reg[0] (reg[0] == reg[5]).
+                    // return the value of reg[5] when instr 28 is first run
+                    if ip == 28 {
+                        return state[5];
+                    }
+                }
+                SolveFor::Day21Part2 => {
+                    // run until the value in reg[5] repeats during instruction 28, and return the prior value in reg[5].
+                    if ip == 28 {
+                        let val_in_5 = state[5];
+                        if prev_seen.contains(&val_in_5) {
+                            return last_val_in_reg_5;
+                        } else {
+                            prev_seen.insert(val_in_5);
+                            last_val_in_reg_5 = val_in_5;
+                        }
+                    }
                 }
             }
 

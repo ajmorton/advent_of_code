@@ -1,7 +1,7 @@
 use regex::Regex;
 use std::collections::HashMap;
 
-use crate::computer::{Computer, Instruction, Opcode, Prog, Regs, UnknownInstruction};
+use crate::computer::{Computer, Instruction, Opcode, Prog, Regs, UnknownInstruction, SolveFor};
 
 const ALL_OPS: [Opcode; 16] = [
     Opcode::Addr,
@@ -181,7 +181,7 @@ pub fn run() -> (usize, usize) {
 
     let init_regs = vec![0; 5];
     let mut computer = Computer::new(init_regs, 4, program_known);
-    let p2 = computer.run(false);
+    let p2 = computer.run(SolveFor::Day16);
 
     (three_plus_possible_opcodes, p2)
 }

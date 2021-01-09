@@ -187,3 +187,8 @@ fn day_19() {
 fn day_20() {
     assert_eq!(day_20::run(), (3885, 8677));
 }
+
+#[test]
+fn day_21() {
+    assert_eq!(day_21::run(), (3941014, 13775890));
+}
