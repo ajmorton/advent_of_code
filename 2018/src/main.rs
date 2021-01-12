@@ -29,6 +29,7 @@ mod day_20;
 mod day_21;
 mod day_22;
 mod day_23;
+mod day_24;
 mod day_25;
 
 fn main() {
@@ -71,6 +72,7 @@ fn run(day: usize) {
             21 => println!("{:?}", day_21::run()),
             22 => println!("{:?}", day_22::run()),
             23 => println!("{:?}", day_23::run()),
+            24 => println!("{:?}", day_24::run()),
             25 => println!("{:?}", day_25::run()),
             _ => println!("Unrecognised number {}", day),
         }
@@ -201,5 +203,10 @@ fn day_22() {
 #[test]
 fn day_23() {
     assert_eq!(day_23::run(), (248, 124623002));
+}
+
+#[test]
+fn day_24() {
+    assert_eq!(day_24::run(), (21765, 5522));
 }
 
