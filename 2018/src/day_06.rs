@@ -76,3 +76,8 @@ pub fn run() -> (usize, isize) {
 
     (size_largest, count)
 }
+
+#[test]
+fn day_06() {
+    assert_eq!(run(), (3894, 39398));
+}

@@ -80,3 +80,8 @@ pub fn run() -> (String, usize) {
 
     (assemble(&deps_map, 1, |_f| 0).0, assemble(&deps_map, 5, get_time).1)
 }
+
+#[test]
+fn day_07() {
+    assert_eq!(run(), (String::from("BFKEGNOVATIHXYZRMCJDLSUPWQ"), 1020));
+}

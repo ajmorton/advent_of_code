@@ -67,22 +67,22 @@ fn parse_input(input_str: &str) -> (Map, HashMap<Pos, Unit>, State) {
     (map, units, state)
 }
 
-// fn print_map(map: &Map) {
-//     for row in map {
-//         for cell in row {
-//             if *cell == 'X' {
-//                 print!("\x1b[0;31m{}\x1b[0m", cell);
-//             } else if *cell == 'G' {
-//                 print!("\x1b[0;35m{}\x1b[0m", cell);
-//             } else if *cell == 'E' {
-//                 print!("\x1b[0;32m{}\x1b[0m", cell);
-//             } else {
-//                 print!("{}", cell);
-//             }
-//         }
-//         println!();
-//     }
-// }
+fn _print_map(map: &Map) {
+    for row in map {
+        for cell in row {
+            if *cell == 'X' {
+                print!("\x1b[0;31m{}\x1b[0m", cell);
+            } else if *cell == 'G' {
+                print!("\x1b[0;35m{}\x1b[0m", cell);
+            } else if *cell == 'E' {
+                print!("\x1b[0;32m{}\x1b[0m", cell);
+            } else {
+                print!("{}", cell);
+            }
+        }
+        println!();
+    }
+}
 
 fn manhattan_dist(p1: &Pos, p2: &Pos) -> usize {
     ((p1.r as isize - p2.r as isize).abs() + (p1.c as isize - p2.c as isize).abs()) as usize
@@ -334,6 +334,11 @@ pub fn run() -> (usize, usize) {
 
     // P2
     (p1, find_first_survivable_conflict(&map, units, &state))
+}
+
+#[test]
+fn day_15() {
+    assert_eq!(run(), (206720, 37992));
 }
 
 #[test]

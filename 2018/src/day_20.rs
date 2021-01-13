@@ -77,7 +77,7 @@ impl Map {
             }
 
             for &neighbour in neighbours(cur_pos).iter() {
-                if self.get(&neighbour) != &Cell::Wall && visited[(neighbour.0 - self.min_r) as usize][(neighbour.1 - self.min_c) as usize] == false {
+                if self.get(&neighbour) != &Cell::Wall && ! visited[(neighbour.0 - self.min_r) as usize][(neighbour.1 - self.min_c) as usize] {
                     visited[(neighbour.0 - self.min_r) as usize][(neighbour.1 - self.min_c) as usize] = true;
                     nodes.push((cur_doors, neighbour));
                 }
@@ -103,7 +103,7 @@ fn build_map(regex_str: &str) -> Map {
             ')' => {
                 cur_ptrs.extend(ptrs_at_level.pop().unwrap().drain(..));
                 cur_ptrs.extend(other_ptrs_at_level.drain(..));
-                cur_ptrs.sort();
+                cur_ptrs.sort_unstable();
                 cur_ptrs.dedup();
             },
             '|' => {
@@ -162,4 +162,9 @@ pub fn run() -> (usize, usize) {
     // map.print();
 
     map.doors_to_rooms()
+}
+
+#[test]
+fn day_20() {
+    assert_eq!(run(), (3885, 8677));
 }

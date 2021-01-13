@@ -61,3 +61,8 @@ pub fn run() -> (usize, usize) {
 
     (p1, p2)
 }
+
+#[test]
+fn day_04() {
+    assert_eq!(run(), (14346, 5705));
+}

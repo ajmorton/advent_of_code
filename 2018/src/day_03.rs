@@ -6,13 +6,7 @@ use std::str::FromStr;
 type Pos = (usize, usize);
 
 #[derive(Debug)]
-struct Request {
-    id: usize,
-    c: usize,
-    r: usize,
-    width: usize,
-    height: usize,
-}
+struct Request { id: usize, c: usize, r: usize, width: usize, height: usize }
 
 impl FromStr for Request {
     type Err = ();
@@ -48,16 +42,13 @@ pub fn run() -> (usize, usize) {
         let cols = req.c..req.c + req.width;
 
         for pos in iproduct!(rows, cols) {
-            let f = claimed.get(&pos);
-            match f {
+            match claimed.get(&pos) {
                 Some(x) => {
                     all_claims.remove(&req.id);
                     all_claims.remove(x);
                     conflicts.insert(pos);
                 }
-                None => {
-                    claimed.insert(pos, req.id);
-                }
+                None => { claimed.insert(pos, req.id); }
             }
         }
     }
@@ -65,4 +56,9 @@ pub fn run() -> (usize, usize) {
     let unique_square = all_claims.iter().collect::<Vec<&usize>>()[0];
 
     (conflicts.len(), *unique_square)
+}
+
+#[test]
+fn day_03() {
+    assert_eq!(run(), (111630, 724));
 }

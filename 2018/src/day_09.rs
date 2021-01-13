@@ -55,3 +55,8 @@ fn day_09_helpers() {
     assert_eq!(play(21, 6111).1, 54718);
     assert_eq!(play(30, 5807).1, 37305);
 }
+
+#[test]
+fn day_09() {
+    assert_eq!(run(), (398242, 3273842452));
+}

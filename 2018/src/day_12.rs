@@ -70,3 +70,8 @@ pub fn run() -> (isize, isize) {
 
     (p1, num_at_50_billion)
 }
+
+#[test]
+fn day_12() {
+    assert_eq!(run(), (3793, 4300000002414));
+}

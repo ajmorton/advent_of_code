@@ -47,3 +47,8 @@ pub fn run() -> (usize, usize) {
 
     (p1, recipes_len - 6)
 }
+
+#[test]
+fn day_14() {
+    assert_eq!(run(), (6107101544, 20291131));
+}

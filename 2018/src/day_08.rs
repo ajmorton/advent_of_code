@@ -54,3 +54,8 @@ pub fn run() -> (usize, usize) {
 
     (root.sum_metadata(), root.get_value())
 }
+
+#[test]
+fn day_08() {
+    assert_eq!(run(), (45210, 22793));
+}

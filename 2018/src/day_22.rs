@@ -156,3 +156,8 @@ pub fn run() -> (usize, usize) {
 
     (sum, search(erosion_level, &(target_r, target_c)).unwrap())
 }
+
+#[test]
+fn day_22() {
+    assert_eq!(run(), (6208, 1039));
+}

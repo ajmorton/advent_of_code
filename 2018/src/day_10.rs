@@ -93,3 +93,21 @@ pub fn run() -> (String, isize) {
     let aligned_stars = starmap_string(stars.iter().map(|s| s.pos_after(alignment_time)).collect());
     (aligned_stars, alignment_time)
 }
+
+#[test]
+fn day_10() {
+    let stars = concat!(
+        "  ##    #    #  ######  #       #        ####     ##    #     \n",
+        " #  #   #    #       #  #       #       #    #   #  #   #     \n",
+        "#    #  #    #       #  #       #       #       #    #  #     \n",
+        "#    #  #    #      #   #       #       #       #    #  #     \n",
+        "#    #  ######     #    #       #       #       #    #  #     \n",
+        "######  #    #    #     #       #       #       ######  #     \n",
+        "#    #  #    #   #      #       #       #       #    #  #     \n",
+        "#    #  #    #  #       #       #       #       #    #  #     \n",
+        "#    #  #    #  #       #       #       #    #  #    #  #     \n",
+        "#    #  #    #  ######  ######  ######   ####   #    #  ######\n"
+    )
+    .to_string();
+    assert_eq!(run(), (stars, 10333));
+}

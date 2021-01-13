@@ -116,3 +116,8 @@ fn day_11_find_subcell() {
         }
     );
 }
+
+#[test]
+fn day_11() {
+    assert_eq!(run(), ((33, 54), (232, 289, 8)));
+}

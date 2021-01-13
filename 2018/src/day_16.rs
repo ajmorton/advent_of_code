@@ -140,13 +140,13 @@ pub fn run() -> (usize, usize) {
         pos_mappings.sort_by_key(|(_i, opcodes)| {
             opcodes
                 .iter()
-                .filter(|op| !opcode_mapping.values().collect::<Vec<_>>().contains(op))
+                .filter(|&op| !opcode_mapping.values().any(|&x| x == *op))
                 .count()
         });
         let (i, mappings) = pos_mappings.remove(0);
         let unique_mapping: Vec<_> = mappings
             .iter()
-            .filter(|op| !opcode_mapping.values().collect::<Vec<_>>().contains(op))
+            .filter(|&op| !opcode_mapping.values().any(|&x| x == *op))
             .collect();
         if unique_mapping.len() != 1 {
             panic!("mapping not unique!");
@@ -200,4 +200,9 @@ fn check_opcode_matches() {
     };
 
     assert_eq!(matches_opcodes(&exec), vec!(Opcode::Addi, Opcode::Mulr, Opcode::Seti));
+}
+
+#[test]
+fn day_16() {
+    assert_eq!(run(), (646, 681));
 }

@@ -61,3 +61,8 @@ pub fn run() -> (isize, isize) {
 
     (num_constellations, 0)
 }
+
+#[test]
+fn day_25() {
+    assert_eq!(run(), (399, 0));
+}

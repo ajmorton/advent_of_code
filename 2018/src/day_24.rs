@@ -39,7 +39,7 @@ impl Units {
     }
 }
 
-fn create_units(lines: Vec<&str>, unit_type: UnitType) -> Vec<Units> {
+fn create_units(lines: &[&str], unit_type: UnitType) -> Vec<Units> {
     let mut units = vec!();
     lazy_static! {
         static ref UNIT_REGEX: Regex = Regex::new(r"(\d+) units each with (\d+) hit points((?: \().*\))? with an attack that does (\d+) (\w+) damage at initiative (\d+)").unwrap();
@@ -47,8 +47,7 @@ fn create_units(lines: Vec<&str>, unit_type: UnitType) -> Vec<Units> {
         static ref WEAK_REGEX: Regex = Regex::new(r"weak to ([a-z]+)(?:, ([a-z]+))?(?:, ([a-z]+))?").unwrap();
     }
 
-    let mut id = 0;
-    for line in lines.iter().skip(1) {
+    for (id, line) in lines.iter().skip(1).enumerate() {
         let caps = UNIT_REGEX.captures(line).unwrap();
         let num_units = caps[1].parse::<isize>().unwrap();
         let hit_points = caps[2].parse::<isize>().unwrap();
@@ -63,8 +62,8 @@ fn create_units(lines: Vec<&str>, unit_type: UnitType) -> Vec<Units> {
         if let Some(modifiers) = caps.get(3) {
             if let Some(immunities_cap) = IMMUNE_REGEX.captures(modifiers.as_str()) {
                 immunities = immunities_cap.iter().skip(1).filter_map(|imm| {
-                    if imm.is_some() {
-                        Some(imm.unwrap().as_str().trim_matches(|c| " ,".contains(c)).to_string())
+                    if let Some(imm) = imm {
+                        Some(imm.as_str().trim_matches(|c| " ,".contains(c)).to_string())
                     } else {
                         None
                     }
@@ -73,8 +72,8 @@ fn create_units(lines: Vec<&str>, unit_type: UnitType) -> Vec<Units> {
 
             if let Some(weaknesses_cap) = WEAK_REGEX.captures(modifiers.as_str()) {
                 weaknesses = weaknesses_cap.iter().skip(1).filter_map(|imm| {
-                    if imm.is_some() {
-                        Some(imm.unwrap().as_str().trim_matches(|c| " ,".contains(c)).to_string())
+                    if let Some(imm) = imm {
+                        Some(imm.as_str().trim_matches(|c| " ,".contains(c)).to_string())
                     } else {
                         None
                     }
@@ -84,13 +83,11 @@ fn create_units(lines: Vec<&str>, unit_type: UnitType) -> Vec<Units> {
         }
 
         units.push(Units{id, unit_type, num_units, hit_points, immunities, weaknesses, attack_power, attack_type, initiative});
-        id += 1;
-
     }
     units
 }
 
-fn allocate_targets(units: &mut Vec<Units>, enemies: &Vec<Units>) -> HashMap<usize, usize> {
+fn allocate_targets(units: &mut Vec<Units>, enemies: &[Units]) -> HashMap<usize, usize> {
     units.sort_by_key(|unit| (-unit.effective_power(), -unit.initiative));
     let mut targets = HashMap::new();
     for attacker in units {
@@ -112,7 +109,7 @@ fn allocate_targets(units: &mut Vec<Units>, enemies: &Vec<Units>) -> HashMap<usi
     targets
 }
 
-fn attack(attacker_ref: &Units, targets: &HashMap<usize, usize>, units: &Vec<Units>, enemies: &mut Vec<Units>) {
+fn attack(attacker_ref: &Units, targets: &HashMap<usize, usize>, units: &[Units], enemies: &mut Vec<Units>) {
     if targets.contains_key(&attacker_ref.id) {
         let attacker = units.iter().find(|attacker| attacker.id == attacker_ref.id).unwrap();
         if attacker.num_units <= 0 {
@@ -125,10 +122,10 @@ fn attack(attacker_ref: &Units, targets: &HashMap<usize, usize>, units: &Vec<Uni
     }
 }
 
-fn fight(immune_system: &Vec<Units>, infections: &Vec<Units>) -> Option<(UnitType, isize)> {
+fn fight(immune_system: &[Units], infections: &[Units]) -> Option<(UnitType, isize)> {
 
-    let mut immune_system: Vec<Units> = immune_system.clone();
-    let mut infections: Vec<Units> = infections.clone();
+    let mut immune_system: Vec<Units> = immune_system.to_owned();
+    let mut infections: Vec<Units> = infections.to_owned();
 
     let mut total_units_last_round = 0;
     let mut num_groups_last_round = 0;
@@ -143,9 +140,9 @@ fn fight(immune_system: &Vec<Units>, infections: &Vec<Units>) -> Option<(UnitTyp
         let num_groups = immune_system.len() + infections.len();
         if num_groups == num_groups_last_round && total_units == total_units_last_round {
             return None; // stalemate
-        } else if immune_system.len() == 0 {
+        } else if immune_system.is_empty() {
             return Some((UnitType::Infection, infections.iter().map(|inf| inf.num_units).sum()));
-        } else if infections.len() == 0 {
+        } else if infections.is_empty() {
             return Some((UnitType::Immune, immune_system.iter().map(|imm| imm.num_units).sum()));
         }
 
@@ -157,8 +154,8 @@ fn fight(immune_system: &Vec<Units>, infections: &Vec<Units>) -> Option<(UnitTyp
         let infection_targets = allocate_targets(&mut infections, &immune_system);
 
         // attack phase
-        let immune_copy = immune_system.clone();
-        let infection_copy = infections.clone();
+        let immune_copy = immune_system.to_owned();
+        let infection_copy = infections.to_owned();
         let mut all_units: Vec<&Units> = immune_copy.iter().chain(infection_copy.iter()).collect();
         all_units.sort_by_key(|unit| -unit.initiative );
 
@@ -179,8 +176,8 @@ pub fn run() -> (isize, isize) {
     let immune_system: Vec<&str> = input[0].split('\n').collect();
     let infections: Vec<&str> = input[1].split('\n').collect();
 
-    let immune_system = create_units(immune_system, UnitType::Immune);
-    let infections = create_units(infections, UnitType::Infection);
+    let immune_system = create_units(&immune_system, UnitType::Immune);
+    let infections = create_units(&infections, UnitType::Infection);
 
     // p1
     let (_winner, p1) = fight(&immune_system, &infections).unwrap();
@@ -193,7 +190,7 @@ pub fn run() -> (isize, isize) {
             let mut boosted_unit = unit.clone(); 
             boosted_unit.attack_power += boost; 
             boosted_unit
-        }).collect();
+        }).collect::<Vec<_>>();
 
         // println!("{}\t {:?}", boost, fight(&boosted_immune, &infections));
         if let Some((winner, num_winning_units)) = fight(&boosted_immune, &infections) {
@@ -208,4 +205,9 @@ pub fn run() -> (isize, isize) {
 
     // debug later
     (p1, p2)
+}
+
+#[test]
+fn day_24() {
+    assert_eq!(run(), (21765, 5522));
 }

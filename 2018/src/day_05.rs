@@ -45,3 +45,8 @@ pub fn run() -> (usize, usize) {
 
     (reduce(polymer).len(), shortest)
 }
+
+#[test]
+fn day_05() {
+    assert_eq!(run(), (11540, 6918));
+}

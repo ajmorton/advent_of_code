@@ -184,3 +184,8 @@ pub fn run() -> (usize, usize) {
     let mut map = create_map(input);
     map.fill(false)
 }
+
+#[test]
+fn day_17() {
+    assert_eq!(run(), (40879, 34693));
+}

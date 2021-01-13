@@ -59,7 +59,7 @@ impl BoundingCube {
         corners
     }
 
-    fn count_intersecting_drones(&mut self, drones: &Vec<Drone>) {
+    fn count_intersecting_drones(&mut self, drones: &[Drone]) {
 
         let cube_x_range = self.min_corner.0 ..= self.min_corner.0 + self.size;
         let cube_y_range = self.min_corner.1 ..= self.min_corner.1 + self.size;
@@ -78,7 +78,7 @@ impl BoundingCube {
         }).count();
     }
 
-    fn get_subcubes(&self, drones: &Vec<Drone>) -> Vec<BoundingCube> {
+    fn get_subcubes(&self, drones: &[Drone]) -> Vec<BoundingCube> {
         let new_corners = self.get_corners(self.size >> 1);
         let mut sub_cubes: Vec<BoundingCube> = new_corners.iter().map(|new_corner| BoundingCube{min_corner: *new_corner, size: self.size >> 1, num_drones: 0}).collect();
 
@@ -102,7 +102,7 @@ fn dist_from_zero((x, y, z): (isize, isize, isize)) -> isize {
     x.abs() + y.abs() + z.abs()
 }
 
-fn find_most_connected_cell(drones: &Vec<Drone>) -> Option<(isize, isize, isize)> {
+fn find_most_connected_cell(drones: &[Drone]) -> Option<(isize, isize, isize)> {
 
     let min_corner = drones.iter().map(|drone| (drone.x - drone.r, drone.y - drone.r, drone.z - drone.r)).min().unwrap();
     let max_corner = drones.iter().map(|drone| (drone.x + drone.r, drone.y + drone.r, drone.z + drone.r)).max().unwrap();
@@ -118,7 +118,7 @@ fn find_most_connected_cell(drones: &Vec<Drone>) -> Option<(isize, isize, isize)
         next_power_of_2 <<= 1;
     }
 
-    let mut bounding_cube = BoundingCube{min_corner: min_corner, size: next_power_of_2, num_drones: 0};
+    let mut bounding_cube = BoundingCube{min_corner, size: next_power_of_2, num_drones: 0};
     bounding_cube.count_intersecting_drones(&drones);
 
     let mut to_explore = std::collections::BinaryHeap::new();
@@ -150,4 +150,9 @@ pub fn run() -> (usize, isize) {
     let most_connected_point = find_most_connected_cell(&drones).unwrap();
 
     (in_radius, dist_from_zero(most_connected_point))
+}
+
+#[test]
+fn day_23() {
+    assert_eq!(run(), (248, 124623002));
 }

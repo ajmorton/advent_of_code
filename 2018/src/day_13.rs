@@ -176,3 +176,8 @@ pub fn run() -> (Pos, Pos) {
 
     (crash, last_cart)
 }
+
+#[test]
+fn day_13() {
+    assert_eq!(run(), ((118, 66), (70, 129)));
+}

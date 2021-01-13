@@ -11,3 +11,8 @@ pub fn run() -> (usize, usize) {
 
     (computer.run(SolveFor::Day19), computer_2.run(SolveFor::Day19))
 }
+
+#[test]
+fn day_19() {
+    assert_eq!(run(), (2520, 27941760));
+}
