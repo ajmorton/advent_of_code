@@ -82,7 +82,8 @@ pub fn run() -> (String, isize) {
             break;
         }
 
-        if max_pos_r - min_pos_r < 100 && max_pos_c - min_pos_c < 100 {
+        let debug_print = false;
+        if debug_print && max_pos_r - min_pos_r < 100 && max_pos_c - min_pos_c < 100 {
             let stars_string = starmap_string(starmap);
             print!("\x1B[2J"); // clear console
             print!("{}", stars_string);
