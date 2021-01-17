@@ -1,5 +1,5 @@
-use itertools::*;
-use regex::*;
+use itertools::iproduct;
+use regex::{Regex, Captures};
 use std::collections::{HashMap, HashSet};
 use std::str::FromStr;
 
@@ -16,7 +16,7 @@ impl FromStr for Request {
             static ref REQUEST_REGEX: Regex = Regex::new(r"#(\d+) @ (\d+),(\d+): (\d+)x(\d+)").unwrap();
         }
         let captures: Captures = REQUEST_REGEX.captures(s).unwrap();
-        Ok(Request {
+        Ok( Self {
             id: captures[1].parse().unwrap(),
             c: captures[2].parse().unwrap(),
             r: captures[3].parse().unwrap(),
@@ -26,6 +26,7 @@ impl FromStr for Request {
     }
 }
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let requests: Vec<Request> = include_str!("../input/3.txt")
         .lines()
@@ -60,5 +61,5 @@ pub fn run() -> (usize, usize) {
 
 #[test]
 fn day_03() {
-    assert_eq!(run(), (111630, 724));
+    assert_eq!(run(), (111_630, 724));
 }

@@ -1,7 +1,7 @@
 use regex::Regex;
 use std::collections::{HashSet, VecDeque};
 
-fn meets_rules(i: &isize, plants: &HashSet<isize>, ruleset: &HashSet<String>) -> bool {
+fn meets_rules(i: isize, plants: &HashSet<isize>, ruleset: &HashSet<String>) -> bool {
     let neighbours: String = (i - 2..=i + 2)
         .map(|j| if plants.contains(&j) { '#' } else { '.' })
         .collect();
@@ -9,6 +9,7 @@ fn meets_rules(i: &isize, plants: &HashSet<isize>, ruleset: &HashSet<String>) ->
     ruleset.contains(&neighbours)
 }
 
+#[must_use]
 pub fn run() -> (isize, isize) {
     let input: Vec<&str> = include_str!("../input/12.txt").trim().split("\n\n").collect();
 
@@ -17,7 +18,7 @@ pub fn run() -> (isize, isize) {
         .chars()
         .filter(|&c| c == '#' || c == '.')
         .enumerate()
-        .filter_map(|(i, c)| if c != '#' { None } else { Some(i as isize) })
+        .filter_map(|(i, c)| if c == '#' { Some(i as isize) } else { None })
         .collect();
 
     let rules: Vec<&str> = input[1].split('\n').collect();
@@ -29,8 +30,6 @@ pub fn run() -> (isize, isize) {
 
         if let Some(caps) = caps {
             ruleset.insert(caps[1].to_string().clone());
-        } else {
-            continue;
         }
     }
 
@@ -40,10 +39,10 @@ pub fn run() -> (isize, isize) {
 
     let mut stable_state = (0, 0, 0);
 
-    for _step in 0..10000 {
+    for step in 0..10000 {
         let mut new_plants: HashSet<isize> = HashSet::new();
         for i in plants.iter().min().unwrap() - 2..=plants.iter().max().unwrap() + 2 {
-            if meets_rules(&i, &plants, &ruleset) {
+            if meets_rules(i, &plants, &ruleset) {
                 new_plants.insert(i);
             }
         }
@@ -52,15 +51,15 @@ pub fn run() -> (isize, isize) {
         num = plants.iter().sum::<isize>();
         prev_deltas.push_front(delta);
 
-        if _step > 10 {
+        if step > 10 {
             let pop = prev_deltas.pop_back().unwrap();
             if pop == delta && prev_deltas.iter().all(|&prev| prev == delta) {
-                stable_state = (_step, num, delta);
+                stable_state = (step, num, delta);
                 break;
             }
         }
 
-        if _step == 19 {
+        if step == 19 {
             p1 = num;
         }
     }
@@ -73,5 +72,5 @@ pub fn run() -> (isize, isize) {
 
 #[test]
 fn day_12() {
-    assert_eq!(run(), (3793, 4300000002414));
+    assert_eq!(run(), (3793, 4_300_000_002_414));
 }

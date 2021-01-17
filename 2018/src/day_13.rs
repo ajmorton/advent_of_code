@@ -5,21 +5,12 @@ type Map = [Vec<char>];
 type CartID = usize;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
-enum Direction {
-    N,
-    E,
-    S,
-    W,
-}
+enum Direction { N, E, S, W }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
-enum Turn {
-    Left,
-    Straight,
-    Right,
-}
+enum Turn { Left, Straight, Right }
 
-fn turn(dir: Direction, turn: Turn) -> Direction {
+const fn turn(dir: Direction, turn: Turn) -> Direction {
     match turn {
         Turn::Straight => dir,
         Turn::Left => match dir {
@@ -37,7 +28,7 @@ fn turn(dir: Direction, turn: Turn) -> Direction {
     }
 }
 
-fn next_turn(turn: Turn) -> Turn {
+const fn next_turn(turn: Turn) -> Turn {
     match turn {
         Turn::Left => Turn::Straight,
         Turn::Straight => Turn::Right,
@@ -54,7 +45,7 @@ struct Cart {
 }
 
 impl Cart {
-    fn update(mut self, map: &Map) -> Cart {
+    fn update(mut self, map: &Map) -> Self {
         match self.direction {
             Direction::N => self.r -= 1,
             Direction::E => self.c += 1,
@@ -62,11 +53,12 @@ impl Cart {
             Direction::W => self.c -= 1,
         }
 
+        // match map[self.r][self.c] {
         match map[self.r][self.c] {
             '+' => {
                 self.direction = turn(self.direction, self.next_turn);
                 self.next_turn = next_turn(self.next_turn);
-            } // turn
+            }
             '/' => {
                 self.direction = match self.direction {
                     Direction::N => Direction::E,
@@ -94,7 +86,7 @@ fn run_carts(carts: HashMap<CartID, Cart>, map: &Map, end_on_first_crash: bool) 
     let mut positions: HashSet<Pos> = HashSet::new();
     let mut crashed: HashSet<CartID> = HashSet::new();
 
-    for tick in 0.. {
+    for _tick in 0.. {
         carts = carts.into_iter().filter(|(id, _c)| !crashed.contains(id)).collect();
         if carts.iter().len() == 1 {
             let last_cart = carts.into_iter().next().unwrap().1;
@@ -111,12 +103,12 @@ fn run_carts(carts: HashMap<CartID, Cart>, map: &Map, end_on_first_crash: bool) 
             }
             let mut cart = *carts.get(&cart_id).unwrap();
             positions.remove(&(cart.r, cart.c));
-            cart = cart.update(&map);
+            cart = cart.update(map);
 
             let new_position = (cart.r, cart.c);
 
             if positions.contains(&new_position) {
-                println!("CRASH at {:?} time {}!!", (cart.r, cart.c), tick);
+                // println!("CRASH at {:?} time {}!!", (cart.r, cart.c), tick);
                 if end_on_first_crash {
                     return (cart.c, cart.r); // flipped to match puzzle coords
                 } else {
@@ -163,6 +155,7 @@ fn parse_carts(map: &Map) -> HashMap<CartID, Cart> {
     carts.into_iter().enumerate().collect()
 }
 
+#[must_use]
 pub fn run() -> (Pos, Pos) {
     let input = include_str!("../input/13.txt").trim_end_matches('\n');
     let rows: Vec<&str> = input.split('\n').collect();

@@ -1,5 +1,6 @@
-use itertools::*;
+use itertools::Itertools;
 
+#[must_use]
 pub fn run() -> (usize, String) {
     let lines: Vec<&str> = include_str!("../input/2.txt").lines().collect();
 

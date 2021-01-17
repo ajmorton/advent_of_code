@@ -1,7 +1,9 @@
 use std::collections::HashMap;
+use itertools::iproduct;
 
 type Grid = Vec<Vec<char>>;
 
+#[allow(clippy::ptr_arg)] // clippy doesn't play well with typedefs
 fn count_neighbours(grid: &Grid, r: usize, c: usize) -> (usize, usize) {
     let min_r = r.checked_sub(1).unwrap_or(r);
     let min_c = c.checked_sub(1).unwrap_or(c);
@@ -11,21 +13,20 @@ fn count_neighbours(grid: &Grid, r: usize, c: usize) -> (usize, usize) {
     let mut num_trees = 0;
     let mut num_yards = 0;
 
-    for rr in min_r..=max_r {
-        for cc in min_c..=max_c {
-            if rr == r && cc == c {
-                continue;
-            }
-            match grid[rr][cc] {
-                '|' => num_trees += 1,
-                '#' => num_yards += 1,
-                _ => {}
-            }
+    for (rr, cc) in iproduct!(min_r..=max_r, min_c..=max_c) {
+        if rr == r && cc == c {
+            continue;
+        }
+        match grid[rr][cc] {
+            '|' => num_trees += 1,
+            '#' => num_yards += 1,
+            _ => {}
         }
     }
     (num_trees, num_yards)
 }
 
+#[allow(clippy::ptr_arg)] // clippy doesn't play well with typedefs
 fn update(grid: &Grid) -> Grid {
     let mut new_grid = grid.clone();
 
@@ -46,6 +47,7 @@ fn update(grid: &Grid) -> Grid {
     new_grid
 }
 
+#[allow(clippy::ptr_arg)] // clippy doesn't play well with typedefs
 fn resources_after(grid: &Grid, n: usize) -> usize {
     let mut grid = grid.clone();
 
@@ -75,6 +77,7 @@ fn resources_after(grid: &Grid, n: usize) -> usize {
     num_trees * num_yards
 }
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let input = include_str!("../input/18.txt").trim_end_matches('\n').split('\n');
     let grid: Grid = input.into_iter().map(|row| row.chars().collect()).collect();
@@ -87,5 +90,5 @@ pub fn run() -> (usize, usize) {
 
 #[test]
 fn day_18() {
-    assert_eq!(run(), (384416, 195776));
+    assert_eq!(run(), (384_416, 195_776));
 }

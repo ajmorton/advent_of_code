@@ -5,46 +5,29 @@ use regex::Regex;
 pub type Regs = Vec<usize>;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Opcode {
-    Addr,
-    Addi,
-    Mulr,
-    Muli,
-    Banr,
-    Bani,
-    Borr,
-    Bori,
-    Setr,
-    Seti,
-    Gtir,
-    Gtri,
-    Gtrr,
-    Eqir,
-    Eqri,
-    Eqrr,
-}
+pub enum Opcode { Addr, Addi, Mulr, Muli, Banr, Bani, Borr, Bori, Setr, Seti, Gtir, Gtri, Gtrr, Eqir, Eqri, Eqrr }
 
 impl FromStr for Opcode {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "addr" => Ok(Opcode::Addr),
-            "addi" => Ok(Opcode::Addi),
-            "mulr" => Ok(Opcode::Mulr),
-            "muli" => Ok(Opcode::Muli),
-            "banr" => Ok(Opcode::Banr),
-            "bani" => Ok(Opcode::Bani),
-            "borr" => Ok(Opcode::Borr),
-            "bori" => Ok(Opcode::Bori),
-            "setr" => Ok(Opcode::Setr),
-            "seti" => Ok(Opcode::Seti),
-            "gtir" => Ok(Opcode::Gtir),
-            "gtri" => Ok(Opcode::Gtri),
-            "gtrr" => Ok(Opcode::Gtrr),
-            "eqir" => Ok(Opcode::Eqir),
-            "eqri" => Ok(Opcode::Eqri),
-            "eqrr" => Ok(Opcode::Eqrr),
+            "addr" => Ok(Self::Addr),
+            "addi" => Ok(Self::Addi),
+            "mulr" => Ok(Self::Mulr),
+            "muli" => Ok(Self::Muli),
+            "banr" => Ok(Self::Banr),
+            "bani" => Ok(Self::Bani),
+            "borr" => Ok(Self::Borr),
+            "bori" => Ok(Self::Bori),
+            "setr" => Ok(Self::Setr),
+            "seti" => Ok(Self::Seti),
+            "gtir" => Ok(Self::Gtir),
+            "gtri" => Ok(Self::Gtri),
+            "gtrr" => Ok(Self::Gtrr),
+            "eqir" => Ok(Self::Eqir),
+            "eqri" => Ok(Self::Eqri),
+            "eqrr" => Ok(Self::Eqrr),
             _ => Err(()),
         }
     }
@@ -54,22 +37,12 @@ impl FromStr for Opcode {
 pub enum SolveFor {Day16, Day19, Day21Part1, Day21Part2}
 
 #[derive(Debug, Clone, Copy)]
-pub struct Instruction {
-    pub op: Opcode,
-    pub a: usize,
-    pub b: usize,
-    pub c: usize,
-}
+pub struct Instruction { pub op: Opcode, pub a: usize, pub b: usize, pub c: usize }
 
 pub type Prog = Vec<Instruction>;
 
 #[derive(Debug)]
-pub struct UnknownInstruction {
-    pub op: usize,
-    pub a: usize,
-    pub b: usize,
-    pub c: usize,
-}
+pub struct UnknownInstruction { pub op: usize, pub a: usize, pub b: usize, pub c: usize }
 
 impl FromIterator<usize> for UnknownInstruction {
     fn from_iter<I: IntoIterator<Item = usize>>(iter: I) -> Self {
@@ -78,7 +51,7 @@ impl FromIterator<usize> for UnknownInstruction {
         let a = it.next().unwrap();
         let b = it.next().unwrap();
         let c = it.next().unwrap();
-        UnknownInstruction { op, a, b, c }
+        Self { op, a, b, c }
     }
 }
 
@@ -103,15 +76,11 @@ pub fn read_prog(filepath: &str) -> (Prog, usize) {
     (prog, ip_reg)
 }
 
-pub struct Computer {
-    ip_reg: usize,
-    regs: Regs,
-    prog: Prog,
-}
+pub struct Computer { ip_reg: usize, regs: Regs, prog: Prog }
 
 impl Computer {
     pub fn new(regs: Vec<usize>, ip_reg: usize, prog: Prog) -> Self {
-        Computer { ip_reg, regs, prog }
+        Self { ip_reg, regs, prog }
     }
 
     pub fn execute(regs: &mut Regs, instr: &Instruction) {
@@ -126,52 +95,16 @@ impl Computer {
             Opcode::Bori => regs[instr.a] | instr.b,
             Opcode::Setr => regs[instr.a],
             Opcode::Seti => instr.a,
-            Opcode::Gtir => {
-                if instr.a > regs[instr.b] {
-                    1
-                } else {
-                    0
-                }
-            }
-            Opcode::Gtri => {
-                if regs[instr.a] > instr.b {
-                    1
-                } else {
-                    0
-                }
-            }
-            Opcode::Gtrr => {
-                if regs[instr.a] > regs[instr.b] {
-                    1
-                } else {
-                    0
-                }
-            }
-            Opcode::Eqir => {
-                if instr.a == regs[instr.b] {
-                    1
-                } else {
-                    0
-                }
-            }
-            Opcode::Eqri => {
-                if regs[instr.a] == instr.b {
-                    1
-                } else {
-                    0
-                }
-            }
-            Opcode::Eqrr => {
-                if regs[instr.a] == regs[instr.b] {
-                    1
-                } else {
-                    0
-                }
-            }
+            Opcode::Gtir => if instr.a       > regs[instr.b]  { 1 } else { 0 }
+            Opcode::Gtri => if regs[instr.a] > instr.b        { 1 } else { 0 }
+            Opcode::Gtrr => if regs[instr.a] > regs[instr.b]  { 1 } else { 0 }
+            Opcode::Eqir => if instr.a       == regs[instr.b] { 1 } else { 0 }
+            Opcode::Eqri => if regs[instr.a] == instr.b       { 1 } else { 0 }
+            Opcode::Eqrr => if regs[instr.a] == regs[instr.b] { 1 } else { 0 }
         };
     }
 
-    pub fn run(&mut self, solve_for: SolveFor) -> usize {
+    pub fn run(&mut self, solve_for: &SolveFor) -> usize {
         let mut state = self.regs.clone();
         let mut ip = 0;
         
@@ -221,7 +154,7 @@ impl Computer {
             state[self.ip_reg] = ip;
 
             let instr = &self.prog[ip];
-            Computer::execute(&mut state, instr);
+            Self::execute(&mut state, instr);
             ip = state[self.ip_reg] + 1;
         }
         self.regs = state;

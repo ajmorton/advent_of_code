@@ -14,7 +14,7 @@ struct Map {
 
 impl Map {
     fn new() -> Self {
-        Map{
+        Self {
             hashmap: HashMap::new(), 
             min_r: isize::max_value(), 
             max_r: isize::min_value(), 
@@ -58,7 +58,7 @@ impl Map {
         nodes.push((0, (0,0)));
         let width = self.max_c - self.min_c;
         let height = self.max_r - self.min_r;
-        let mut visited = vec![vec![false; height as usize]; width as usize];
+        let mut visited = vec![vec![false; height.abs() as usize]; width.abs() as usize];
 
         let mut max_doors = 0;
         let mut rooms_with_at_least_1000 = 0;
@@ -76,9 +76,9 @@ impl Map {
                 cur_doors += 1;
             }
 
-            for &neighbour in neighbours(cur_pos).iter() {
-                if self.get(&neighbour) != &Cell::Wall && ! visited[(neighbour.0 - self.min_r) as usize][(neighbour.1 - self.min_c) as usize] {
-                    visited[(neighbour.0 - self.min_r) as usize][(neighbour.1 - self.min_c) as usize] = true;
+            for &neighbour in &neighbours(cur_pos) {
+                if self.get(&neighbour) != &Cell::Wall && ! visited[(neighbour.0 - self.min_r).abs() as usize][(neighbour.1 - self.min_c).abs() as usize] {
+                    visited[(neighbour.0 - self.min_r).abs() as usize][(neighbour.1 - self.min_c).abs() as usize] = true;
                     nodes.push((cur_doors, neighbour));
                 }
             }
@@ -111,7 +111,7 @@ fn build_map(regex_str: &str) -> Map {
                 cur_ptrs = ptrs_at_level[ptrs_at_level.len() -1].clone()
             },
             'N' | 'S' | 'E' | 'W' => {
-                for ptr in cur_ptrs.iter_mut() {
+                for ptr in &mut cur_ptrs {
                     match ch {
                         'N' => {
                             map.insert((ptr.0 - 1, ptr.1), Cell::DoorNS);
@@ -146,7 +146,7 @@ fn build_map(regex_str: &str) -> Map {
     map
 }
 
-fn neighbours(pos: Pos) -> [Pos; 4] {
+const fn neighbours(pos: Pos) -> [Pos; 4] {
     [
         (pos.0 - 1, pos.1), 
         (pos.0 + 1, pos.1), 
@@ -156,6 +156,7 @@ fn neighbours(pos: Pos) -> [Pos; 4] {
 } 
 
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let input = include_str!("../input/20.txt").trim_end_matches('\n');
     let map = build_map(input);

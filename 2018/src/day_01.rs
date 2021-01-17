@@ -1,10 +1,13 @@
 use std::collections::HashSet;
 
 fn first_repeated_freq(nums: &[isize]) -> Option<isize> {
+    const MAX_EXPLORE: usize = 10_000_000;
+
     let mut seen: HashSet<isize> = HashSet::new();
     seen.insert(0);
     nums.iter()
         .cycle()
+        .take(MAX_EXPLORE)
         .scan(0, |x, y| {
             *x += y;
             Some(*x)
@@ -12,6 +15,7 @@ fn first_repeated_freq(nums: &[isize]) -> Option<isize> {
         .find(|freq| !seen.insert(*freq))
 }
 
+#[must_use]
 pub fn run() -> (isize, isize) {
     let nums: Vec<isize> = include_str!("../input/1.txt")
         .lines()

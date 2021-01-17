@@ -9,29 +9,29 @@ struct Units {
     unit_type: UnitType, 
     num_units: isize,
     hit_points: isize,
-    immunities: Vec<String>,
-    weaknesses: Vec<String>,
+    immunities: Vec<&'static str>,
+    weaknesses: Vec<&'static str>,
     attack_power: isize,
     attack_type: String,
     initiative: isize
 }
 
 impl Units {
-    fn effective_power(&self) -> isize {
+    const fn effective_power(&self) -> isize {
         self.num_units * self.attack_power
     }
 
-    fn vulnerability_modifier(&self, attack_type: &String) -> isize {
-        if self.immunities.contains(attack_type) {
+    fn vulnerability_modifier(&self, attack_type: &str) -> isize {
+        if self.immunities.contains(&attack_type) {
             0
-        } else if self.weaknesses.contains(attack_type) {
+        } else if self.weaknesses.contains(&attack_type) {
             2
         } else {
             1
         }
     }
 
-    fn inflict_damage(&mut self, attack_power: isize, attack_type: &String) {
+    fn inflict_damage(&mut self, attack_power: isize, attack_type: &str) {
         let damage = attack_power * self.vulnerability_modifier(attack_type);
         let num_killed = isize::min(self.num_units,  damage / self.hit_points);
         self.num_units -= num_killed;
@@ -39,7 +39,7 @@ impl Units {
     }
 }
 
-fn create_units(lines: &[&str], unit_type: UnitType) -> Vec<Units> {
+fn create_units(lines: &[&'static str], unit_type: UnitType) -> Vec<Units> {
     let mut units = vec!();
     lazy_static! {
         static ref UNIT_REGEX: Regex = Regex::new(r"(\d+) units each with (\d+) hit points((?: \().*\))? with an attack that does (\d+) (\w+) damage at initiative (\d+)").unwrap();
@@ -62,21 +62,13 @@ fn create_units(lines: &[&str], unit_type: UnitType) -> Vec<Units> {
         if let Some(modifiers) = caps.get(3) {
             if let Some(immunities_cap) = IMMUNE_REGEX.captures(modifiers.as_str()) {
                 immunities = immunities_cap.iter().skip(1).filter_map(|imm| {
-                    if let Some(imm) = imm {
-                        Some(imm.as_str().trim_matches(|c| " ,".contains(c)).to_string())
-                    } else {
-                        None
-                    }
+                    imm.map(|imm| imm.as_str().trim_matches(|c| " ,".contains(c)))
                 }).collect();
             }
 
             if let Some(weaknesses_cap) = WEAK_REGEX.captures(modifiers.as_str()) {
                 weaknesses = weaknesses_cap.iter().skip(1).filter_map(|imm| {
-                    if let Some(imm) = imm {
-                        Some(imm.as_str().trim_matches(|c| " ,".contains(c)).to_string())
-                    } else {
-                        None
-                    }
+                    imm.map(|imm| imm.as_str().trim_matches(|c| " ,".contains(c)))
                 }).collect();
             }
 
@@ -161,15 +153,16 @@ fn fight(immune_system: &[Units], infections: &[Units]) -> Option<(UnitType, isi
 
         for unit_ref in all_units {
             if unit_ref.unit_type == UnitType::Immune {
-                attack(&unit_ref, &immune_targets, &immune_system, &mut infections);
+                attack(unit_ref, &immune_targets, &immune_system, &mut infections);
             } else {
-                attack(&unit_ref, &infection_targets, &infections, &mut immune_system);
+                attack(unit_ref, &infection_targets, &infections, &mut immune_system);
             }
         }
         // println!();
     }
 }
 
+#[must_use]
 pub fn run() -> (isize, isize) {
     let input: Vec<&str> = include_str!("../input/24.txt").trim_end_matches('\n').split("\n\n").collect();
 

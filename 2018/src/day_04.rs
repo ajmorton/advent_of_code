@@ -1,14 +1,16 @@
 use regex::Regex;
 use std::collections::HashMap;
 
+#[must_use]
 pub fn run() -> (usize, usize) {
+    type Schedule = [usize; 60];
+    type GuardID = usize;
+
     let mut lines: Vec<&str> = include_str!("../input/4.txt").trim_end().split('\n').collect();
     lines.sort_unstable();
 
     let line_pattern = Regex::new(r"\[\d+-\d+-\d+ \d+:(\d+)\] (.*)").unwrap();
 
-    type Schedule = [usize; 60];
-    type GuardID = usize;
     let mut guard_schedules: HashMap<GuardID, Schedule> = HashMap::new();
 
     let mut cur_guard = 0;
@@ -35,26 +37,26 @@ pub fn run() -> (usize, usize) {
         }
     }
 
-    let (laziest_guard, _most_minutes) = guard_schedules
+    let (laziest_guard, most_minutes) = guard_schedules
         .iter()
         .max_by_key::<usize, _>(|elem| elem.1.iter().sum())
         .unwrap();
 
-    let best_minute = _most_minutes
+    let best_minute = most_minutes
         .iter()
-        .position(|x| x == _most_minutes.iter().max().unwrap())
+        .position(|x| x == most_minutes.iter().max().unwrap())
         .unwrap();
 
     let p1 = laziest_guard * best_minute;
 
-    let (most_freq_guard, _minutes) = guard_schedules
+    let (most_freq_guard, minutes) = guard_schedules
         .iter()
         .max_by_key::<usize, _>(|elem| *elem.1.iter().max().unwrap())
         .unwrap();
 
-    let most_freq_minute = _minutes
+    let most_freq_minute = minutes
         .iter()
-        .position(|x| x == _minutes.iter().max().unwrap())
+        .position(|x| x == minutes.iter().max().unwrap())
         .unwrap();
 
     let p2 = most_freq_guard * most_freq_minute;

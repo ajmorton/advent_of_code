@@ -10,7 +10,7 @@ struct Result {
 
 const GRID_SIZE: usize = 300;
 
-fn power_level(r: isize, c: isize, serial_number: isize) -> Power {
+const fn power_level(r: isize, c: isize, serial_number: isize) -> Power {
     let rack_id = c + 10;
     let power_level = ((rack_id * r) + serial_number) * rack_id;
     let power_level = (power_level / 100) % 10;
@@ -60,6 +60,7 @@ fn build_partial_sums(serial_number: isize) -> Vec<Vec<Power>> {
     partial_sums
 }
 
+#[must_use]
 pub fn run() -> ((usize, usize), (usize, usize, usize)) {
     const SERIAL_NUMBER: isize = 5235;
 

@@ -1,5 +1,6 @@
 use crate::computer::{Computer, SolveFor, read_prog};
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let (prog, ip_reg) = read_prog("./input/19.txt");
 
@@ -9,10 +10,10 @@ pub fn run() -> (usize, usize) {
     let init_regs_2 = vec![1, 0, 0, 0, 0, 0];
     let mut computer_2 = Computer::new(init_regs_2, ip_reg, prog);
 
-    (computer.run(SolveFor::Day19), computer_2.run(SolveFor::Day19))
+    (computer.run(&SolveFor::Day19), computer_2.run(&SolveFor::Day19))
 }
 
 #[test]
 fn day_19() {
-    assert_eq!(run(), (2520, 27941760));
+    assert_eq!(run(), (2520, 27_941_760));
 }

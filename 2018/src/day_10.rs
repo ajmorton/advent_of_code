@@ -11,12 +11,12 @@ struct Star {
 }
 
 impl Star {
-    fn pos_after(&self, t: isize) -> (isize, isize) {
+    const fn pos_after(&self, t: isize) -> (isize, isize) {
         (self.pos_r + t * self.vel_r, self.pos_c + t * self.vel_c)
     }
 }
 
-fn starmap_string(starmap: HashSet<(isize, isize)>) -> String {
+fn starmap_string(starmap: &HashSet<(isize, isize)>) -> String {
     let min_pos_r = starmap.iter().map(|s| s.0).min().unwrap();
     let max_pos_r = starmap.iter().map(|s| s.0).max().unwrap();
     let min_pos_c = starmap.iter().map(|s| s.1).min().unwrap();
@@ -36,6 +36,7 @@ fn starmap_string(starmap: HashSet<(isize, isize)>) -> String {
     stars_string
 }
 
+#[must_use] 
 pub fn run() -> (String, isize) {
     let input = include_str!("../input/10.txt").trim().split('\n');
     let pattern = Regex::new(r"position=< *(-?\d+), *(-?\d+)> velocity=< *(-?\d+), *(-?\d+)>").unwrap();
@@ -84,14 +85,14 @@ pub fn run() -> (String, isize) {
 
         let debug_print = false;
         if debug_print && max_pos_r - min_pos_r < 100 && max_pos_c - min_pos_c < 100 {
-            let stars_string = starmap_string(starmap);
+            let stars_string = starmap_string(&starmap);
             print!("\x1B[2J"); // clear console
             print!("{}", stars_string);
             sleep(Duration::from_millis(100));
         }
     }
 
-    let aligned_stars = starmap_string(stars.iter().map(|s| s.pos_after(alignment_time)).collect());
+    let aligned_stars = starmap_string(&stars.iter().map(|s| s.pos_after(alignment_time)).collect());
     (aligned_stars, alignment_time)
 }
 

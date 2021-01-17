@@ -2,10 +2,11 @@ use std::collections::{HashMap, HashSet};
 
 type Point = (isize, isize);
 
-fn manhattan(a: &Point, b: &Point) -> isize {
+const fn manhattan(a: &Point, b: &Point) -> isize {
     (a.0 - b.0).abs() + (a.1 - b.1).abs()
 }
 
+#[must_use]
 pub fn run() -> (usize, isize) {
     let input: Vec<&str> = include_str!("../input/6.txt").trim().split('\n').collect();
 

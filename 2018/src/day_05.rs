@@ -4,7 +4,7 @@ fn reduce(polymer: Vec<char>) -> Vec<char> {
     let mut p = polymer;
     loop {
         let mut new_polymer = vec![];
-        for c in p.iter() {
+        for c in &p {
             match new_polymer.last() {
                 None => new_polymer.push(*c),
                 Some(&nc) => {
@@ -24,18 +24,19 @@ fn reduce(polymer: Vec<char>) -> Vec<char> {
     }
 }
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let polymer: Vec<char> = include_str!("../input/5.txt").trim_end().chars().collect();
 
     // p2
-    let letters: HashSet<char> = polymer.iter().map(|c| c.to_ascii_lowercase()).collect();
+    let letters: HashSet<char> = polymer.iter().map(char::to_ascii_lowercase).collect();
     let stripped_polymers: Vec<Vec<char>> = letters
         .iter()
         .map(|l| {
             polymer
                 .clone()
                 .into_iter()
-                .filter(|&c| !c.eq_ignore_ascii_case(&l))
+                .filter(|&c| !c.eq_ignore_ascii_case(l))
                 .collect()
         })
         .collect();

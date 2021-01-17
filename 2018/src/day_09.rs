@@ -37,6 +37,7 @@ fn play(num_players: usize, num_marbles: usize) -> (Player, Score) {
     scores.into_iter().max_by_key(|p| p.1).unwrap()
 }
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let input = include_str!("../input/9.txt").trim();
     let pattern = Regex::new(r"(\d+) players; last marble is worth (\d+) points").unwrap();
@@ -50,7 +51,7 @@ pub fn run() -> (usize, usize) {
 #[test]
 fn day_09_helpers() {
     assert_eq!(play(10, 1618).1, 8317);
-    assert_eq!(play(13, 7999).1, 146373);
+    assert_eq!(play(13, 7999).1, 146_373);
     assert_eq!(play(17, 1104).1, 2764);
     assert_eq!(play(21, 6111).1, 54718);
     assert_eq!(play(30, 5807).1, 37305);
@@ -58,5 +59,5 @@ fn day_09_helpers() {
 
 #[test]
 fn day_09() {
-    assert_eq!(run(), (398242, 3273842452));
+    assert_eq!(run(), (398_242, 3_273_842_452));
 }

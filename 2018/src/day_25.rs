@@ -5,11 +5,12 @@ use regex::Regex;
 struct Point { x: isize, y: isize, z: isize, t: isize }
 
 impl Point {
-    fn dist(&self, other: &Point) -> isize {
+    const fn dist(&self, other: &Self) -> isize {
         (self.x - other.x).abs() + (self.y - other.y).abs() + (self.z - other.z).abs() + (self.t - other.t).abs()
     }
 }
 
+#[must_use]
 pub fn run() -> (isize, isize) {
     let coord_pattern = Regex::new(r"(-?\d+),(-?\d+),(-?\d+),(-?\d+)").unwrap();
     let coords: Vec<Point> = include_str!("../input/25.txt").trim_end_matches('\n').split('\n').map( 

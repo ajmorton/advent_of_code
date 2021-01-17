@@ -7,8 +7,8 @@ fn get_erosion_levels(depth: usize, target_r: usize, target_c: usize) -> Vec<Vec
 
     let mut erosion_level = vec![vec![0; target_c + 1 + BUFFER]; depth]; 
 
-    for r in 0..depth {
-        erosion_level[r][0] = (r * 48271 + depth) % MOD;
+    for (r, row) in erosion_level.iter_mut().enumerate() {
+        row[0] = (r * 48271 + depth) % MOD;
     }
 
     for c in 0..=target_c + BUFFER{
@@ -36,9 +36,9 @@ enum Equipment {Torch, ClimbingGear, Neither}
 impl Into<usize> for Equipment {
     fn into(self) -> usize {
         match self {
-            Equipment::Neither => 0,
-            Equipment::ClimbingGear => 1,
-            Equipment::Torch => 2
+            Self::Neither => 0,
+            Self::ClimbingGear => 1,
+            Self::Torch => 2
         }
     }
 } 
@@ -58,7 +58,7 @@ fn neighbours(pos: (usize, usize)) -> Vec<(usize, usize)> {
 
 enum CaveType {Rocky, Wet, Narrow}
 
-fn cave_type(erosion_level: &usize) -> CaveType {
+fn cave_type(erosion_level: usize) -> CaveType {
     match erosion_level % 3 {
         0 => CaveType::Rocky,
         1 => CaveType::Wet,
@@ -67,7 +67,7 @@ fn cave_type(erosion_level: &usize) -> CaveType {
     }
 }
 
-#[derive(PartialEq, Eq, Ord)]
+#[derive(PartialEq, Eq)]
 struct Node {
     time: usize,
     pos: (usize, usize),
@@ -80,7 +80,13 @@ impl PartialOrd for Node {
     }
 }
 
-fn allowed_equipment(cave_type: CaveType) -> Vec<Equipment> {
+impl Ord for Node {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.partial_cmp(other).unwrap()
+    }
+}
+
+fn allowed_equipment(cave_type: &CaveType) -> Vec<Equipment> {
     match cave_type {
         CaveType::Rocky => {vec![Equipment::ClimbingGear, Equipment::Torch]}
         CaveType::Wet => {vec![Equipment::ClimbingGear, Equipment::Neither]}
@@ -88,7 +94,9 @@ fn allowed_equipment(cave_type: CaveType) -> Vec<Equipment> {
     }
 }
 
-fn search(erosion_level: Vec<Vec<usize>>, target: &(usize, usize)) -> Option<usize> {
+fn search(erosion_level: &[Vec<usize>], target: &(usize, usize)) -> Option<usize> {
+    const TRAVEL_TIME: usize = 1;
+    const TOOL_SWAP_TIME: usize = 7;
 
     let mut nodes: BinaryHeap<Node> = std::collections::BinaryHeap::new();
     nodes.push(Node{time: 0, pos: (0,0), equipped: Equipment::Torch});
@@ -96,9 +104,6 @@ fn search(erosion_level: Vec<Vec<usize>>, target: &(usize, usize)) -> Option<usi
     let depth = erosion_level.len();
     let width = erosion_level[0].len();
     let mut visited = vec![vec![[0; 3]; width]; depth];
-
-    const TRAVEL_TIME: usize = 1;
-    const TOOL_SWAP_TIME: usize = 7;
 
     while let Some(node) = nodes.pop() {
 
@@ -110,13 +115,13 @@ fn search(erosion_level: Vec<Vec<usize>>, target: &(usize, usize)) -> Option<usi
 
         visited[node.pos.0][node.pos.1][node.equipped as usize] = node.time;
 
-        for neighbour in neighbours(node.pos).iter() {
+        for neighbour in &neighbours(node.pos) {
             if neighbour.0 >= depth || neighbour.1 >= width {
                 continue;
             }
 
-            let cave_type = cave_type(&erosion_level[neighbour.0][neighbour.1]);
-            let allowed_equipment = allowed_equipment(cave_type);
+            let cave_type = cave_type(erosion_level[neighbour.0][neighbour.1]);
+            let allowed_equipment = allowed_equipment(&cave_type);
 
             // move to next cell
             if allowed_equipment.contains(&node.equipped) {
@@ -125,8 +130,8 @@ fn search(erosion_level: Vec<Vec<usize>>, target: &(usize, usize)) -> Option<usi
         }
 
         // swap equipment
-        let cur_cave_type = cave_type(&erosion_level[node.pos.0][node.pos.1]);
-        let cur_allowed_equipment = allowed_equipment(cur_cave_type);
+        let cur_cave_type = cave_type(erosion_level[node.pos.0][node.pos.1]);
+        let cur_allowed_equipment = allowed_equipment(&cur_cave_type);
 
         for tool in cur_allowed_equipment {
             if node.equipped != tool {
@@ -138,6 +143,7 @@ fn search(erosion_level: Vec<Vec<usize>>, target: &(usize, usize)) -> Option<usi
     None
 }
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let input: Vec<&str> = include_str!("../input/22.txt").trim_end_matches('\n').split('\n').into_iter().collect();
     let depth: usize = input[0].trim_start_matches("depth: ").parse::<usize>().unwrap();
@@ -148,13 +154,13 @@ pub fn run() -> (usize, usize) {
     let erosion_level = get_erosion_levels(depth, target_r, target_c);
     
     let mut sum = 0;
-    for r in 0..=target_r {
-        for c in 0 ..=target_c {
-            sum += erosion_level[r][c] % 3;
+    for row in &erosion_level[0..=target_r] {
+        for cell in &row[0..=target_c] {
+            sum +=  cell % 3;
         }
     }
 
-    (sum, search(erosion_level, &(target_r, target_c)).unwrap())
+    (sum, search(&erosion_level, &(target_r, target_c)).unwrap())
 }
 
 #[test]

@@ -3,30 +3,16 @@ use std::collections::HashMap;
 type Map = Vec<Vec<char>>;
 
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Clone, Copy, Ord)]
-struct Pos {
-    r: usize,
-    c: usize,
-}
+struct Pos { r: usize, c: usize }
+
 #[derive(Clone, Debug, PartialEq, PartialOrd, Eq, Ord, Copy)]
-enum Move {
-    Up,
-    Left,
-    Right,
-    Down,
-}
+enum Move { Up, Left, Right, Down }
 
 #[derive(Debug, Clone, Copy)]
-struct Unit {
-    race: char,
-    health: isize,
-    attack: usize,
-}
+struct Unit { race: char, health: isize, attack: usize }
 
 #[derive(Debug, Clone, Copy)]
-struct State {
-    num_elves: usize,
-    num_goblins: usize,
-}
+struct State { num_elves: usize, num_goblins: usize }
 
 fn parse_input(input_str: &str) -> (Map, HashMap<Pos, Unit>, State) {
     let input: Vec<&str> = input_str.trim_end_matches('\n').split('\n').collect();
@@ -34,60 +20,44 @@ fn parse_input(input_str: &str) -> (Map, HashMap<Pos, Unit>, State) {
     let map: Map = input.iter().map(|&line| line.chars().collect()).collect();
     let mut units: HashMap<Pos, Unit> = HashMap::new();
 
-    let mut num_elves = 0;
-    let mut num_goblins = 0;
-
     for (r, row) in map.iter().enumerate() {
         for (c, &cell) in row.iter().enumerate() {
-            if cell == 'E' {
-                num_elves += 1;
+            if ['E', 'G'].contains(&cell) {
                 units.insert(
                     Pos { r, c },
-                    Unit {
-                        race: cell,
-                        health: 200,
-                        attack: 3,
-                    },
-                );
-            } else if cell == 'G' {
-                num_goblins += 1;
-                units.insert(
-                    Pos { r, c },
-                    Unit {
-                        race: cell,
-                        health: 200,
-                        attack: 3,
-                    },
+                    Unit { race: cell, health: 200, attack: 3 },
                 );
             }
         }
     }
 
+    let num_elves = units.iter().filter(|(_pos, &unit)| unit.race == 'E').count();
+    let num_goblins = units.iter().filter(|(_pos, &unit)| unit.race == 'G').count();
+
     let state = State { num_elves, num_goblins };
     (map, units, state)
 }
 
+#[allow(clippy::ptr_arg)] // clippy doesn't play well with typedefs
 fn _print_map(map: &Map) {
     for row in map {
         for cell in row {
-            if *cell == 'X' {
-                print!("\x1b[0;31m{}\x1b[0m", cell);
-            } else if *cell == 'G' {
-                print!("\x1b[0;35m{}\x1b[0m", cell);
-            } else if *cell == 'E' {
-                print!("\x1b[0;32m{}\x1b[0m", cell);
-            } else {
-                print!("{}", cell);
+            match *cell {
+                'X' => print!("\x1b[0;31m{}\x1b[0m", cell),
+                'G' => print!("\x1b[0;35m{}\x1b[0m", cell),
+                'E' => print!("\x1b[0;32m{}\x1b[0m", cell),
+                _   => print!("{}", cell) 
             }
         }
         println!();
     }
 }
 
-fn manhattan_dist(p1: &Pos, p2: &Pos) -> usize {
+const fn manhattan_dist(p1: &Pos, p2: &Pos) -> usize {
     ((p1.r as isize - p2.r as isize).abs() + (p1.c as isize - p2.c as isize).abs()) as usize
 }
 
+#[allow(clippy::ptr_arg)] // clippy doesn't play well with typedefs
 fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
     let mut paths: Vec<(Pos, Vec<Move>)> = Vec::new();
     let mut visited: Vec<Vec<bool>> = map.iter().map(|r| r.iter().map(|_c| false).collect()).collect();
@@ -126,10 +96,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
             let mut new_path = path_to.clone();
             new_path.push(Move::Up);
             paths.push((
-                Pos {
-                    r: cur_pos.r - 1,
-                    c: cur_pos.c,
-                },
+                Pos { r: cur_pos.r - 1, c: cur_pos.c },
                 new_path,
             ));
         }
@@ -138,10 +105,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
             let mut new_path = path_to.clone();
             new_path.push(Move::Left);
             paths.push((
-                Pos {
-                    r: cur_pos.r,
-                    c: cur_pos.c - 1,
-                },
+                Pos { r: cur_pos.r, c: cur_pos.c - 1 },
                 new_path,
             ));
         }
@@ -150,10 +114,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
             let mut new_path = path_to.clone();
             new_path.push(Move::Right);
             paths.push((
-                Pos {
-                    r: cur_pos.r,
-                    c: cur_pos.c + 1,
-                },
+                Pos { r: cur_pos.r, c: cur_pos.c + 1 },
                 new_path,
             ));
         }
@@ -162,10 +123,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
             let mut new_path = path_to.clone();
             new_path.push(Move::Down);
             paths.push((
-                Pos {
-                    r: cur_pos.r + 1,
-                    c: cur_pos.c,
-                },
+                Pos { r: cur_pos.r + 1, c: cur_pos.c },
                 new_path,
             ));
         }
@@ -174,6 +132,7 @@ fn path_to_nearest(start: Pos, enemy: char, map: &Map) -> Option<Vec<Move>> {
     None
 }
 
+#[allow(clippy::ptr_arg)] // clippy doesn't play well with typedefs
 fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize, usize) {
     let mut map = map.clone();
     let mut units = units.clone();
@@ -182,7 +141,7 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
     for t in 0.. {
         let units_copy = units.clone();
         let mut positions_to_update: Vec<&Pos> = units_copy.keys().into_iter().collect();
-        positions_to_update.sort_by(|a, b| a.cmp(&b).reverse());
+        positions_to_update.sort_by(|a, b| a.cmp(b).reverse());
 
         while !positions_to_update.is_empty() {
             let mut cur_pos = *positions_to_update.pop().unwrap();
@@ -195,7 +154,7 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
 
             let enemy_positions: Vec<Pos> = units
                 .iter()
-                .filter_map(|(&pos, u)| if u.race != cur_unit.race { Some(pos) } else { None })
+                .filter_map(|(&pos, u)| if u.race == cur_unit.race { None } else { Some(pos) })
                 .collect();
 
             let enemy = if cur_unit.race == 'G' { 'E' } else { 'G' };
@@ -210,22 +169,10 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
 
                 //move
                 let new_pos = match next_move {
-                    Move::Up => Pos {
-                        r: cur_pos.r - 1,
-                        c: cur_pos.c,
-                    },
-                    Move::Left => Pos {
-                        r: cur_pos.r,
-                        c: cur_pos.c - 1,
-                    },
-                    Move::Right => Pos {
-                        r: cur_pos.r,
-                        c: cur_pos.c + 1,
-                    },
-                    Move::Down => Pos {
-                        r: cur_pos.r + 1,
-                        c: cur_pos.c,
-                    },
+                    Move::Up    => Pos { r: cur_pos.r -1, c: cur_pos.c    },
+                    Move::Left  => Pos { r: cur_pos.r,    c: cur_pos.c -1 },
+                    Move::Right => Pos { r: cur_pos.r,    c: cur_pos.c +1 },
+                    Move::Down  => Pos { r: cur_pos.r +1, c: cur_pos.c    },
                 };
 
                 map[cur_pos.r][cur_pos.c] = '.';
@@ -278,12 +225,13 @@ fn fight(map: &Map, units: &HashMap<Pos, Unit>, state: &State) -> (usize, usize,
         // print!("\x1B[2J"); // clear console
         // println!();
         // println!("{}", state.tick);
-        // print_map(&map);
+        // _print_map(&map);
         // std::thread::sleep(Duration::from_millis(500));
     }
     panic!("unreachable");
 }
 
+#[allow(clippy::ptr_arg)] // clippy doesn't play well with typedefs
 fn find_first_survivable_conflict(map: &Map, units: HashMap<Pos, Unit>, state: &State) -> usize {
     let num_elves_start = units.iter().filter(|(_pos, unit)| unit.race == 'E').count();
 
@@ -306,9 +254,9 @@ fn find_first_survivable_conflict(map: &Map, units: HashMap<Pos, Unit>, state: &
     loop {
         updated_units = update_attack_power(attack_power, updated_units);
 
-        let (_tick, _remaining_health, num_elves_remaining) = fight(&map, &updated_units, &state);
+        let (_tick, _remaining_health, num_elves_remaining) = fight(map, &updated_units, state);
         if num_elves_remaining == num_elves_start {
-            break; // return tick * remaining_health;
+            break;
         }
         attack_power *= 2;
     }
@@ -316,7 +264,7 @@ fn find_first_survivable_conflict(map: &Map, units: HashMap<Pos, Unit>, state: &
     for attack_power in attack_power / 2 + 1..attack_power {
         updated_units = update_attack_power(attack_power, updated_units);
 
-        let (tick, remaining_health, num_elves_remaining) = fight(&map, &updated_units, &state);
+        let (tick, remaining_health, num_elves_remaining) = fight(map, &updated_units, state);
         if num_elves_remaining == num_elves_start {
             return tick * remaining_health;
         }
@@ -325,6 +273,7 @@ fn find_first_survivable_conflict(map: &Map, units: HashMap<Pos, Unit>, state: &
     panic!("unreachable");
 }
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let input_str = include_str!("../input/15.txt");
     let (map, units, state) = parse_input(input_str);
@@ -338,7 +287,7 @@ pub fn run() -> (usize, usize) {
 
 #[test]
 fn day_15() {
-    assert_eq!(run(), (206720, 37992));
+    assert_eq!(run(), (206_720, 37992));
 }
 
 #[test]

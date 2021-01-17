@@ -5,7 +5,7 @@ struct Node {
 
 impl Node {
     fn sum_metadata(&self) -> usize {
-        return self.metadata.iter().sum::<usize>() + self.children.iter().map(|c| c.sum_metadata()).sum::<usize>();
+        return self.metadata.iter().sum::<usize>() + self.children.iter().map(Self::sum_metadata).sum::<usize>();
     }
 
     fn get_value(&self) -> usize {
@@ -14,8 +14,12 @@ impl Node {
         } else {
             self.metadata
                 .iter()
-                .filter_map(|m| self.children.get(m - 1))
-                .map(|c| c.get_value())
+                .filter_map(|m| 
+                    match self.children.get(m - 1) {
+                        Some(val) => Some(val.get_value()),
+                        None => None,
+                    }
+                )
                 .sum()
         }
     }
@@ -44,6 +48,7 @@ where
     (Node { children, metadata }, nums)
 }
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let input: Vec<usize> = include_str!("../input/8.txt")
         .trim()

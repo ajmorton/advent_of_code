@@ -50,6 +50,7 @@ fn matches_opcodes(exec: &Execution) -> Vec<Opcode> {
         .collect()
 }
 
+#[must_use]
 pub fn run() -> (usize, usize) {
     let input = include_str!("../input/16.txt").trim_end_matches('\n');
     let breakpoint = input.find("\n\n\n").unwrap();
@@ -60,24 +61,9 @@ pub fn run() -> (usize, usize) {
     let executions: Vec<Execution> = before_after_regex
         .captures_iter(examples)
         .map(|caps| {
-            let before = caps[1]
-                .split(", ")
-                .collect::<Vec<_>>()
-                .iter()
-                .map(|n| n.parse::<usize>().unwrap())
-                .collect();
-            let instr = caps[2]
-                .split(' ')
-                .collect::<Vec<_>>()
-                .iter()
-                .map(|n| n.parse::<usize>().unwrap())
-                .collect();
-            let after = caps[3]
-                .split(", ")
-                .collect::<Vec<_>>()
-                .iter()
-                .map(|n| n.parse::<usize>().unwrap())
-                .collect();
+            let before = caps[1].split(", ").collect::<Vec<_>>().iter().map(|n| n.parse::<usize>().unwrap()).collect();
+            let instr = caps[2].split(' ').collect::<Vec<_>>().iter().map(|n| n.parse::<usize>().unwrap()).collect();
+            let after = caps[3].split(", ").collect::<Vec<_>>().iter().map(|n| n.parse::<usize>().unwrap()).collect();
 
             Execution { before, instr, after }
         })
@@ -85,23 +71,9 @@ pub fn run() -> (usize, usize) {
 
     let mut pos_mappings: HashMap<usize, Vec<&Opcode>> = HashMap::new();
     for i in 0..16 {
-        let all_codes = vec![
-            &Opcode::Addr,
-            &Opcode::Addi,
-            &Opcode::Mulr,
-            &Opcode::Muli,
-            &Opcode::Banr,
-            &Opcode::Bani,
-            &Opcode::Borr,
-            &Opcode::Bori,
-            &Opcode::Setr,
-            &Opcode::Seti,
-            &Opcode::Gtir,
-            &Opcode::Gtri,
-            &Opcode::Gtrr,
-            &Opcode::Eqir,
-            &Opcode::Eqri,
-            &Opcode::Eqrr,
+        let all_codes = vec![ 
+            &Opcode::Addr, &Opcode::Addi, &Opcode::Mulr, &Opcode::Muli, &Opcode::Banr, &Opcode::Bani, &Opcode::Borr, &Opcode::Bori,
+            &Opcode::Setr, &Opcode::Seti, &Opcode::Gtir, &Opcode::Gtri, &Opcode::Gtrr, &Opcode::Eqir, &Opcode::Eqri, &Opcode::Eqrr,
         ];
         pos_mappings.insert(i, all_codes);
     }
@@ -148,11 +120,11 @@ pub fn run() -> (usize, usize) {
             .iter()
             .filter(|&op| !opcode_mapping.values().any(|&x| x == *op))
             .collect();
-        if unique_mapping.len() != 1 {
-            panic!("mapping not unique!");
-        } else {
+        if unique_mapping.len() == 1 {
             opcode_mapping.insert(i, unique_mapping[0]);
             pos_mappings = pos_mappings.into_iter().filter(|(j, _a)| *j != i).collect();
+        } else {
+            panic!("mapping not unique!");
         }
     }
 
@@ -181,7 +153,7 @@ pub fn run() -> (usize, usize) {
 
     let init_regs = vec![0; 5];
     let mut computer = Computer::new(init_regs, 4, program_known);
-    let p2 = computer.run(SolveFor::Day16);
+    let p2 = computer.run(&SolveFor::Day16);
 
     (three_plus_possible_opcodes, p2)
 }

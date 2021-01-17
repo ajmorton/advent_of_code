@@ -1,3 +1,4 @@
+#[must_use]
 pub fn run() -> (usize, usize) {
     let input = [1, 1, 0, 2, 0, 1];
     let input_len = input.len();
@@ -50,5 +51,5 @@ pub fn run() -> (usize, usize) {
 
 #[test]
 fn day_14() {
-    assert_eq!(run(), (6107101544, 20291131));
+    assert_eq!(run(), (6_107_101_544, 20_291_131));
 }
