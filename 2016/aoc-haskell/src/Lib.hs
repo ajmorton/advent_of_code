@@ -4,6 +4,7 @@ import System.Environment ( getArgs )
 import System.IO ()  
 
 import Day01 ( runDay01 )
+import Day02 ( runDay02 )
       
 run :: IO ()
 run = do  
@@ -13,3 +14,4 @@ run = do
 
 runDay :: Int -> String -> IO ()    
 runDay 1 inp = print $ runDay01 inp
+runDay 2 inp = print $ runDay02 inp
