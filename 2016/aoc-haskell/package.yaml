@@ -21,6 +21,7 @@ dependencies:
 - text
 - split
 - containers
+- sort
 
 library:
   source-dirs: src

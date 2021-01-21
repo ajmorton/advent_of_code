@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e9fe250bfc2f7a63c8497a33263c76b83f6b736fb9033829fb02874e887722d8
+-- hash: 8259601dc04cee53a007db498784f5ab5da2163b3c208ac59953d48a7b684a1b
 
 name:           aoc-haskell
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       Day01
       Day02
       Day03
+      Day04
       Lib
   other-modules:
       Paths_aoc_haskell
@@ -38,6 +39,7 @@ library
   build-depends:
       base >=4.7 && <5
     , containers
+    , sort
     , split
     , text
   default-language: Haskell2010
@@ -53,6 +55,7 @@ executable aoc-haskell-exe
       aoc-haskell
     , base >=4.7 && <5
     , containers
+    , sort
     , split
     , text
   default-language: Haskell2010
@@ -69,6 +72,7 @@ test-suite aoc-haskell-test
       aoc-haskell
     , base >=4.7 && <5
     , containers
+    , sort
     , split
     , text
   default-language: Haskell2010
