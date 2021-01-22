@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8259601dc04cee53a007db498784f5ab5da2163b3c208ac59953d48a7b684a1b
+-- hash: 02911999151b6b95df5b5df257e50fc9f4a57f9d3f973d045d0ba8e0e0e8e36e
 
 name:           aoc-haskell
 version:        0.1.0.0
@@ -31,14 +31,19 @@ library
       Day02
       Day03
       Day04
+      Day05
       Lib
   other-modules:
       Paths_aoc_haskell
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      MissingH
+    , base >=4.7 && <5
+    , bytestring
     , containers
+    , cryptonite
+    , parallel
     , sort
     , split
     , text
@@ -52,9 +57,13 @@ executable aoc-haskell-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aoc-haskell
+      MissingH
+    , aoc-haskell
     , base >=4.7 && <5
+    , bytestring
     , containers
+    , cryptonite
+    , parallel
     , sort
     , split
     , text
@@ -69,9 +78,13 @@ test-suite aoc-haskell-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aoc-haskell
+      MissingH
+    , aoc-haskell
     , base >=4.7 && <5
+    , bytestring
     , containers
+    , cryptonite
+    , parallel
     , sort
     , split
     , text

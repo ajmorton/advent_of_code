@@ -22,6 +22,10 @@ dependencies:
 - split
 - containers
 - sort
+- MissingH
+- parallel
+- cryptonite
+- bytestring
 
 library:
   source-dirs: src
