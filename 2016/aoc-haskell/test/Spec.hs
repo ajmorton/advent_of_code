@@ -6,6 +6,7 @@ import Day03 ( runDay03 )
 import Day04 ( runDay04 )
 import Day05 ( runDay05 )
 import Day06 ( runDay06 )
+import Day07 ( runDay07 )
 
 runTest :: Eq a => String -> (String -> a) -> FilePath -> a -> IO ()
 runTest day fn file expected = do
@@ -21,3 +22,4 @@ main = do
     runTest "Day04: " Day04.runDay04 "data/4.txt" (361724,482)
     -- runTest "Day05: " Day05.runDay05 "data/5.txt" ("4543c154","1050cbbd")  skipped: runtime is 6 minutes
     runTest "Day06: " Day06.runDay06 "data/6.txt" ("nabgqlcw","ovtrjcjh")
+    runTest "Day07: " Day07.runDay07 "data/7.txt" (115, 231)
