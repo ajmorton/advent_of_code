@@ -11,6 +11,7 @@ import Day05 ( runDay05 )
 import Day06 ( runDay06 )
 import Day07 ( runDay07 )
 import Day08 ( runDay08 )
+import Day09 ( runDay09 )
       
 run :: IO ()
 run = do  
@@ -27,3 +28,4 @@ runDay 5 inp = print $ runDay05 inp
 runDay 6 inp = print $ runDay06 inp
 runDay 7 inp = print $ runDay07 inp
 runDay 8 inp = print $ runDay08 inp
+runDay 9 inp = print $ runDay09 inp

@@ -8,6 +8,7 @@ import Day05 ( runDay05 )
 import Day06 ( runDay06 )
 import Day07 ( runDay07 )
 import Day08 ( runDay08 )
+import Day09 ( runDay09 )
 
 runTest :: Eq a => String -> (String -> a) -> FilePath -> a -> IO ()
 runTest day fn file expected = do
@@ -26,3 +27,4 @@ main = do
     runTest "Day07: " Day07.runDay07 "data/7.txt" (115, 231)
     -- 123, AFBUPZBJPS
     runTest "Day08: " Day08.runDay08 "data/8.txt" (123, [" ##  #### ###  #  # ###  #### ###    ## ###   ### ", "#  # #    #  # #  # #  #    # #  #    # #  # #    ", "#  # ###  ###  #  # #  #   #  ###     # #  # #    ", "#### #    #  # #  # ###   #   #  #    # ###   ##  ", "#  # #    #  # #  # #    #    #  # #  # #       # ", "#  # #    ###   ##  #    #### ###   ##  #    ###  "])
+    runTest "Day09: " Day09.runDay09 "data/9.txt" (152851,11797310782)
