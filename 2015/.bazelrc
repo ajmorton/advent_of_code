@@ -1,0 +1,3 @@
+run --cxxopt='-std=c++20' //:aoc-2015
+build --cxxopt='-std=c++20'
+test --cxxopt='-std=c++20' --test_output=all //test:aoc-2015_test

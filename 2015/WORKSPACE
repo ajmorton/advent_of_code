@@ -1,0 +1,10 @@
+workspace(name = "advent_of_code_2015")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "catch2",
+    strip_prefix = "Catch2-2.13.0",
+    urls = ["https://github.com/catchorg/Catch2/archive/v2.13.0.tar.gz"],
+    sha256 = "4e6608d3fb0247e2aa988735bae2064381b0ec712f47beb766dd761838a546b6"
+)
