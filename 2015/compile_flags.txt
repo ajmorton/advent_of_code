@@ -1,0 +1,4 @@
+-I./
+-I./bazel-2015/external/boost
+-I./bazel-2015/external/catch2/single_include
+-std=c++20
