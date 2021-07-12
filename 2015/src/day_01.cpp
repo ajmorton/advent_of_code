@@ -1,5 +1,4 @@
 #include "day_01.hpp"
-#include <algorithm>
 
 int day_01_01(string input) {
     auto numChars = [input](char c) { return std::count(input.begin(), input.end(), c); };

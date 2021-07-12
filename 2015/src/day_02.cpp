@@ -1,5 +1,4 @@
 #include "day_02.hpp"
-#include <algorithm>
 
 tuple<int, int> day_02(string input) {
     int totalArea = 0;
