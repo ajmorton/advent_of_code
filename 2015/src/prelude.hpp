@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <numeric>
+#include <regex>
 #include <string>
 #include <tuple>
 #include <vector>
