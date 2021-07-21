@@ -11,6 +11,7 @@
 #include "src/day_09.hpp"
 #include "src/day_10.hpp"
 #include "src/day_11.hpp"
+#include "src/day_12.hpp"
 
 TEST_CASE( "Day 01") {
     string input = readFromFile("test/input/day_01.txt");
@@ -68,4 +69,9 @@ TEST_CASE( "Day 11") {
 
     CHECK_THAT( a, Catch::Equals( "hepxxyzz" ) );
     CHECK_THAT( b, Catch::Equals( "heqaabcc" ) );
+}
+
+TEST_CASE( "Day 12") {
+    string input = readFromFile("test/input/day_12.txt");
+    REQUIRE( day_12(input) == std::tuple{111754, 65402} );
 }
