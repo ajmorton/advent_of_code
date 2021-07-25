@@ -18,3 +18,9 @@ vector<string> splitOn(string input, char ch) {
     }
     return lines;
 }
+
+void stripChars(string& str, string chars) {
+    for(char c: chars) {
+        str.erase(std::remove(str.begin(), str.end(), c), str.end());
+    }
+}

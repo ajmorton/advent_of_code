@@ -20,3 +20,4 @@ using std::vector;
 
 string readFromFile(string fileName);
 vector<string> splitOn(string input, char ch);
+void stripChars(string& str, string chars);
