@@ -16,6 +16,7 @@
 #include "src/day_14.hpp"
 #include "src/day_15.hpp"
 #include "src/day_16.hpp"
+#include "src/day_17.hpp"
 
 TEST_CASE( "Day 01") {
     string input = readFromFile("test/input/day_01.txt");
@@ -98,4 +99,9 @@ TEST_CASE( "Day 15") {
 TEST_CASE( "Day 16") {
     string input = readFromFile("test/input/day_16.txt");
     REQUIRE( day_16(input) == std::tuple{40, 241} );
+}
+
+TEST_CASE( "Day 17") {
+    string input = readFromFile("test/input/day_17.txt");
+    REQUIRE( day_17(input) == std::tuple{1304, 18} );
 }
