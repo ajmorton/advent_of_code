@@ -8,6 +8,11 @@ vector<int> factors(int n) {
             factors.push_back(n / i);
         }
     }
+
+    // sqrt is added twice above
+    if(factors.back() * factors.back() == n) {
+        factors.pop_back();
+    }
     return factors;
 }
 
@@ -16,7 +21,10 @@ tuple<int, int> day_20(string input) {
 
     auto [p1Found, p2Found] = tuple{false, false};
     auto [p1, p2] = tuple{0, 0};
-    for(int i = 1; ; i++) {
+
+    // numbers with many factors will have a higher sum of factors
+    int base = 1*2*3*5*7;
+    for(int i = base; ; i += base) {
         vector<int> facs = factors(i);
         auto [p1Sum, p2Sum] = tuple{0, 0};
         for(auto fac: facs) {
