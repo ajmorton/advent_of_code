@@ -1,4 +1,4 @@
-use crate::computer::{Computer, SolveFor, read_prog};
+use crate::computer::{read_prog, Computer, SolveFor};
 
 #[must_use]
 pub fn run() -> (usize, usize) {

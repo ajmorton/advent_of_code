@@ -6,14 +6,14 @@ enum UnitType {Infection, Immune}
 #[derive(Debug, Clone)]
 struct Units {
     id: usize,
-    unit_type: UnitType, 
+    unit_type: UnitType,
     num_units: isize,
     hit_points: isize,
     immunities: Vec<&'static str>,
     weaknesses: Vec<&'static str>,
     attack_power: isize,
     attack_type: String,
-    initiative: isize
+    initiative: isize,
 }
 
 impl Units {
@@ -33,14 +33,14 @@ impl Units {
 
     fn inflict_damage(&mut self, attack_power: isize, attack_type: &str) {
         let damage = attack_power * self.vulnerability_modifier(attack_type);
-        let num_killed = isize::min(self.num_units,  damage / self.hit_points);
+        let num_killed = isize::min(self.num_units, damage / self.hit_points);
         self.num_units -= num_killed;
         // println!("\t{} damage done to {:?} {}, leaving {} units (deaths = {})", damage, self.unit_type, self.id, self.num_units, num_killed);
     }
 }
 
 fn create_units(lines: &[&'static str], unit_type: UnitType) -> Vec<Units> {
-    let mut units = vec!();
+    let mut units = vec![];
     lazy_static! {
         static ref UNIT_REGEX: Regex = Regex::new(r"(\d+) units each with (\d+) hit points((?: \().*\))? with an attack that does (\d+) (\w+) damage at initiative (\d+)").unwrap();
         static ref IMMUNE_REGEX: Regex = Regex::new(r"immune to ([a-z]+)(?:, ([a-z]+))?(?:, ([a-z]+))?").unwrap();
@@ -56,8 +56,8 @@ fn create_units(lines: &[&'static str], unit_type: UnitType) -> Vec<Units> {
         let attack_type = caps[5].to_string();
         let initiative = caps[6].parse::<isize>().unwrap();
 
-        let mut immunities = vec!();
-        let mut weaknesses = vec!();
+        let mut immunities = vec![];
+        let mut weaknesses = vec![];
 
         if let Some(modifiers) = caps.get(3) {
             if let Some(immunities_cap) = IMMUNE_REGEX.captures(modifiers.as_str()) {
@@ -85,7 +85,7 @@ fn allocate_targets(units: &mut Vec<Units>, enemies: &[Units]) -> HashMap<usize,
     for attacker in units {
         // println!("Deciding for {:?} {} (ep: {})", attacker.unit_type, attacker.id + 1, attacker.effective_power());
         let not_attacked = enemies.iter().filter(|&enemy| {
-            targets.values().find(|&target| *target == enemy.id).is_none()
+            !targets.values().any(|target| *target == enemy.id)
         });
 
         if let Some(target) = not_attacked.filter(|&enemy| enemy.vulnerability_modifier(&attacker.attack_type) != 0).max_by_key(|&enemy| 
@@ -110,12 +110,11 @@ fn attack(attacker_ref: &Units, targets: &HashMap<usize, usize>, units: &[Units]
         if let Some(target) = enemies.iter_mut().find(|enemy| enemy.id == targets[&attacker_ref.id]) {
             // print!("{:?} {} attacks {:?} {} {} num: {} atk: {}\t", attacker_ref.unit_type, attacker_ref.id + 1, target.unit_type, target.id + 1, attacker.num_units, attacker.num_units, attacker.attack_power);
             target.inflict_damage(attacker.effective_power(), &attacker_ref.attack_type);
-        }    
+        }
     }
 }
 
 fn fight(immune_system: &[Units], infections: &[Units]) -> Option<(UnitType, isize)> {
-
     let mut immune_system: Vec<Units> = immune_system.to_owned();
     let mut infections: Vec<Units> = infections.to_owned();
 
@@ -126,9 +125,9 @@ fn fight(immune_system: &[Units], infections: &[Units]) -> Option<(UnitType, isi
         immune_system = immune_system.into_iter().filter(|unit| unit.num_units > 0).collect();
         infections = infections.into_iter().filter(|unit| unit.num_units > 0).collect();
 
-        let total_units = immune_system.iter().map(|unit| unit.num_units).sum::<isize>() +
-            infections.iter().map(|unit| unit.num_units).sum::<isize>();
-    
+        let total_units = immune_system.iter().map(|unit| unit.num_units).sum::<isize>()
+            + infections.iter().map(|unit| unit.num_units).sum::<isize>();
+
         let num_groups = immune_system.len() + infections.len();
         if num_groups == num_groups_last_round && total_units == total_units_last_round {
             return None; // stalemate
@@ -149,7 +148,7 @@ fn fight(immune_system: &[Units], infections: &[Units]) -> Option<(UnitType, isi
         let immune_copy = immune_system.to_owned();
         let infection_copy = infections.to_owned();
         let mut all_units: Vec<&Units> = immune_copy.iter().chain(infection_copy.iter()).collect();
-        all_units.sort_by_key(|unit| -unit.initiative );
+        all_units.sort_by_key(|unit| -unit.initiative);
 
         for unit_ref in all_units {
             if unit_ref.unit_type == UnitType::Immune {

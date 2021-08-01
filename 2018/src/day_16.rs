@@ -1,7 +1,7 @@
 use regex::Regex;
 use std::collections::HashMap;
 
-use crate::computer::{Computer, Instruction, Opcode, Prog, Regs, UnknownInstruction, SolveFor};
+use crate::computer::{Computer, Instruction, Opcode, Prog, Regs, SolveFor, UnknownInstruction};
 
 const ALL_OPS: [Opcode; 16] = [
     Opcode::Addr,
@@ -80,7 +80,7 @@ pub fn run() -> (usize, usize) {
 
     let three_plus_possible_opcodes = executions
         .iter()
-        .filter(|&exec| matches_opcodes(exec).iter().count() >= 3)
+        .filter(|&exec| matches_opcodes(exec).len() >= 3)
         .count();
 
     for exec in executions {

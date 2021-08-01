@@ -1,27 +1,16 @@
 use regex::Regex;
-use std::{collections::HashMap, thread::sleep, time::Duration};
+use std::collections::HashMap;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-enum Cell {
-    Clay,
-    Sand,
-    Water,
-    FallingWater,
-    Spring,
-}
+enum Cell { Clay, Sand, Water, FallingWater, Spring }
+
+#[derive(Debug, PartialEq)]
+enum Side{Edge, Wall}
 
 #[derive(Clone, Copy)]
-struct Pos {
-    r: usize,
-    c: usize,
-}
+struct Pos { r: usize, c: usize }
 
-struct Map {
-    grid: Vec<Vec<Cell>>,
-    spring_pos: Pos,
-    width: usize,
-    height: usize,
-}
+struct Map { grid: Vec<Vec<Cell>>, spring_pos: Pos }
 
 fn create_map(input: &str) -> Map {
     let mut map = HashMap::new();
@@ -29,7 +18,6 @@ fn create_map(input: &str) -> Map {
     let pattern = Regex::new(r"(\w)=(\d+), \w=(\d+)\.\.(\d+)").unwrap();
     map.insert((0, 500), Cell::Spring);
 
-    let _min_r = 0;
     let mut max_r = 0;
     let mut min_c = usize::max_value();
     let mut max_c = 0;
@@ -62,19 +50,9 @@ fn create_map(input: &str) -> Map {
         .map(|r| r.into_iter().skip(min_c - 2).take(max_c - min_c + 5).collect())
         .collect();
 
-    let spring_pos = Pos {
-        r: 0,
-        c: 500 - min_c + 2,
-    };
-    let height = grid.len();
-    let width = grid[0].len();
+    let spring_pos = Pos { r: 0, c: 500 - min_c + 2 };
 
-    Map {
-        grid,
-        spring_pos,
-        height,
-        width,
-    }
+    Map { grid, spring_pos }
 }
 
 impl Map {
@@ -93,89 +71,106 @@ impl Map {
         }
     }
 
-    fn fill(&mut self, debug_print: bool) -> (usize, usize) {
-        loop {
-            let finished = self.drip(self.spring_pos);
-            if debug_print {
-                print!("\x1B[2J"); // clear console
-                self.print_map();
-                sleep(Duration::from_millis(1000));
-            }
-            if finished {
-                break;
-            }
-        }
-
-        let water_cells: usize = self
-            .grid
-            .iter()
-            .skip_while(|row| !row.contains(&Cell::Clay))
-            .map(|row| row.iter().filter(|&cell| *cell == Cell::Water).count())
-            .sum();
-        let falling_water_cells: usize = self
-            .grid
-            .iter()
-            .skip_while(|row| !row.contains(&Cell::Clay))
-            .map(|row| row.iter().filter(|&cell| *cell == Cell::FallingWater).count())
-            .sum();
-        (water_cells + falling_water_cells, water_cells)
+    fn is_passable(&self, r: usize, c: usize) -> bool {
+        self.grid[r][c] != Cell::Clay && self.grid[r][c] != Cell::Water
     }
 
-    fn drip(&mut self, start: Pos) -> bool {
-        let mut drip = start;
-        drip.r += 1;
+    fn is_supported(&self, r: usize, c: usize) -> bool {
+        !self.is_passable(r + 1, c)
+    }
 
-        // drip down
-        while drip.r < self.height {
-            self.grid[drip.r][drip.c] = Cell::FallingWater;
-            if drip.r == self.height - 1 {
-                // bottom of grid, finished filling
-                return true;
-            }
-            if self.grid[drip.r + 1][drip.c] == Cell::Clay || self.grid[drip.r + 1][drip.c] == Cell::Water {
-                break;
-            }
-            drip.r += 1;
+    fn fill_left(&self, r: usize, c: usize) -> (Side, Pos) {
+        let mut left_col = c - 1;
+
+        while self.is_supported(r, left_col) && self.is_passable(r, left_col) {
+            left_col -= 1;
         }
 
-        // left right
-        let mut left_to_wall = true;
-        let mut left = drip;
-        let mut finished = true;
-        while left.c != 0 && self.grid[left.r][left.c - 1] != Cell::Clay {
-            if self.grid[left.r + 1][left.c] != Cell::Water && self.grid[left.r + 1][left.c] != Cell::Clay {
-                left_to_wall = false;
-                finished &= self.drip(left);
-                break;
-            }
-            left.c -= 1;
-        }
-
-        let mut right_to_wall = true;
-        let mut right = drip;
-        while right.c != self.width - 1 && self.grid[right.r][right.c + 1] != Cell::Clay {
-            if self.grid[right.r + 1][right.c] != Cell::Water && self.grid[right.r + 1][right.c] != Cell::Clay {
-                right_to_wall = false;
-                finished &= self.drip(right);
-                break;
-            }
-            right.c += 1;
-        }
-
-        let cell_type = if left_to_wall && right_to_wall {
-            Cell::Water
+        if self.is_passable(r, left_col) {
+            (Side::Edge, Pos { r, c: left_col })
         } else {
-            Cell::FallingWater
-        };
+            (Side::Wall, Pos { r, c: left_col + 1 })
+        }
+    }
 
-        finished &= cell_type != Cell::Water;
+    fn fill_right(&self, r: usize, c: usize) -> (Side, Pos) {
+        let mut right_col = c + 1;
 
-        // println!("filling row {}", drip.r);
-        for c in left.c..=right.c {
-            self.grid[drip.r][c] = cell_type;
+        while self.is_supported(r, right_col) && self.is_passable(r, right_col) {
+            right_col += 1;
         }
 
-        finished
+        if self.is_passable(r, right_col) {
+            (Side::Edge, Pos { r, c: right_col })
+        } else {
+            (Side::Wall, Pos { r, c: right_col - 1 })
+        }
+    }
+
+    fn flow(&mut self, r: usize, c: usize) -> Vec<Pos> {
+        let mut to_explore = vec![];
+
+        let (left_side, left_pos) = self.fill_left(r, c);
+        let (right_side, right_pos) = self.fill_right(r, c);
+
+        if left_side == Side::Edge || right_side == Side::Edge {
+            for cc in left_pos.c ..= right_pos.c {
+                self.grid[r][cc] = Cell::FallingWater;
+            }
+            if left_side  == Side::Edge { to_explore.push(left_pos); }
+            if right_side == Side::Edge { to_explore.push(right_pos);}
+        } else {
+            for cc in left_pos.c ..= right_pos.c {
+                self.grid[r][cc] = Cell::Water;
+            }
+            self.grid[r - 1][c] = Cell::FallingWater;
+            to_explore.push(Pos { r: r - 1, c });
+        }
+
+        to_explore
+    }
+
+    fn fill(&mut self, debug_print: bool) -> (usize, usize) {
+        let mut to_explore: Vec<Pos> = vec![self.spring_pos];
+
+        while let Some(Pos { r, c }) = to_explore.pop() {
+            if r == self.grid.len() - 1 {
+                // bottom of grid
+                continue;
+            }
+
+            match self.grid[r][c] {
+                Cell::Spring => {
+                    self.grid[r + 1][c] = Cell::FallingWater;
+                    to_explore.push(Pos { r: r + 1, c });
+                }
+                Cell::FallingWater => match self.grid[r + 1][c] {
+                    Cell::Water | Cell::Clay => {
+                        to_explore.append(&mut self.flow(r, c));
+                    }
+                    Cell::Sand => {
+                        self.grid[r + 1][c] = Cell::FallingWater;
+                        to_explore.push(Pos { r: r + 1, c });
+                    }
+                    _ => continue,
+                },
+                _ => continue,
+            }
+        }
+
+        if debug_print {
+            self.print_map();
+        }
+
+        let (mut flat_water, mut falling_water) = (0, 0);
+        for cell in self.grid.iter().skip_while(|row| !row.contains(&Cell::Clay)).flatten() {
+            match cell {
+                Cell::Water        => flat_water    += 1,
+                Cell::FallingWater => falling_water += 1,
+                _ => continue,
+            }
+        }
+        (flat_water + falling_water, flat_water)
     }
 }
 

@@ -5,7 +5,7 @@ type Pos = (isize, isize);
 enum Cell {Wall, DoorNS, DoorEW, Room, Start}
 
 struct Map {
-    hashmap: HashMap<Pos,Cell>,
+    hashmap: HashMap<Pos, Cell>,
     min_r: isize,
     max_r: isize,
     min_c: isize,
@@ -15,11 +15,11 @@ struct Map {
 impl Map {
     fn new() -> Self {
         Self {
-            hashmap: HashMap::new(), 
-            min_r: isize::max_value(), 
-            max_r: isize::min_value(), 
-            min_c: isize::max_value(), 
-            max_c: isize::min_value()
+            hashmap: HashMap::new(),
+            min_r: isize::max_value(),
+            max_r: isize::min_value(),
+            min_c: isize::max_value(),
+            max_c: isize::min_value(),
         }
     }
 
@@ -38,12 +38,12 @@ impl Map {
     pub fn _print(&self) {
         for r in self.min_r..=self.max_r {
             for c in self.min_c..=self.max_c {
-                match self.get(&(r,c)) {
+                match self.get(&(r, c)) {
                     Cell::Start => print!("X"),
                     Cell::Wall => print!("#"),
                     Cell::DoorNS => print!("-"),
                     Cell::DoorEW => print!("|"),
-                    Cell::Room => print!(".")
+                    Cell::Room => print!("."),
                 }
             }
             println!();
@@ -51,11 +51,10 @@ impl Map {
     }
 
     fn doors_to_rooms(&self) -> (usize, usize) {
-
         type Node = (usize, Pos);
 
         let mut nodes: BinaryHeap<Node> = BinaryHeap::new();
-        nodes.push((0, (0,0)));
+        nodes.push((0, (0, 0)));
         let width = self.max_c - self.min_c;
         let height = self.max_r - self.min_r;
         let mut visited = vec![vec![false; height.abs() as usize]; width.abs() as usize];
@@ -64,7 +63,6 @@ impl Map {
         let mut rooms_with_at_least_1000 = 0;
 
         while let Some((mut cur_doors, cur_pos)) = nodes.pop() {
-
             max_doors = usize::max(cur_doors, max_doors);
             let cur_cell = self.get(&cur_pos);
 
@@ -88,14 +86,13 @@ impl Map {
 }
 
 fn build_map(regex_str: &str) -> Map {
-
-    let mut ptrs_at_level = vec!();
-    let mut cur_ptrs = vec!();
-    let mut other_ptrs_at_level = vec!();
+    let mut ptrs_at_level = vec![];
+    let mut cur_ptrs = vec![];
+    let mut other_ptrs_at_level = vec![];
 
     let mut map = Map::new();
-    map.insert((0,0), Cell::Start);
-    cur_ptrs.push((0,0));
+    map.insert((0, 0), Cell::Start);
+    cur_ptrs.push((0, 0));
 
     for ch in regex_str.chars() {
         match ch {
@@ -105,11 +102,11 @@ fn build_map(regex_str: &str) -> Map {
                 cur_ptrs.extend(other_ptrs_at_level.drain(..));
                 cur_ptrs.sort_unstable();
                 cur_ptrs.dedup();
-            },
+            }
             '|' => {
                 other_ptrs_at_level = cur_ptrs;
-                cur_ptrs = ptrs_at_level[ptrs_at_level.len() -1].clone()
-            },
+                cur_ptrs = ptrs_at_level[ptrs_at_level.len() - 1].clone()
+            }
             'N' | 'S' | 'E' | 'W' => {
                 for ptr in &mut cur_ptrs {
                     match ch {
@@ -117,29 +114,29 @@ fn build_map(regex_str: &str) -> Map {
                             map.insert((ptr.0 - 1, ptr.1), Cell::DoorNS);
                             map.insert((ptr.0 - 2, ptr.1), Cell::Room);
                             ptr.0 -= 2;
-                        } 
+                        }
                         'S' => {
                             map.insert((ptr.0 + 1, ptr.1), Cell::DoorNS);
                             map.insert((ptr.0 + 2, ptr.1), Cell::Room);
                             ptr.0 += 2;
-                        } 
+                        }
                         'E' => {
                             map.insert((ptr.0, ptr.1 + 1), Cell::DoorEW);
                             map.insert((ptr.0, ptr.1 + 2), Cell::Room);
                             ptr.1 += 2;
-                        } 
+                        }
                         'W' => {
                             map.insert((ptr.0, ptr.1 - 1), Cell::DoorEW);
                             map.insert((ptr.0, ptr.1 - 2), Cell::Room);
                             ptr.1 -= 2;
-                        } 
-                        _ => panic!()
+                        }
+                        _ => panic!(),
                     }
                 }
-            },
-            '^' => {},
-            '$' => {return map;},
-            _ => panic!(format!("enuexpected character: {}", ch))
+            }
+            '^' => {}
+            '$' => { return map; }
+            _ => panic!("unexpected character: {}", ch),
         }
     }
 
@@ -148,13 +145,12 @@ fn build_map(regex_str: &str) -> Map {
 
 const fn neighbours(pos: Pos) -> [Pos; 4] {
     [
-        (pos.0 - 1, pos.1), 
-        (pos.0 + 1, pos.1), 
-        (pos.0, pos.1 - 1), 
-        (pos.0, pos.1 + 1)
+        (pos.0 - 1, pos.1),
+        (pos.0 + 1, pos.1),
+        (pos.0, pos.1 - 1),
+        (pos.0, pos.1 + 1),
     ]
-} 
-
+}
 
 #[must_use]
 pub fn run() -> (usize, usize) {

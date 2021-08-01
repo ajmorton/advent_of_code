@@ -13,21 +13,23 @@ impl Point {
 #[must_use]
 pub fn run() -> (isize, isize) {
     let coord_pattern = Regex::new(r"(-?\d+),(-?\d+),(-?\d+),(-?\d+)").unwrap();
-    let coords: Vec<Point> = include_str!("../input/25.txt").trim_end_matches('\n').split('\n').map( 
-        |line| {
+    let coords: Vec<Point> = include_str!("../input/25.txt")
+        .trim_end_matches('\n')
+        .split('\n')
+        .map(|line| {
             let caps = coord_pattern.captures(line).unwrap();
             let x = caps[1].parse::<isize>().unwrap();
             let y = caps[2].parse::<isize>().unwrap();
             let z = caps[3].parse::<isize>().unwrap();
             let t = caps[4].parse::<isize>().unwrap();
-            Point{x,y,z,t}
-        }
-    ).collect();
+            Point { x, y, z, t }
+        })
+        .collect();
 
     let mut connections = vec![vec!(); coords.len()];
 
     for i in 0..coords.len() {
-        for j in i+1 .. coords.len() {
+        for j in i + 1..coords.len() {
             if coords[i].dist(&coords[j]) <= 3 {
                 connections[i].push(j);
                 connections[j].push(i);
@@ -40,14 +42,14 @@ pub fn run() -> (isize, isize) {
 
     let mut num_constellations = 0;
 
-    while ! unexplored_points.is_empty() {
+    while !unexplored_points.is_empty() {
         num_constellations += 1;
 
         let next_coord = unexplored_points.iter().cloned().next().unwrap();
         unexplored_points.remove(&next_coord);
 
         let mut in_constellation = vec![next_coord];
-        while ! in_constellation.is_empty() {
+        while !in_constellation.is_empty() {
             let point = in_constellation.remove(0);
             unexplored_points.remove(&point);
 

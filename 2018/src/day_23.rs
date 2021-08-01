@@ -5,11 +5,11 @@ struct Drone { x: isize, y: isize, z: isize, radius: isize }
 
 impl Drone {
     const fn distance(&self, other: &Self) -> isize {
-        (self.x - other.x).abs() + (self.y - other.y).abs() + (self.z - other.z).abs() 
+        (self.x - other.x).abs() + (self.y - other.y).abs() + (self.z - other.z).abs()
     }
 
     const fn distance_to_point(&self, point: &Point) -> isize {
-        (self.x - point.x).abs() + (self.y - point.y).abs() + (self.z - point.z).abs() 
+        (self.x - point.x).abs() + (self.y - point.y).abs() + (self.z - point.z).abs()
     }
 }
 
@@ -19,7 +19,7 @@ impl FromStr for Drone {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         lazy_static! {
             static ref DRONE_REGEX: Regex = Regex::new(r"pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)").unwrap();
-        }        
+        }
 
         let drone_caps = DRONE_REGEX.captures(s).unwrap();
         let x = drone_caps[1].parse::<isize>().unwrap();
@@ -27,7 +27,7 @@ impl FromStr for Drone {
         let z = drone_caps[3].parse::<isize>().unwrap();
         let radius = drone_caps[4].parse::<isize>().unwrap();
 
-        Ok( Self{x, y, z, radius} )
+        Ok(Self { x, y, z, radius })
     }
 }
 
@@ -38,40 +38,42 @@ struct Point { x: isize, y: isize, z: isize }
 struct BoundingCube {
     min_corner: Point,
     size: isize,
-    num_drones: usize
+    num_drones: usize,
 }
 
 impl BoundingCube {
     fn get_corners(&self, size: isize) -> Vec<Point> {
-
-        let mut corners = vec!();
-        corners.push(Point {x: self.min_corner.x,        y: self.min_corner.y,        z: self.min_corner.z       });
-        corners.push(Point {x: self.min_corner.x,        y: self.min_corner.y,        z: self.min_corner.z + size});
-        corners.push(Point {x: self.min_corner.x,        y: self.min_corner.y + size, z: self.min_corner.z       });
-        corners.push(Point {x: self.min_corner.x,        y: self.min_corner.y + size, z: self.min_corner.z + size});
-        corners.push(Point {x: self.min_corner.x + size, y: self.min_corner.y,        z: self.min_corner.z       });
-        corners.push(Point {x: self.min_corner.x + size, y: self.min_corner.y,        z: self.min_corner.z + size});
-        corners.push(Point {x: self.min_corner.x + size, y: self.min_corner.y + size, z: self.min_corner.z       });
-        corners.push(Point {x: self.min_corner.x + size, y: self.min_corner.y + size, z: self.min_corner.z + size});
-        
-        corners
+        vec![
+            Point {x: self.min_corner.x,        y: self.min_corner.y,        z: self.min_corner.z       },
+            Point {x: self.min_corner.x,        y: self.min_corner.y,        z: self.min_corner.z + size},
+            Point {x: self.min_corner.x,        y: self.min_corner.y + size, z: self.min_corner.z       },
+            Point {x: self.min_corner.x,        y: self.min_corner.y + size, z: self.min_corner.z + size},
+            Point {x: self.min_corner.x + size, y: self.min_corner.y,        z: self.min_corner.z       },
+            Point {x: self.min_corner.x + size, y: self.min_corner.y,        z: self.min_corner.z + size},
+            Point {x: self.min_corner.x + size, y: self.min_corner.y + size, z: self.min_corner.z       },
+            Point {x: self.min_corner.x + size, y: self.min_corner.y + size, z: self.min_corner.z + size}
+        ]
     }
 
     fn count_intersecting_drones(&mut self, drones: &[Drone]) {
+        self.num_drones = drones
+            .iter()
+            .filter(|drone| {
+                let drone_in_box = self.min_corner.x <= drone.x
+                    && drone.x <= self.min_corner.x + self.size
+                    && self.min_corner.y <= drone.y
+                    && drone.y <= self.min_corner.y + self.size
+                    && self.min_corner.z <= drone.z
+                    && drone.z <= self.min_corner.z + self.size;
 
-        self.num_drones = drones.iter().filter(|drone|{
+                let in_range_of_corners = self
+                    .get_corners(self.size)
+                    .iter()
+                    .any(|corner| drone.distance_to_point(corner) <= drone.radius);
 
-            let drone_in_box = self.min_corner.x <= drone.x && drone.x <= self.min_corner.x + self.size
-                && self.min_corner.y <= drone.y && drone.y <= self.min_corner.y + self.size
-                && self.min_corner.z <= drone.z && drone.z <= self.min_corner.z + self.size;
-
-            let in_range_of_corners = self.get_corners(self.size).iter().any(|corner| {
-                drone.distance_to_point(corner) <= drone.radius
-            });
-
-            drone_in_box || in_range_of_corners
-
-        }).count();
+                drone_in_box || in_range_of_corners
+            })
+            .count();
     }
 
     fn get_subcubes(&self, drones: &[Drone]) -> Vec<Self> {
@@ -135,7 +137,7 @@ fn find_most_connected_cell(drones: &[Drone]) -> Option<Point> {
             to_explore.push(sub_cube);
         }
     }
-    
+
     None
 }
 

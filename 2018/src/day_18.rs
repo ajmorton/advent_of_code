@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use itertools::iproduct;
+use std::collections::HashMap;
 
 type Grid = Vec<Vec<char>>;
 

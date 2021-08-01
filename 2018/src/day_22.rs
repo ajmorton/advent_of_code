@@ -5,20 +5,20 @@ fn get_erosion_levels(depth: usize, target_r: usize, target_c: usize) -> Vec<Vec
     const BUFFER: usize = 100;
     const MOD: usize = 20183;
 
-    let mut erosion_level = vec![vec![0; target_c + 1 + BUFFER]; depth]; 
+    let mut erosion_level = vec![vec![0; target_c + 1 + BUFFER]; depth];
 
     for (r, row) in erosion_level.iter_mut().enumerate() {
         row[0] = (r * 48271 + depth) % MOD;
     }
 
-    for c in 0..=target_c + BUFFER{
+    for c in 0..=target_c + BUFFER {
         erosion_level[0][c] = (c * 16807 + depth) % MOD;
     }
 
     for r in 1..depth {
         for c in 1..=target_c + BUFFER {
-            let left = erosion_level[r][c-1];
-            let up = erosion_level[r-1][c];
+            let left = erosion_level[r][c - 1];
+            let up = erosion_level[r - 1][c];
             erosion_level[r][c] = (((left % MOD) * (up % MOD)) + depth) % MOD;
 
             if r == target_r && c == target_c {
@@ -38,15 +38,15 @@ impl Into<usize> for Equipment {
         match self {
             Self::Neither => 0,
             Self::ClimbingGear => 1,
-            Self::Torch => 2
+            Self::Torch => 2,
         }
     }
-} 
+}
 
 fn neighbours(pos: (usize, usize)) -> Vec<(usize, usize)> {
-    let mut neighbours = vec!();
+    let mut neighbours = vec![];
     if pos.0 > 0 {
-        neighbours.push((pos.0 -1, pos.1));
+        neighbours.push((pos.0 - 1, pos.1));
     }
     if pos.1 > 0 {
         neighbours.push((pos.0, pos.1 - 1));
@@ -63,7 +63,7 @@ fn cave_type(erosion_level: usize) -> CaveType {
         0 => CaveType::Rocky,
         1 => CaveType::Wet,
         2 => CaveType::Narrow,
-        _ => panic!(format!("Unknown erosion level {}", erosion_level).as_str())
+        _ => panic!("Unknown erosion level {}", erosion_level),
     }
 }
 
@@ -71,7 +71,7 @@ fn cave_type(erosion_level: usize) -> CaveType {
 struct Node {
     time: usize,
     pos: (usize, usize),
-    equipped: Equipment
+    equipped: Equipment,
 }
 
 impl PartialOrd for Node {
@@ -106,8 +106,7 @@ fn search(erosion_level: &[Vec<usize>], target: &(usize, usize)) -> Option<usize
     let mut visited = vec![vec![[0; 3]; width]; depth];
 
     while let Some(node) = nodes.pop() {
-
-        if &node.pos == target && node.equipped == Equipment::Torch{
+        if &node.pos == target && node.equipped == Equipment::Torch {
             return Some(node.time);
         } else if visited[node.pos.0][node.pos.1][node.equipped as usize] != 0 {
             continue;
@@ -152,11 +151,11 @@ pub fn run() -> (usize, usize) {
     let target_r = target[1].parse::<usize>().unwrap();
 
     let erosion_level = get_erosion_levels(depth, target_r, target_c);
-    
+
     let mut sum = 0;
     for row in &erosion_level[0..=target_r] {
         for cell in &row[0..=target_c] {
-            sum +=  cell % 3;
+            sum += cell % 3;
         }
     }
 

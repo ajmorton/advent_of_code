@@ -36,7 +36,7 @@ fn starmap_string(starmap: &HashSet<(isize, isize)>) -> String {
     stars_string
 }
 
-#[must_use] 
+#[must_use]
 pub fn run() -> (String, isize) {
     let input = include_str!("../input/10.txt").trim().split('\n');
     let pattern = Regex::new(r"position=< *(-?\d+), *(-?\d+)> velocity=< *(-?\d+), *(-?\d+)>").unwrap();

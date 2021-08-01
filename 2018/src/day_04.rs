@@ -54,10 +54,7 @@ pub fn run() -> (usize, usize) {
         .max_by_key::<usize, _>(|elem| *elem.1.iter().max().unwrap())
         .unwrap();
 
-    let most_freq_minute = minutes
-        .iter()
-        .position(|x| x == minutes.iter().max().unwrap())
-        .unwrap();
+    let most_freq_minute = minutes.iter().position(|x| x == minutes.iter().max().unwrap()).unwrap();
 
     let p2 = most_freq_guard * most_freq_minute;
 

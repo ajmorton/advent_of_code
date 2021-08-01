@@ -14,12 +14,7 @@ impl Node {
         } else {
             self.metadata
                 .iter()
-                .filter_map(|m| 
-                    match self.children.get(m - 1) {
-                        Some(val) => Some(val.get_value()),
-                        None => None,
-                    }
-                )
+                .filter_map(|m| self.children.get(m - 1).map(|val| val.get_value()))
                 .sum()
         }
     }

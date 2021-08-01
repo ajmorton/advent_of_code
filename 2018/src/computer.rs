@@ -136,7 +136,14 @@ impl Computer {
                 }
                 SolveFor::Day21Part2 => {
                     // run until the value in reg[5] repeats during instruction 28, and return the prior value in reg[5].
-                    if ip == 28 {
+                    if state[0] == 0 && state[1] == 20 && state[2] == 0 {
+                        // skip inner loop
+                        let shortcircuit = (state[4] / 256) - 1;
+                        if state[3] != shortcircuit {
+                            state[3] = shortcircuit;
+                            continue;
+                         }
+                    } else if ip == 28 {
                         let val_in_5 = state[5];
                         if prev_seen.contains(&val_in_5) {
                             return last_val_in_reg_5;
