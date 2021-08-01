@@ -10,51 +10,60 @@ long bestQuantum(vector<vector<int>> possibleCombos) {
     return minQuantum;
 }
 
+unsigned nextNumSameOneBits(unsigned n) {
+    if (n == 0) return n;
+    unsigned leastSig    = n & -n;
+    unsigned incr        = n + leastSig;
+    unsigned newLeastSig = incr & -incr;
+    unsigned shift       = newLeastSig / leastSig;
+
+    unsigned bitShift = (shift >> 1) - 1;
+    return incr | bitShift;
+}
+
 vector<vector<int>> validCombinations(int n, vector<int> weights, int targetWeight) {
 
-    vector<vector<int>> totalCombos;
+    vector<vector<int>> validCombos;
     int k = weights.size();
+    unsigned mask = (1 << n) - 1;
 
-    auto sum = [](vector<int> v){ return std::accumulate(v.begin(), v.end(), 0);};
+    while((mask & (1<<k)) == 0) {
 
-    vector<bool> mask(k, false);
-    for(int i = 0; i < n; i++) {
-        mask[i] = true;
-    }
-
-    std::sort(mask.begin(), mask.end());
-
-    do {
-        vector<int> possibleCombo;
+        int weightsSum = 0;
         for(int i = 0; i < k; i++) {
-            if(mask[i]) {
-                possibleCombo.push_back(weights[i]);
+            if(((1 << i) & mask) != 0) {
+                weightsSum += weights[i];
             }
         }
 
-        if(sum(possibleCombo) == targetWeight) {
-            totalCombos.push_back(possibleCombo);
+        if(weightsSum == targetWeight) {
+            vector<int> valCombo;
+            for(int i = 0; i < k; i++) {
+                if(((1 << i) & mask) != 0) {
+                    valCombo.push_back(weights[i]);
+                }
+            }
+            validCombos.push_back(valCombo);
         }
-    } while(std::next_permutation(mask.begin(), mask.end()));
 
-    return totalCombos;
+        mask = nextNumSameOneBits(mask);
+    }
+
+    return validCombos;
 }
 
 long bestConfig(vector<int> weights, int numContainers) {
-    int totalWeight = std::accumulate(weights.begin(), weights.end(), 0);
+    int totalWeight  = std::accumulate(weights.begin(), weights.end(), 0);
     int targetWeight = totalWeight / numContainers;
-
-    int numPackages = weights.size();
+    int numPackages  = weights.size();
 
     vector<vector<int>> validCombos;
-
     for(int n = 1; n <= numPackages; n++) {
         validCombos = validCombinations(n, weights, targetWeight);
         if(validCombos.empty() == false) {
             break;
         }
     }
-
     return bestQuantum(validCombos);
 }
 
