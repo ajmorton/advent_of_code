@@ -1,4 +1,4 @@
-#include "day_07.hpp"
+#include "days.hpp"
 
 using std::regex;
 

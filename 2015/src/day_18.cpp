@@ -1,4 +1,4 @@
-#include "day_18.hpp"
+#include "days.hpp"
 
 const int SIZE = 100;
 

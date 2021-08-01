@@ -1,4 +1,4 @@
-#include "day_21.hpp"
+#include "days.hpp"
 
 typedef struct stats_t{string name; int cost; int damage; int armor;} stats_t;
 typedef struct fighter_t{int hitpoints; int damage; int armor;} fighter_t;

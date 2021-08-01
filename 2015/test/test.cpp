@@ -1,80 +1,54 @@
 #include <catch2/catch.hpp>
-#include <tuple>
-#include "src/day_01.hpp"
-#include "src/day_02.hpp"
-#include "src/day_03.hpp"
-#include "src/day_04.hpp"
-#include "src/day_05.hpp"
-#include "src/day_06.hpp"
-#include "src/day_07.hpp"
-#include "src/day_08.hpp"
-#include "src/day_09.hpp"
-#include "src/day_10.hpp"
-#include "src/day_11.hpp"
-#include "src/day_12.hpp"
-#include "src/day_13.hpp"
-#include "src/day_14.hpp"
-#include "src/day_15.hpp"
-#include "src/day_16.hpp"
-#include "src/day_17.hpp"
-#include "src/day_18.hpp"
-#include "src/day_19.hpp"
-#include "src/day_20.hpp"
-#include "src/day_21.hpp"
-#include "src/day_22.hpp"
-#include "src/day_23.hpp"
-#include "src/day_24.hpp"
-#include "src/day_25.hpp"
+#include "src/days.hpp"
 
 TEST_CASE( "Day 01") {
     string input = readFromFile("test/input/day_01.txt");
-    SECTION( "Part 1" ) { REQUIRE( day_01_01(input) ==   74 ); }
-    SECTION( "Part 2" ) { REQUIRE( day_01_02(input) == 1795 ); }
+    REQUIRE( day_01(input) == tuple{74, 1795} );
 }
 
 TEST_CASE( "Day 02") {
     string input = readFromFile("test/input/day_02.txt");
-    REQUIRE( day_02(input) == std::tuple{1598415, 3812909} );
+    REQUIRE( day_02(input) == tuple{1598415, 3812909} );
 }
 
 TEST_CASE( "Day 03") {
     string input = readFromFile("test/input/day_03.txt");
-    REQUIRE( day_03(input) == std::tuple{2592, 2360} );
+    REQUIRE( day_03(input) == tuple{2592, 2360} );
 }
 
 TEST_CASE( "Day 04") {
     string input = readFromFile("test/input/day_04.txt");
-    REQUIRE( day_04(input) == std::tuple{117946, 3938038} );
+    REQUIRE( day_04(input) == tuple{117946, 3938038} );
 }
 
 TEST_CASE( "Day 05") {
     string input = readFromFile("test/input/day_05.txt");
-    REQUIRE( day_05(input) == std::tuple{255, 55} );
+    REQUIRE( day_05(input) == tuple{255, 55} );
 }
 
 TEST_CASE( "Day 06") {
     string input = readFromFile("test/input/day_06.txt");
-    REQUIRE( day_06(input) == std::tuple{377891, 14110788} );
+    REQUIRE( day_06(input) == tuple{377891, 14110788} );
 }
 
 TEST_CASE( "Day 07") {
     string input = readFromFile("test/input/day_07.txt");
-    REQUIRE( day_07(input) == std::tuple{46065, 14134} );
+    REQUIRE( day_07(input) == tuple{46065, 14134} );
 }
 
 TEST_CASE( "Day 08") {
     string input = readFromFile("test/input/day_08.txt");
-    REQUIRE( day_08(input) == std::tuple{1371, 2117} );
+    REQUIRE( day_08(input) == tuple{1371, 2117} );
 }
 
 TEST_CASE( "Day 09") {
     string input = readFromFile("test/input/day_09.txt");
-    REQUIRE( day_09(input) == std::tuple{141, 736} );
+    REQUIRE( day_09(input) == tuple{141, 736} );
 }
 
 TEST_CASE( "Day 10") {
     string input = readFromFile("test/input/day_10.txt");
-    REQUIRE( day_10(input) == std::tuple{252594, 3579328} );
+    REQUIRE( day_10(input) == tuple{252594, 3579328} );
 }
 
 TEST_CASE( "Day 11") {
@@ -86,70 +60,70 @@ TEST_CASE( "Day 11") {
 
 TEST_CASE( "Day 12") {
     string input = readFromFile("test/input/day_12.txt");
-    REQUIRE( day_12(input) == std::tuple{111754, 65402} );
+    REQUIRE( day_12(input) == tuple{111754, 65402} );
 }
 
 TEST_CASE( "Day 13") {
     string input = readFromFile("test/input/day_13.txt");
-    REQUIRE( day_13(input) == std::tuple{709, 668} );
+    REQUIRE( day_13(input) == tuple{709, 668} );
 }
 
 TEST_CASE( "Day 14") {
     string input = readFromFile("test/input/day_14.txt");
-    REQUIRE( day_14(input) == std::tuple{2660, 1256} );
+    REQUIRE( day_14(input) == tuple{2660, 1256} );
 }
 
 TEST_CASE( "Day 15") {
     string input = readFromFile("test/input/day_15.txt");
-    REQUIRE( day_15(input) == std::tuple{21367368, 1766400} );
+    REQUIRE( day_15(input) == tuple{21367368, 1766400} );
 }
 
 TEST_CASE( "Day 16") {
     string input = readFromFile("test/input/day_16.txt");
-    REQUIRE( day_16(input) == std::tuple{40, 241} );
+    REQUIRE( day_16(input) == tuple{40, 241} );
 }
 
 TEST_CASE( "Day 17") {
     string input = readFromFile("test/input/day_17.txt");
-    REQUIRE( day_17(input) == std::tuple{1304, 18} );
+    REQUIRE( day_17(input) == tuple{1304, 18} );
 }
 
 TEST_CASE( "Day 18") {
     string input = readFromFile("test/input/day_18.txt");
-    REQUIRE( day_18(input) == std::tuple{768, 781} );
+    REQUIRE( day_18(input) == tuple{768, 781} );
 }
 
 TEST_CASE( "Day 19") {
     string input = readFromFile("test/input/day_19.txt");
-    REQUIRE( day_19(input) == std::tuple{509, 195} );
+    REQUIRE( day_19(input) == tuple{509, 195} );
 }
 
 TEST_CASE( "Day 20") {
     string input = readFromFile("test/input/day_20.txt");
-    REQUIRE( day_20(input) == std::tuple{665280, 705600} );
+    REQUIRE( day_20(input) == tuple{665280, 705600} );
 }
 
 TEST_CASE( "Day 21") {
     string input = readFromFile("test/input/day_21.txt");
-    REQUIRE( day_21(input) == std::tuple{91, 158} );
+    REQUIRE( day_21(input) == tuple{91, 158} );
 }
 
 TEST_CASE( "Day 22") {
     string input = readFromFile("test/input/day_22.txt");
-    REQUIRE( day_22(input) == std::tuple{953, 1289} );
+    REQUIRE( day_22(input) == tuple{953, 1289} );
 }
 
 TEST_CASE( "Day 23") {
     string input = readFromFile("test/input/day_23.txt");
-    REQUIRE( day_23(input) == std::tuple{170, 247} );
+    REQUIRE( day_23(input) == tuple{170, 247} );
 }
 
 TEST_CASE( "Day 24") {
     string input = readFromFile("test/input/day_24.txt");
-    REQUIRE( day_24(input) == std::tuple{10723906903L, 74850409L} );
+    REQUIRE( day_24(input) == tuple{10723906903L, 74850409L} );
 }
 
 TEST_CASE( "Day 25") {
     string input = readFromFile("test/input/day_25.txt");
-    REQUIRE( day_25(input) == std::tuple{8997277L, 0} );
+    REQUIRE( day_25(input) == tuple{8997277L, 0} );
 }

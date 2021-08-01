@@ -1,4 +1,4 @@
-#include "day_25.hpp"
+#include "days.hpp"
 
 int sigma(int n) {
     int sum = 0;

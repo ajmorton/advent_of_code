@@ -1,4 +1,4 @@
-#include "day_10.hpp"
+#include "days.hpp"
 
 int lookAndSay(vector<char>& word1, vector<char>& word2) {
     int ptr1 = 0;

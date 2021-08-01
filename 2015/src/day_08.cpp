@@ -1,4 +1,4 @@
-#include "day_08.hpp"
+#include "days.hpp"
 
 int encodedStringDecrease(string line) {
     string newLine;

@@ -1,4 +1,4 @@
-#include "day_22.hpp"
+#include "days.hpp"
 
 enum Effect{Shielded = 0, Poisoned = 1, Recharging = 2};
 

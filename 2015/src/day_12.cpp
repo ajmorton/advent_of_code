@@ -1,4 +1,4 @@
-#include "day_12.hpp"
+#include "days.hpp"
 
 string stripRedObjects(string jsonString){
     vector<string> stack = {""};

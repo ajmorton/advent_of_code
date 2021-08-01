@@ -1,4 +1,4 @@
-#include "day_09.hpp"
+#include "days.hpp"
 
 typedef int cityGrid_t[10][10];
 

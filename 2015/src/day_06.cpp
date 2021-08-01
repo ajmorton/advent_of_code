@@ -1,4 +1,4 @@
-#include "day_06.hpp"
+#include "days.hpp"
 
 struct cell_t {int fst; int snd;};
 struct instr_t {string action; int min_r; int min_c; int max_r; int max_c;};

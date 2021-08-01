@@ -1,4 +1,4 @@
-#include "day_20.hpp"
+#include "days.hpp"
 
 vector<int> factors(int n) {
     vector<int> factors;

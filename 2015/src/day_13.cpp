@@ -1,4 +1,4 @@
-#include "day_13.hpp"
+#include "days.hpp"
 
 typedef int person_t;
 typedef int score_t;

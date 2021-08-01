@@ -1,4 +1,4 @@
-#include "day_24.hpp"
+#include "days.hpp"
 
 long bestQuantum(vector<vector<int>> possibleCombos) {
     auto quantumScore = [](vector<int> v){return std::accumulate(v.begin(), v.end(), 1L, std::multiplies<long>());};

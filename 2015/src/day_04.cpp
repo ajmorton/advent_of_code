@@ -1,4 +1,4 @@
-#include "day_04.hpp"
+#include "days.hpp"
 #include <boost/uuid/detail/md5.hpp>
 
 using boost::uuids::detail::md5;

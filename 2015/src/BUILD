@@ -1,10 +1,6 @@
 cc_library(
     name = "solutions",
-    hdrs = ["prelude.hpp", "day_01.hpp", "day_02.hpp", "day_03.hpp", "day_04.hpp", "day_05.hpp",
-                           "day_06.hpp", "day_07.hpp", "day_08.hpp", "day_09.hpp", "day_10.hpp",
-                           "day_11.hpp", "day_12.hpp", "day_13.hpp", "day_14.hpp", "day_15.hpp",
-                           "day_16.hpp", "day_17.hpp", "day_18.hpp", "day_19.hpp", "day_20.hpp",
-                           "day_21.hpp", "day_22.hpp", "day_23.hpp", "day_24.hpp", "day_25.hpp"],
+    hdrs = ["prelude.hpp", "days.hpp" ],
     srcs = ["prelude.cpp", "day_01.cpp", "day_02.cpp", "day_03.cpp", "day_04.cpp", "day_05.cpp",
                            "day_06.cpp", "day_07.cpp", "day_08.cpp", "day_09.cpp", "day_10.cpp",
                            "day_11.cpp", "day_12.cpp", "day_13.cpp", "day_14.cpp", "day_15.cpp",

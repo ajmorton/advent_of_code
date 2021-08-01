@@ -1,4 +1,4 @@
-#include "day_03.hpp"
+#include "days.hpp"
 
 typedef struct pos_t{int x = 0; int y = 0;} pos_t;
 typedef map<tuple<int, int>, int> visitedMap;

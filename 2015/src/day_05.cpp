@@ -1,4 +1,4 @@
-#include "day_05.hpp"
+#include "days.hpp"
 
 bool isNice(string line) {
     auto notSubstr = [line](string sub){ return line.find(sub) == string::npos; };

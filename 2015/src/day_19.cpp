@@ -1,4 +1,4 @@
-#include "day_19.hpp"
+#include "days.hpp"
 
 struct replacement_t {string input; string output;};
 

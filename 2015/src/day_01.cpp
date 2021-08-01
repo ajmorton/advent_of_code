@@ -1,4 +1,4 @@
-#include "day_01.hpp"
+#include "days.hpp"
 
 int day_01_01(string input) {
     auto numChars = [input](char c) { return std::count(input.begin(), input.end(), c); };
@@ -14,4 +14,8 @@ int day_01_02(string input) {
         if (numClosed > numOpens) { return numOpens + numClosed; }
     }
     return -1;
+}
+
+tuple<int, int> day_01(string input) {
+    return {day_01_01(input), day_01_02(input)};
 }

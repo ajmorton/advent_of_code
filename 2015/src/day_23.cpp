@@ -1,4 +1,4 @@
-#include "day_23.hpp"
+#include "days.hpp"
 
 enum reg_t{A = 0, B = 1};
 enum command_t {HLF, TPL, INC, JMP, JIE, JIO};

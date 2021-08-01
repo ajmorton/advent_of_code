@@ -1,4 +1,4 @@
-#include "day_15.hpp"
+#include "days.hpp"
 
 struct ingr_t{char name[20]; int capacity; int durability; int flavour; int texture; int calories;};
 

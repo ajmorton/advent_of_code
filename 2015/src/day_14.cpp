@@ -1,4 +1,4 @@
-#include "day_14.hpp"
+#include "days.hpp"
 
 struct deer_t{string name; int speed; int travel; int rest; int score;};
 
