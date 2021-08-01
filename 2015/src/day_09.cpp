@@ -1,40 +1,52 @@
 #include "day_09.hpp"
 
-typedef string city_t;
-typedef int distance_t;
+typedef int cityGrid_t[10][10];
 
-typedef map< tuple<city_t, city_t>, distance_t > distanceBetween_t;
+tuple<int, int> findPaths(int cityGrid[10][10], int numCities){
+    int shortest = INT_MAX;
+    int largest = 0;
 
-tuple<int, int> day_09(string input) {
+    vector<int> paths(numCities);
+    std::iota(paths.begin(), paths.end(), 0);
 
-    distanceBetween_t distanceBetween;
-    std::set<city_t> cities;
+    do {
+        int pathDist = 0;
+        for(int i = 0; i < numCities - 1; i++) {
+            pathDist += cityGrid[paths[i]][paths[i+1]];
+        }
+        shortest = std::min(shortest, pathDist);
+        largest = std::max(largest, pathDist);
+    } while( std::next_permutation(paths.begin(), paths.end()) );
+
+    return {shortest, largest};
+}
+
+int readInCities(string input, cityGrid_t& cityGrid) {
+    std::map<string, int> cityIds;
+    int numCities = 0;
 
     std::smatch matches;
     for(string line: splitOn(input, '\n')) {
         std::regex_match(line, matches, std::regex("(\\w+) to (\\w+) = (\\d+)"));
-        city_t city1 = matches[1];
-        city_t city2 = matches[2];
-        distance_t dist = stoi(matches[3]);
+        string city1 = matches[1];
+        string city2 = matches[2];
+        int dist = stoi(matches[3]);
 
-        cities.insert(city1);
-        cities.insert(city2);
-        distanceBetween[{city1, city2}] = dist;
-        distanceBetween[{city2, city1}] = dist;
+        if(cityIds.contains(city1) == false) { cityIds[city1] = numCities++; }
+        if(cityIds.contains(city2) == false) { cityIds[city2] = numCities++; }
+
+        int cityId1 = cityIds[city1];
+        int cityId2 = cityIds[city2];
+
+        cityGrid[cityId1][cityId2] = dist;
+        cityGrid[cityId2][cityId1] = dist;
     }
+    return numCities;
+}
 
-    vector<city_t> citiesList = vector(cities.begin(), cities.end());
+tuple<int, int> day_09(string input) {
+    cityGrid_t cityGrid;
+    int numCities = readInCities(input, cityGrid);
 
-    int shortest = INT_MAX;
-    int largest = 0;
-    do {
-        int pathDist = 0;
-        for(int i = 0; i < citiesList.size() - 1; i++) {
-            pathDist += distanceBetween[{citiesList[i], citiesList[i+1]}];
-        }
-        shortest = std::min(shortest, pathDist);
-        largest = std::max(largest, pathDist);
-    } while( std::next_permutation(citiesList.begin(), citiesList.end()) );
-
-    return {shortest, largest};
+    return findPaths(cityGrid, numCities);
 }
