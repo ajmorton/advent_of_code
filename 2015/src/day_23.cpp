@@ -25,25 +25,25 @@ int runProg(vector<instr_t> instructions, bool p2) {
     return regs[B];
 }
 
-tuple<int, int> day_23(string input) {
+tuple<int, int> day_23(const string& input) {
 
     vector<instr_t> instructions;
 
-    int jumpVal;
+    int jumpVal = 0;
     char command[5];
-    char reg;
-    for(string line: splitOn(input, '\n')) {
+    char reg = '0';
+    for(const string& line: splitOn(input, '\n')) {
 
         string instrFormat;
-        if(line.find(',') != line.npos) {
+        if(line.find(',') != string::npos) {
             sscanf(line.c_str(), "%s %c, %d", command, &reg, &jumpVal);
-        } else if(line.find("jmp") != line.npos) {
+        } else if(line.find("jmp") != string::npos) {
             sscanf(line.c_str(), "%s %d", command, &jumpVal);
         } else {
             sscanf(line.c_str(), "%s %c", command, &reg);
         }
 
-        instr_t instr;
+        instr_t instr{};
         if(     string(command) == "hlf") {instr.cmd = HLF;}
         else if(string(command) == "tpl") {instr.cmd = TPL;}
         else if(string(command) == "inc") {instr.cmd = INC;}

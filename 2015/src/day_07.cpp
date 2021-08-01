@@ -2,16 +2,16 @@
 
 using std::regex;
 
-typedef unsigned short voltage_t ;
-typedef string wire_t;
+using voltage_t = unsigned short ;
+using wire_t = string;
 enum class Oper{EQ, AND, OR, LSHIFT, RSHIFT, NOT};
 
 struct gate_t{wire_t inA; Oper oper; wire_t inB; wire_t out;};
 
-regex exprRegex("([\\w ]+) -> (\\w+)");
-regex valueRegex("(\\w+)");
-regex unaryRegex("NOT (\\w+)");
-regex binaryRegex("(\\w+) ([A-Z]+) (\\w+)");
+const regex exprRegex("([\\w ]+) -> (\\w+)");
+const regex valueRegex("(\\w+)");
+const regex unaryRegex("NOT (\\w+)");
+const regex binaryRegex("(\\w+) ([A-Z]+) (\\w+)");
 
 class Circuit {
 
@@ -23,16 +23,16 @@ class Circuit {
     std::deque<wire_t> _inputsToResolve;
 
     private:
-        Oper fromString(string oper) {
-            if(oper == "EQ")          {return Oper::EQ;     }
-            else if(oper == "AND")    {return Oper::AND;    }
-            else if(oper == "OR")     {return Oper::OR;     }
-            else if(oper == "LSHIFT") {return Oper::LSHIFT; }
-            else if(oper == "RSHIFT") {return Oper::RSHIFT; }
-            else                      {return Oper::NOT;    }
+        static Oper fromString(const string& oper) {
+            if(oper == "EQ")     {return Oper::EQ;     }
+            if(oper == "AND")    {return Oper::AND;    }
+            if(oper == "OR")     {return Oper::OR;     }
+            if(oper == "LSHIFT") {return Oper::LSHIFT; }
+            if(oper == "RSHIFT") {return Oper::RSHIFT; }
+            return Oper::NOT;
         }
 
-        void evaluate(gate_t gate) {
+        void evaluate(const gate_t& gate) {
             switch(gate.oper) {
                 case Oper::EQ:     _wireVoltage[gate.out] = eval(gate.inA);                   break;
                 case Oper::AND:    _wireVoltage[gate.out] = eval(gate.inA) &  eval(gate.inB); break;
@@ -43,25 +43,25 @@ class Circuit {
             }
         }
 
-        voltage_t eval(string input) {
+        voltage_t eval(const string& input) {
             return isNumber(input) ? stoi(input) : _wireVoltage[input];
         }
 
-        bool isNumber(string str) {
+        static bool isNumber(string str) {
             return std::all_of(str.begin(), str.end(), ::isdigit);
         }
 
-        void addConnection(string input, wire_t output) {
-            if(isNumber(input) == false) {
+        void addConnection(const string& input, const wire_t& output) {
+            if(not isNumber(input)) {
                 _outputs[input].insert(output);
                 _inputs[output].insert(input);
             }
         }
 
     public : 
-        void setUp(string input) {
+        void setUp(const string& input) {
             std::smatch matches;
-            for(string line: splitOn(input, '\n')) {
+            for(const string& line: splitOn(input, '\n')) {
 
                 regex_match(line, matches, exprRegex);
                 string input = matches[1]; 
@@ -89,13 +89,13 @@ class Circuit {
         }
 
         void resolve() {
-            while(_inputsToResolve.empty() == false) {
+            while(not _inputsToResolve.empty()) {
                 wire_t knownInput = _inputsToResolve.front();
                 _inputsToResolve.pop_front();
 
-                for(wire_t output: _outputs[knownInput]) {
+                for(const wire_t& output: _outputs[knownInput]) {
                     _inputs[output].erase(knownInput);
-                    if(_inputs[output].size() == 0) {
+                    if(_inputs[output].empty()) {
                         evaluate(_gateOf[output]);
                         _inputsToResolve.push_back(output);
                     }
@@ -103,16 +103,16 @@ class Circuit {
             }
         }
 
-        voltage_t voltage(wire_t wire) {
+        voltage_t voltage(const wire_t& wire) {
             return _wireVoltage[wire];
         }
 
-        void setVoltage(wire_t wire, voltage_t voltage) {
+        void setVoltage(const wire_t& wire, voltage_t voltage) {
             _wireVoltage[wire] = voltage;
         }
 };
 
-tuple<int, int> day_07(string input) {
+tuple<int, int> day_07(const string& input) {
 
     Circuit circuit;
     circuit.setUp(input);

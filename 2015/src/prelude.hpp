@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <deque>
 #include <iostream>
 #include <map>
@@ -18,6 +19,6 @@ using std::string;
 using std::tuple;
 using std::vector;
 
-string readFromFile(string fileName);
-vector<string> splitOn(string input, char ch);
-void stripChars(string& str, string chars);
+string readFromFile(const string& fileName);
+vector<string> splitOn(const string& input, char ch);
+void stripChars(string& str, const string& chars);

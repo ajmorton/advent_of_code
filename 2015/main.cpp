@@ -2,7 +2,7 @@
 
 using namespace std::chrono;
     
-void runTest(string day, auto func){
+void runTest(const string& day, auto func){
     std::cout << "Day " + day + "\n";
     string input = readFromFile("input/day_" + day + ".txt");
     long start = duration_cast< milliseconds >( system_clock::now().time_since_epoch() ).count();
@@ -15,7 +15,7 @@ void runTest(string day, auto func){
     cout << "==========================\n";
 }
 
-int main(int argc, char** argv) {
+int main() {
     runTest("01", day_01);
     runTest("02", day_02);
     runTest("03", day_03);

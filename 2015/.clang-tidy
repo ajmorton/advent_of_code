@@ -1,0 +1,6 @@
+Checks: 'bugprone-*,
+  cppcoreguidelines-*, -cppcoreguidelines-avoid-c-arrays, -cppcoreguidelines-avoid-magic-numbers, -cppcoreguidelines-pro-type-vararg,
+  misc-*,
+  modernize-*,         -modernize-avoid-c-arrays, -modernize-use-trailing-return-type,
+  performance-*,
+  readability-*,       -readability-isolate-declaration, -readability-magic-numbers'

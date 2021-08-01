@@ -16,7 +16,7 @@ vector<int> factors(int n) {
     return factors;
 }
 
-tuple<int, int> day_20(string input) {
+tuple<int, int> day_20(const string& input) {
     int n = stoi(input);
 
     auto [p1Found, p2Found] = tuple{false, false};

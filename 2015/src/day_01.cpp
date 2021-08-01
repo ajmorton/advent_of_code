@@ -1,11 +1,11 @@
 #include "days.hpp"
 
-int day_01_01(string input) {
+int day_01_01(const string& input) {
     auto numChars = [input](char c) { return std::count(input.begin(), input.end(), c); };
-    return numChars('(') - numChars(')');
+    return int(numChars('(') - numChars(')'));
 }
 
-int day_01_02(string input) {
+int day_01_02(const string& input) {
     int numOpens = 0;
     int numClosed = 0;
     for(char c: input) {
@@ -16,6 +16,6 @@ int day_01_02(string input) {
     return -1;
 }
 
-tuple<int, int> day_01(string input) {
+tuple<int, int> day_01(const string& input) {
     return {day_01_01(input), day_01_02(input)};
 }

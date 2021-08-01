@@ -1,11 +1,13 @@
+#include <utility>
+
 #include "days.hpp"
 
 struct replacement_t {string input; string output;};
 
-std::set<string> allTransforms(string molecule, vector<replacement_t> replacements) {
+std::set<string> allTransforms(string molecule, const vector<replacement_t>& replacements) {
     std::set<string> outputMolecules;
 
-    for(replacement_t repl: replacements) {
+    for(const replacement_t& repl: replacements) {
         size_t replPos = molecule.find(repl.input, 0);
         while(replPos != string::npos) {
             string prefix = string(molecule.begin(), molecule.begin() + replPos);
@@ -19,16 +21,16 @@ std::set<string> allTransforms(string molecule, vector<replacement_t> replacemen
     return outputMolecules;
 }
 
-int numOccurences(string input, string regex) {
+int numOccurences(string input, const string& regex) {
     std::regex searchRegex(regex);
     vector<string> numElements(
         std::sregex_token_iterator(input.begin(), input.end(), searchRegex), 
         std::sregex_token_iterator()
     );
-    return numElements.size();
+    return int(numElements.size());
 }
 
-tuple<int, int> day_19(string input) {
+tuple<int, int> day_19(const string& input) {
 
     vector<string> inputLines = splitOn(input, '\n');
     vector<string> replStrings = vector(inputLines.begin(), inputLines.end() - 2);
@@ -37,7 +39,7 @@ tuple<int, int> day_19(string input) {
     string ignore;
     vector<replacement_t> replacements;
 
-    for(string replacement: replStrings) {
+    for(const string& replacement: replStrings) {
         replacement_t repl;
         std::istringstream reader(replacement);
         reader >> repl.input >> ignore >> repl.output;

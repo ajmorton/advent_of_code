@@ -7,9 +7,9 @@ class Grid {
     char nextGrid[SIZE][SIZE] = {{0}};
 
     public:
-        Grid(string input) {
+        explicit Grid(const string& input) {
             int r = 0;
-            for(string line: splitOn(input, '\n')) {
+            for(const string& line: splitOn(input, '\n')) {
                 int c = 0;
                 for(char light: line) {
                     grid[r][c] = light;
@@ -19,19 +19,24 @@ class Grid {
             }
         }
 
+        int countNeighbours(int r, int c) {
+            int neigbours = 0;
+            for(int rr = r - 1; rr < r + 2; rr++) {
+                for(int cc = c - 1; cc < c + 2; cc++) {
+                    if(rr < 0 || rr >= SIZE) { continue; }
+                    if(cc < 0 || cc >= SIZE) { continue; }
+                    if(rr == r && cc == c)   { continue; }
+                    neigbours += grid[rr][cc] == '#';
+                }
+            }
+            return neigbours;
+        }
+
         void incr() {
             for(int r = 0; r < SIZE; r++) {
                 for(int c = 0; c < SIZE; c++) {
                     
-                    int neigbours = 0;
-                    for(int rr = r - 1; rr < r + 2; rr++) {
-                        for(int cc = c - 1; cc < c + 2; cc++) {
-                            if(rr < 0 || rr >= SIZE) { continue; }
-                            if(cc < 0 || cc >= SIZE) { continue; }
-                            if(rr == r && cc == c)   { continue; }
-                            neigbours += grid[rr][cc] == '#';
-                        }
-                    }
+                    int neigbours = countNeighbours(r, c);
 
                     if(grid[r][c] == '.') {
                         nextGrid[r][c] = neigbours == 3 ? '#' : '.';
@@ -42,11 +47,8 @@ class Grid {
                     }
                 }
             }
-            for(int r = 0; r < SIZE; r++) {
-                for(int c = 0; c < SIZE; c++) {
-                    grid[r][c] = nextGrid[r][c];
-                }
-            }
+
+            std::swap(grid, nextGrid);
         }
 
         void setCorners() {
@@ -58,18 +60,18 @@ class Grid {
 
         int numOn() {
             int numOn = 0;
-            for(int r = 0; r < SIZE; r++) {
-                for(int c = 0; c < SIZE; c++) {
-                    numOn += grid[r][c] == '#';
+            for(auto & r : grid) {
+                for(char c : r) {
+                    numOn += c == '#' ? 1 : 0;
                 }
             }
             return numOn;
         }
 
-        void printGrid(char grid[SIZE][SIZE]) {
-            for(int r = 0; r < SIZE; r++) {
-                for(int c = 0; c < SIZE; c++) {
-                    cout << grid[r][c];
+        void printGrid() {
+            for(auto & r : grid) {
+                for(char c : r) {
+                    cout << c;
                 }
                 cout << "\n";
             }
@@ -77,7 +79,7 @@ class Grid {
 
 };
 
-tuple<int, int> day_18(string input) {
+tuple<int, int> day_18(const string& input) {
 
     Grid g1 = Grid(input);
     Grid g2 = Grid(input);

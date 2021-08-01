@@ -2,13 +2,13 @@
 #include <fstream>
 #include <sstream>
 
-string readFromFile(string fileName) {
+string readFromFile(const string& fileName) {
     std::ifstream ifs(fileName);
     std::string content( (std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
     return content;
 }
 
-vector<string> splitOn(string input, char ch) {
+vector<string> splitOn(const string& input, char ch) {
     std::stringstream inputStream(input);
     string line;
     vector<string> lines;
@@ -19,7 +19,7 @@ vector<string> splitOn(string input, char ch) {
     return lines;
 }
 
-void stripChars(string& str, string chars) {
+void stripChars(string& str, const string& chars) {
     for(char c: chars) {
         str.erase(std::remove(str.begin(), str.end(), c), str.end());
     }

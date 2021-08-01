@@ -1,11 +1,13 @@
 #include "days.hpp"
 
-tuple<int, int> day_02(string input) {
+tuple<int, int> day_02(const string& input) {
     int totalArea = 0;
     int totalRibbon = 0;
 
-    for(string line: splitOn(input, '\n')) {
-        int h, w, d;
+    for(const string& line: splitOn(input, '\n')) {
+        int h = 0; 
+        int w = 0; 
+        int d = 0;
         std::sscanf(line.c_str(), "%dx%dx%d", &h, &w, &d);
         vector<int> dim = {h, w, d};
 

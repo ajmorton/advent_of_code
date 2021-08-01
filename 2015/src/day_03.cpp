@@ -1,9 +1,9 @@
 #include "days.hpp"
 
-typedef struct pos_t{int x = 0; int y = 0;} pos_t;
-typedef map<tuple<int, int>, int> visitedMap;
+using pos_t = struct pos_t{int x = 0; int y = 0;};
+using visitedMap = map<tuple<int, int>, int>;
 
-void deliver(string path, visitedMap& visited) {
+void deliver(const string& path, visitedMap& visited) {
     visited[{0,0}] = 1;
     int x = 0, y = 0;
 
@@ -18,14 +18,14 @@ void deliver(string path, visitedMap& visited) {
     }
 }
 
-tuple<int, int> day_03(string input) {
+tuple<int, int> day_03(const string& input) {
 
     visitedMap visited1, visited2;
     deliver(input, visited1);
 
-    string splitPaths[2];
+    std::array<string, 2> splitPaths;
     for(int i = 0; i < input.length(); i++) {
-        splitPaths[i % 2] += input[i];
+        splitPaths.at(i % 2) += input[i];
     }
     deliver(splitPaths[0], visited2);
     deliver(splitPaths[1], visited2);

@@ -19,10 +19,10 @@ int numCombos(int n, vector<int> containers, int numContainers, std::map<int, in
          + numCombos(n, containers, numContainers, counts);
 }
 
-tuple<int, int> day_17(string input) {
+tuple<int, int> day_17(const string& input) {
     vector<int> containers;
     
-    for(string line: splitOn(input, '\n')) {
+    for(const string& line: splitOn(input, '\n')) {
         containers.push_back(stoi(line));
     }
     std::sort(containers.begin(), containers.end());

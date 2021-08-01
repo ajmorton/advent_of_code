@@ -8,8 +8,9 @@ int sigma(int n) {
     return sum;
 }
 
-tuple<long, long> day_25(string input) {
-    int targetRow, targetCol;
+tuple<long, long> day_25(const string& input) {
+    int targetRow = 0;
+    int targetCol = 0;
     sscanf(input.c_str(), 
            "To continue, please consult the code grid in the manual.  Enter the code at row %d, column %d.", 
            &targetRow, 

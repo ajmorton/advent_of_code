@@ -1,11 +1,11 @@
 #include "days.hpp"
 
 bool isNice(string line) {
-    auto notSubstr = [line](string sub){ return line.find(sub) == string::npos; };
+    auto notSubstr = [line](const string& sub){ return line.find(sub) == string::npos; };
     bool noDissallowed = notSubstr("ab") && notSubstr("cd") && notSubstr("pq") && notSubstr("xy");
 
     auto isVowel = [](char c){ return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; };    
-    int numVowels = std::count_if(line.begin(), line.end(), isVowel);
+    long numVowels = std::count_if(line.begin(), line.end(), isVowel);
 
     bool hasDouble = false;
     for(int i = 0; i < line.length() - 1; i++) {
@@ -26,10 +26,10 @@ bool isNice2(string line) {
     return occursTwice && plusTwo;
 }
 
-tuple<int, int> day_05(string input) {
+tuple<long, long> day_05(const string& input) {
     vector<string> lines = splitOn(input, '\n');
-    int numNice1 = std::count_if(lines.begin(), lines.end(), isNice);
-    int numNice2 = std::count_if(lines.begin(), lines.end(), isNice2);
+    long numNice1 = std::count_if(lines.begin(), lines.end(), isNice);
+    long numNice2 = std::count_if(lines.begin(), lines.end(), isNice2);
 
     return { numNice1, numNice2 };
 }

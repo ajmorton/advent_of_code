@@ -13,11 +13,11 @@ int encodedStringDecrease(string line) {
             newLine += line[i];
         }
     }
-    return (line.length() - newLine.length()) + 2;
+    return int(line.length() - newLine.length() + 2);
 }
 
-int decodedStringIncrease(string line) {
-    string newLine = "";
+int decodedStringIncrease(const string& line) {
+    string newLine;
     for(char c: line) {
         switch (c) {
             case '\\': newLine += "\\\\"; break;
@@ -25,13 +25,13 @@ int decodedStringIncrease(string line) {
             default:   newLine += c;      break;
         }
     }
-    return (newLine.length() - line.length()) + 2;
+    return int(newLine.length() - line.length() + 2);
 }
 
-tuple<int, int> day_08(string input) {
+tuple<int, int> day_08(const string& input) {
     int decrease = 0;
     int increase = 0;
-    for(string line: splitOn(input, '\n')) {
+    for(const string& line: splitOn(input, '\n')) {
         decrease += encodedStringDecrease(line);
         increase += decodedStringIncrease(line);
     }

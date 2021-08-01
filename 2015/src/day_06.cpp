@@ -2,22 +2,22 @@
 
 struct cell_t {int fst; int snd;};
 struct instr_t {string action; int min_r; int min_c; int max_r; int max_c;};
-const std::regex instrRegex("(turn on|toggle|turn off) (\\d+),(\\d+) through (\\d+),(\\d+)");
+const std::regex instrRegex(R"((turn on|toggle|turn off) (\d+),(\d+) through (\d+),(\d+))");
 
-instr_t parseInstr(string instr) {
+instr_t parseInstr(const string& instr) {
     std::smatch matches;
     std::regex_match(instr, matches, instrRegex);
     return instr_t{matches[1], stoi(matches[2]), stoi(matches[3]), stoi(matches[4]), stoi(matches[5])};
 }
 
-void turnOn( cell_t& cell){cell.fst  = 1, cell.snd += 1;                         return;};
-void turnOff(cell_t& cell){cell.fst  = 0, cell.snd  = std::max(0, cell.snd - 1); return;};
-void toggle( cell_t& cell){cell.fst ^= 1, cell.snd += 2;                         return;};
+void turnOn( cell_t& cell){cell.fst  = 1, cell.snd += 1;                        };
+void turnOff(cell_t& cell){cell.fst  = 0, cell.snd  = std::max(0, cell.snd - 1);};
+void toggle( cell_t& cell){cell.fst ^= 1, cell.snd += 2;                        };
 
-tuple<int, int> day_06(string input) {
+tuple<int, int> day_06(const string& input) {
     vector<cell_t> grid(1000 * 1000, cell_t{0,0});
 
-    for(string line: splitOn(input, '\n')) {
+    for(const string& line: splitOn(input, '\n')) {
         auto [action, min_r, min_c, max_r, max_c] = parseInstr(line);
 
         auto update = turnOn;

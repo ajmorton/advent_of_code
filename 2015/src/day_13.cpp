@@ -1,23 +1,26 @@
 #include "days.hpp"
 
-typedef int person_t;
-typedef int score_t;
+using person_t = int;
+using score_t = int;
+using happinessScore_t = score_t[10][10];
 
 person_t getIDOrAllocate(std::map<string, person_t>& personIDs, char* person, int& numGuests) {
-    if(personIDs.contains(string(person)) == false) {
+    if(not personIDs.contains(string(person))) {
         personIDs[string(person)] = numGuests++;
     }
     return personIDs[string(person)];
 }
 
-int readInGuests(string input, score_t happiness[10][10]) {
-    char person1[20], person2[20], gainLose[20];
-    score_t score;
+int readInGuests(const string& input, happinessScore_t& happiness) {
+    char person1[20];
+    char person2[20];
+    char gainLose[20];
+    score_t score = 0;
 
     int numGuests = 0;
     map<string, person_t> personIDs;
 
-    for(string line: splitOn(input, '\n')) {
+    for(const string& line: splitOn(input, '\n')) {
         sscanf(line.c_str(), "%s would %s %d happiness units by sitting next to %s", person1, gainLose, &score, person2);
         person_t idPerson1 = getIDOrAllocate(personIDs, person1, numGuests);
         person_t idPerson2 = getIDOrAllocate(personIDs, person2, numGuests);
@@ -26,7 +29,7 @@ int readInGuests(string input, score_t happiness[10][10]) {
     return numGuests;
 }
 
-int bestScore(int numGuests, score_t happiness[10][10]) {
+int bestScore(int numGuests, const happinessScore_t& happiness) {
     score_t max_score = INT_MIN;
     vector<person_t> people(numGuests);
     std::iota(people.begin(), people.end(), 0);
@@ -44,9 +47,9 @@ int bestScore(int numGuests, score_t happiness[10][10]) {
     return max_score;
 }
 
-tuple<int, int> day_13(string input) {
+tuple<int, int> day_13(const string& input) {
 
-    score_t happiness[10][10] = {{0}};
+    happinessScore_t happiness = {{0}};
     int numGuests = readInGuests(input, happiness);
 
     score_t p1 = bestScore(numGuests, happiness);

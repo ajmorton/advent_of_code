@@ -5,11 +5,11 @@ enum Effect{Shielded = 0, Poisoned = 1, Recharging = 2};
 enum Result{InProgress, Win, Lose};
 enum Spell{MagicMissile = 0, Drain = 1, Shield = 2, Poison = 3, Recharge = 4};
 
-typedef struct fighter_t{
-    int hp; 
-    int damage; 
-    int armor; 
-    int mana; 
+using fighter_t = struct fighter_t{
+    int hp      = 0; 
+    int damage  = 0; 
+    int armor   = 0; 
+    int mana    = 0; 
     int effectCounters[3] = {0};
 
     bool attack(int attackPower) {
@@ -32,20 +32,20 @@ typedef struct fighter_t{
         return hp <= 0;
     }
 
-} fighter_t;
+};
 
-typedef struct state_t{
-    int manaSpent; 
-    fighter_t hero; 
-    fighter_t boss; 
-    Result result;
+using state_t = struct state_t{
+    int manaSpent  = 0; 
+    fighter_t hero = {};
+    fighter_t boss = {};
+    Result result  = InProgress;
 
     bool operator<(state_t other) const {
         return this->manaSpent > other.manaSpent;
     }
-} state_t;
+};
 
-std::map<Spell, int> spellCosts({
+const std::map<Spell, int> spellCosts({
     {MagicMissile, 53}, {Drain, 73}, {Shield, 113}, {Poison, 173}, {Recharge, 229}
 }); 
 
@@ -56,10 +56,10 @@ bool setEffect(fighter_t& fighter, Effect effect, int count) {
 }
 
 bool castSpell(Spell spell, fighter_t& hero, fighter_t& boss, int& manaSpent) {
-    if(spellCosts[spell] > hero.mana) { return false; } 
+    if(spellCosts.at(spell) > hero.mana) { return false; } 
 
-    hero.mana -= spellCosts[spell];
-    manaSpent += spellCosts[spell];
+    hero.mana -= spellCosts.at(spell);
+    manaSpent += spellCosts.at(spell);
 
     switch(spell) {
         case MagicMissile: boss.attack(4);              return true;
@@ -100,7 +100,7 @@ int findCheapest(fighter_t boss, bool hardMode) {
     vector<state_t> toExplore = { state_t{0, hero, boss, {}} };
 
     state_t curState;
-    while(toExplore.size() > 0) {
+    while(not toExplore.empty()) {
         // pop heap
         std::pop_heap(toExplore.begin(), toExplore.end());
         curState = toExplore.back();
@@ -108,14 +108,12 @@ int findCheapest(fighter_t boss, bool hardMode) {
 
         if(curState.result == Win) {
             return curState.manaSpent;
-        
-        } else {
-            for(Spell spell: {MagicMissile, Drain, Shield, Poison, Recharge}) {
-                std::optional<state_t> nextState = tick(curState, spell, hardMode);
-                if(nextState.has_value()) {
-                    toExplore.push_back(nextState.value());
-                    std::push_heap(toExplore.begin(), toExplore.end());
-                }
+        }
+        for(Spell spell: {MagicMissile, Drain, Shield, Poison, Recharge}) {
+            std::optional<state_t> nextState = tick(curState, spell, hardMode);
+            if(nextState.has_value()) {
+                toExplore.push_back(nextState.value());
+                std::push_heap(toExplore.begin(), toExplore.end());
             }
         }
     }
@@ -123,9 +121,10 @@ int findCheapest(fighter_t boss, bool hardMode) {
     return -1;
 }
 
-tuple<int, int> day_22(string input) {
+tuple<int, int> day_22(const string& input) {
 
-    int hp, damage;
+    int hp     = 0;
+    int damage = 0;
     std::sscanf(input.c_str(), "Hit Points: %d\nDamage: %d", &hp, &damage);
     fighter_t boss = {hp, damage, 0, 0};
 

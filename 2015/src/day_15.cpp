@@ -2,11 +2,11 @@
 
 struct ingr_t{char name[20]; int capacity; int durability; int flavour; int texture; int calories;};
 
-tuple<int, int> day_15(string input) {
+tuple<int, int> day_15(const string& input) {
     vector<ingr_t> ingredients;
 
-    for(string line: splitOn(input, '\n')) {
-        ingr_t i;
+    for(const string& line: splitOn(input, '\n')) {
+        ingr_t i{};
         sscanf(
             line.c_str(), 
             "%[a-zA-Z]: capacity %d, durability %d, flavor %d, texture %d, calories %d",
