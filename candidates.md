@@ -5,7 +5,6 @@ Fun languages to try for new ideas / concepts.
 
 - `Pony`    Compile time type, memory, and thread safety. Reference Capabilites.
 - `Clojure` Lisp-y
-- `Zig/Nim` Evolutions on C
 
 
 ## Industry standards
