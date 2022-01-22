@@ -4,12 +4,13 @@ const stdout = std.io.getStdOut().writer();
 
 const d1 = @import("days/day01.zig");
 const d2 = @import("days/day02.zig");
+const d3 = @import("days/day03.zig");
 
 var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
 const gpa = general_purpose_allocator.allocator();
 
 pub fn main() !void {
-    const result = d2.run(gpa);
+    const result = d3.run(gpa);
     try stdout.print("===== Results =====\n", .{});
     try stdout.print("{any}\n", .{result});
 }
@@ -24,4 +25,10 @@ test "Day 2" {
     var res_d2 = try d2.run(gpa);
     try expect(res_d2.p1 == 1868935);
     try expect(res_d2.p2 == 1965970888);
+}
+
+test "Day 3" {
+    var res_d3 = try d3.run(gpa);
+    try expect(res_d3.p1 == 4174964);
+    try expect(res_d3.p2 == 4474944);
 }
