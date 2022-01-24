@@ -19,7 +19,7 @@ pub fn readInAs(alloc: std.mem.Allocator, file_name: []const u8, comptime T: typ
     return file_contents;
 }
 
-pub const ConversionError = error {ConvFailed};
+pub const ConversionError = error{ConvFailed};
 
 /// Given an arrayList and a map function return an arrayList of converted values
 pub fn mapArrayList(
