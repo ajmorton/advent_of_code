@@ -35,3 +35,20 @@ pub fn mapArrayList(
     }
     return new_arr;
 }
+
+pub fn filterArrayList(
+    comptime T: type,
+    comptime VarArgs: type,
+    arr: *std.ArrayList(T),
+    filter_fn: fn (T, VarArgs) bool,
+    v: VarArgs,
+) void {
+    var i: u32 = 0;
+    while (i < arr.items.len) {
+        if (!filter_fn(arr.items[i], v)) {
+            _ = arr.orderedRemove(i);
+        } else {
+            i += 1;
+        }
+    }
+}
