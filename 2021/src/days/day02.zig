@@ -1,7 +1,6 @@
 const expect = @import("std").testing.expect;
 const std = @import("std");
 const stdout = std.io.getStdOut().writer();
-const Vector = std.meta.Vector;
 
 const helpers = @import("../helpers.zig");
 
@@ -13,7 +12,6 @@ const Move = struct { dir: Direction, dist: i32 };
 pub fn run(alloc: std.mem.Allocator) !RetDay2 {
     const lines = try helpers.readInAs(alloc, "input/day02.txt", []u8);
     defer lines.deinit();
-
     return try solve(lines.items);
 }
 
