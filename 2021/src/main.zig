@@ -2,75 +2,82 @@ const expect = @import("std").testing.expect;
 const std = @import("std");
 const stdout = std.io.getStdOut().writer();
 
-const d1 = @import("days/day01.zig");
-const d2 = @import("days/day02.zig");
-const d3 = @import("days/day03.zig");
-const d4 = @import("days/day04.zig");
-const d5 = @import("days/day05.zig");
-const d6 = @import("days/day06.zig");
-const d7 = @import("days/day07.zig");
-const d8 = @import("days/day08.zig");
-const d9 = @import("days/day09.zig");
+const d01 = @import("days/day01.zig");
+const d02 = @import("days/day02.zig");
+const d03 = @import("days/day03.zig");
+const d04 = @import("days/day04.zig");
+const d05 = @import("days/day05.zig");
+const d06 = @import("days/day06.zig");
+const d07 = @import("days/day07.zig");
+const d08 = @import("days/day08.zig");
+const d09 = @import("days/day09.zig");
+const d10 = @import("days/day10.zig");
 
 var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
 const gpa = general_purpose_allocator.allocator();
 
 pub fn main() !void {
-    const result = try d9.run(gpa);
+    const result = try d10.run(gpa);
     try stdout.print("===== Results =====\n", .{});
     try stdout.print("{any}\n", .{result});
 }
 
-test "Day 1" {
-    var res_d1 = try d1.run(gpa);
-    try expect(res_d1.p1 == 1715);
-    try expect(res_d1.p2 == 1739);
+test "Day 01" {
+    var res_d01 = try d01.run(gpa);
+    try expect(res_d01.p1 == 1715);
+    try expect(res_d01.p2 == 1739);
 }
 
-test "Day 2" {
-    var res_d2 = try d2.run(gpa);
-    try expect(res_d2.p1 == 1868935);
-    try expect(res_d2.p2 == 1965970888);
+test "Day 02" {
+    var res_d02 = try d02.run(gpa);
+    try expect(res_d02.p1 == 1868935);
+    try expect(res_d02.p2 == 1965970888);
 }
 
-test "Day 3" {
-    var res_d3 = try d3.run(gpa);
-    try expect(res_d3.p1 == 4174964);
-    try expect(res_d3.p2 == 4474944);
+test "Day 03" {
+    var res_d03 = try d03.run(gpa);
+    try expect(res_d03.p1 == 4174964);
+    try expect(res_d03.p2 == 4474944);
 }
 
-test "Day 4" {
-    var res_d4 = try d4.run(gpa);
-    try expect(res_d4.p1 == 11536);
-    try expect(res_d4.p2 == 1284);
+test "Day 04" {
+    var res_d04 = try d04.run(gpa);
+    try expect(res_d04.p1 == 11536);
+    try expect(res_d04.p2 == 1284);
 }
 
-test "Day 5" {
-    var res_d5 = try d5.run(gpa);
-    try expect(res_d5.p1 == 6548);
-    try expect(res_d5.p2 == 19663);
+test "Day 05" {
+    var res_d05 = try d05.run(gpa);
+    try expect(res_d05.p1 == 6548);
+    try expect(res_d05.p2 == 19663);
 }
 
-test "Day 6" {
-    var res_d6 = try d6.run(gpa);
-    try expect(res_d6.p1 == 353079);
-    try expect(res_d6.p2 == 1605400130036);
+test "Day 06" {
+    var res_d06 = try d06.run(gpa);
+    try expect(res_d06.p1 == 353079);
+    try expect(res_d06.p2 == 1605400130036);
 }
 
-test "Day 7" {
-    var res_d7 = try d7.run(gpa);
-    try expect(res_d7.p1 == 342534);
-    try expect(res_d7.p2 == 94004208);
+test "Day 07" {
+    var res_d07 = try d07.run(gpa);
+    try expect(res_d07.p1 == 342534);
+    try expect(res_d07.p2 == 94004208);
 }
 
-test "Day 8" {
-    var res_d8 = try d8.run(gpa);
-    try expect(res_d8.p1 == 456);
-    try expect(res_d8.p2 == 1091609);
+test "Day 08" {
+    var res_d08 = try d08.run(gpa);
+    try expect(res_d08.p1 == 456);
+    try expect(res_d08.p2 == 1091609);
 }
 
-test "Day 9" {
-    var res_d9 = try d9.run(gpa);
-    try expect(res_d9.p1 == 462);
-    try expect(res_d9.p2 == 1397760);
+test "Day 09" {
+    var res_d09 = try d09.run(gpa);
+    try expect(res_d09.p1 == 462);
+    try expect(res_d09.p2 == 1397760);
+}
+
+test "Day 10" {
+    var res_d10 = try d10.run(gpa);
+    try expect(res_d10.p1 == 462693);
+    try expect(res_d10.p2 == 3094671161);
 }
