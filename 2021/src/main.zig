@@ -15,12 +15,13 @@ const d10 = @import("days/day10.zig");
 const d11 = @import("days/day11.zig");
 const d12 = @import("days/day12.zig");
 const d13 = @import("days/day13.zig");
+const d14 = @import("days/day14.zig");
 
 var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
 const gpa = general_purpose_allocator.allocator();
 
 pub fn main() !void {
-    const result = try d13.run(gpa);
+    const result = try d14.run(gpa);
     try stdout.print("===== Results =====\n", .{});
     try stdout.print("{any}\n", .{result});
 }
@@ -110,4 +111,10 @@ test "Day 13" {
         \\
     ;
     try std.testing.expectEqualStrings(p2, res_d13.p2);
+}
+
+test "Day 14" {
+    var res_d14 = try d14.run(gpa);
+    try expect(res_d14.p1 == 3009);
+    try expect(res_d14.p2 == 3459822539451);
 }
