@@ -52,3 +52,59 @@ pub fn filterArrayList(
         }
     }
 }
+
+pub fn Counter(comptime T: type) type {
+    const MapType = if (T == []u8) std.StringHashMap(T) else std.AutoHashMap(T, u64);
+
+    return struct {
+        internal: MapType,
+        const Self = @This();
+
+        pub fn init(alloc: std.mem.Allocator) Self {
+            return Self{ .internal = MapType.init(alloc) };
+        }
+
+        pub fn deinit(self: *Self) void {
+            self.internal.deinit();
+            self.* = undefined;
+        }
+
+        pub fn decr(self: *Self, val: T) !void {
+            try self.decrMany(val, 1);
+        }
+
+        pub fn decrMany(self: *Self, val: T, n: u64) !void {
+            if (self.internal.get(val)) |v| {
+                if (v.* <= n) {
+                    try self.internal.remove(val);
+                } else {
+                    v.* -= n;
+                }
+            }
+        }
+
+        pub fn incr(self: *Self, val: T) !void {
+            try self.incrN(val, 1);
+        }
+
+        pub fn incrN(self: *Self, val: T, n: u64) !void {
+            var entry = try self.internal.getOrPut(val);
+            if (!entry.found_existing) {
+                entry.value_ptr.* = 0;
+            }
+            entry.value_ptr.* += n;
+        }
+
+        pub fn iterator(self: *const Self) MapType.Iterator {
+            return self.internal.iterator();
+        }
+
+        pub fn keyIterator(self: *const Self) MapType.KeyIterator {
+            return self.internal.keyIterator();
+        }
+
+        pub fn valueIterator(self: *const Self) MapType.ValueIterator {
+            return self.internal.valueIterator();
+        }
+    };
+}

@@ -69,12 +69,12 @@ const Direction = enum { Vertical, Horizontal, Diagonal };
 const Pipe = struct { direction: Direction, start: Point, end: Point };
 
 const Grid = struct {
-    cells: std.AutoHashMap(Point, u32),
+    cells: helpers.Counter(Point),
 
     const Self = @This();
 
     fn init(alloc: std.mem.Allocator) Self {
-        return .{ .cells = std.AutoHashMap(Point, u32).init(alloc) };
+        return .{ .cells = helpers.Counter(Point).init(alloc) };
     }
 
     fn deinit(self: *Self) void {
@@ -100,22 +100,13 @@ const Grid = struct {
         var y_dir = gradient(pipe.start.y, pipe.end.y);
 
         while (x != pipe.end.x or y != pipe.end.y) {
-            try self.setCell(.{ .x = x, .y = y });
+            try self.cells.incr(.{ .x = x, .y = y });
             x += x_dir;
             y += y_dir;
         }
 
         // one last time at destination
-        try self.setCell(.{ .x = x, .y = y });
-    }
-
-    fn setCell(self: *Self, point: Point) !void {
-        var kv = try self.cells.getOrPut(point);
-        if (kv.found_existing) {
-            kv.value_ptr.* += 1;
-        } else {
-            kv.value_ptr.* = 1;
-        }
+        try self.cells.incr(.{ .x = x, .y = y });
     }
 
     fn countIntersections(self: Self) u32 {

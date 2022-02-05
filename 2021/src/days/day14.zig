@@ -18,7 +18,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay14 {
     var insertion_map = try parseInsertionMap(alloc, sections.next().?);
 
     var letter_freqs = std.mem.zeroes([26]u64);
-    var pair_freqs = std.AutoHashMap(Pair, u64).init(alloc);
+    var pair_freqs = helpers.Counter(Pair).init(alloc);
     defer pair_freqs.deinit();
     try countFrequencies(initial_molecule, &letter_freqs, &pair_freqs);
 
@@ -49,15 +49,11 @@ fn parseInsertionMap(alloc: std.mem.Allocator, lines: []const u8) !std.AutoHashM
     return insertion_map;
 }
 
-fn countFrequencies(initial_molecule: []const u8, letter_freqs: *[26]u64, pair_freqs: *std.AutoHashMap(Pair, u64)) !void {
+fn countFrequencies(initial_molecule: []const u8, letter_freqs: *[26]u64, pair_freqs: *helpers.Counter(Pair)) !void {
     var j: u64 = 0;
     while (j < initial_molecule.len - 1) : (j += 1) {
         var pair = Pair{ initial_molecule[j], initial_molecule[j + 1] };
-        var kv = try pair_freqs.getOrPut(pair);
-        if (!kv.found_existing) {
-            kv.value_ptr.* = 0;
-        }
-        kv.value_ptr.* += 1;
+        try pair_freqs.incr(pair);
     }
 
     for (initial_molecule) |letter| {
@@ -65,8 +61,8 @@ fn countFrequencies(initial_molecule: []const u8, letter_freqs: *[26]u64, pair_f
     }
 }
 
-fn performExpansion(alloc: std.mem.Allocator, insertion_map: *std.AutoHashMap(Pair, u8), letter_freqs: *[26]u64, pair_freqs: *std.AutoHashMap(Pair, u64)) !void {
-    var new_pair_freqs = std.AutoHashMap(Pair, u64).init(alloc);
+fn performExpansion(alloc: std.mem.Allocator, insertion_map: *std.AutoHashMap(Pair, u8), letter_freqs: *[26]u64, pair_freqs: *helpers.Counter(Pair)) !void {
+    var new_pair_freqs = helpers.Counter(Pair).init(alloc);
     var pairs = pair_freqs.iterator();
     while (pairs.next()) |kv| {
         var pair = kv.key_ptr.*;
@@ -76,18 +72,8 @@ fn performExpansion(alloc: std.mem.Allocator, insertion_map: *std.AutoHashMap(Pa
         var pre = Pair{ pair[0], new_insert };
         var post = Pair{ new_insert, pair[1] };
 
-        // add new pairs
-        var kv2 = try new_pair_freqs.getOrPut(pre);
-        if (!kv2.found_existing) {
-            kv2.value_ptr.* = 0;
-        }
-        kv2.value_ptr.* += kv.value_ptr.*;
-
-        kv2 = try new_pair_freqs.getOrPut(post);
-        if (!kv2.found_existing) {
-            kv2.value_ptr.* = 0;
-        }
-        kv2.value_ptr.* += kv.value_ptr.*;
+        try new_pair_freqs.incrN(pre, kv.value_ptr.*);
+        try new_pair_freqs.incrN(post, kv.value_ptr.*);
     }
     pair_freqs.deinit();
     pair_freqs.* = new_pair_freqs;

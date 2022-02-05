@@ -16,26 +16,20 @@ pub fn run(alloc: std.mem.Allocator) !RetDay7 {
     };
 }
 
-fn getCrabsList(alloc: std.mem.Allocator) !std.AutoHashMap(u32, u32) {
-    var crabsAtPos = std.AutoHashMap(u32, u32).init(alloc);
+fn getCrabsList(alloc: std.mem.Allocator) !helpers.Counter(u32) {
+    var crabsAtPos = helpers.Counter(u32).init(alloc);
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day07.txt", 1000000);
     var nums_iter = std.mem.split(u8, allText, ",");
 
-    // TODO - counting Dict with Day 05
     while (nums_iter.next()) |num_str| {
         const num = try std.fmt.parseInt(u32, num_str, 10);
-        var kv = try crabsAtPos.getOrPut(num);
-        if (kv.found_existing) {
-            kv.value_ptr.* += 1;
-        } else {
-            kv.value_ptr.* = 1;
-        }
+        try crabsAtPos.incr(num);
     }
 
     return crabsAtPos;
 }
 
-fn findBestPos(crabsAtPos: std.AutoHashMap(u32, u32), part1: bool) u64 {
+fn findBestPos(crabsAtPos: helpers.Counter(u32), part1: bool) u64 {
     var min_pos: u32 = std.math.maxInt(u32);
     var max_pos: u32 = 0;
 
@@ -54,7 +48,7 @@ fn findBestPos(crabsAtPos: std.AutoHashMap(u32, u32), part1: bool) u64 {
             var dist: u32 = if (kv.key_ptr.* > try_pos) kv.key_ptr.* - try_pos else try_pos - kv.key_ptr.*;
 
             var fuel_cost: u32 = if (part1) dist else (dist * (dist + 1)) / 2;
-            var num_crabs: u32 = kv.value_ptr.*;
+            var num_crabs: u64 = kv.value_ptr.*;
             move_cost += num_crabs * fuel_cost;
         }
         min_cost = std.math.min(min_cost, move_cost);
