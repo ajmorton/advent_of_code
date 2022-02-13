@@ -95,6 +95,14 @@ pub fn Counter(comptime T: type) type {
             entry.value_ptr.* += n;
         }
 
+        pub fn count(self: Self, val: T) u64 {
+            if (self.internal.get(val)) |v| {
+                return v;
+            } else {
+                return 0;
+            }
+        }
+
         pub fn iterator(self: *const Self) MapType.Iterator {
             return self.internal.iterator();
         }
