@@ -24,12 +24,13 @@ const d19 = @import("days/day19.zig");
 const d20 = @import("days/day20.zig");
 const d21 = @import("days/day21.zig");
 const d22 = @import("days/day22.zig");
+const d23 = @import("days/day23.zig");
 
 var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
 const gpa = general_purpose_allocator.allocator();
 
 pub fn main() !void {
-    const result = try d22.run(gpa);
+    const result = try d23.run(gpa);
     try stdout.print("===== Results =====\n", .{});
     try stdout.print("{any}\n", .{result});
 }
@@ -174,4 +175,10 @@ test "Day 22" {
     var res_d22 = try d22.run(gpa);
     try expect(res_d22.p1 == 591365);
     try expect(res_d22.p2 == 1211172281877240);
+}
+
+test "Day 23" {
+    var res_d23 = try d23.run(gpa);
+    try expect(res_d23.p1 == 16059);
+    try expect(res_d23.p2 == 43117);
 }
