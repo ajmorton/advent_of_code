@@ -1,5 +1,16 @@
 const std = @import("std");
 
+/// Open `file_name` and read the lines into an ArrayList of strings.
+pub fn asLines(alloc: std.mem.Allocator, file_name: []const u8) !std.ArrayList([]const u8) {
+    var lines = std.ArrayList([]const u8).init(alloc);
+    var buf: [100000]u8 = undefined;
+    var allText = try std.fs.cwd().readFile(file_name, &buf);
+    var iter = std.mem.split(u8, allText, "\n");
+    while(iter.next()) |line| try lines.append(line);
+
+    return lines;
+}
+
 /// Open `file_name` and read the contents into an ArrayList. Specify the type of the results via `T`.
 pub fn readInAs(alloc: std.mem.Allocator, file_name: []const u8, comptime T: type) !std.ArrayList(T) {
     var file_contents = std.ArrayList(T).init(alloc);
@@ -8,10 +19,10 @@ pub fn readInAs(alloc: std.mem.Allocator, file_name: []const u8, comptime T: typ
     defer file.close();
 
     while (try file.reader().readUntilDelimiterOrEofAlloc(alloc, '\n', 4096)) |line| {
+        defer alloc.free(line);
         try file_contents.append(switch (@typeInfo(T)) {
             .Int => try std.fmt.parseInt(T, line, 10),
             .Float => try std.fmt.parseFloat(T, line),
-            @typeInfo([]u8) => line,
             else => @compileError("readInAs doesn't handle type: " ++ std.fmt.comptimePrint("{any}", .{T})),
         });
     }

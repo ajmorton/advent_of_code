@@ -16,6 +16,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay7 {
 fn getCrabsList(alloc: std.mem.Allocator) !helpers.Counter(u32) {
     var crabsAtPos = helpers.Counter(u32).init(alloc);
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day07.txt", 1000000);
+    defer alloc.free(allText);
     var nums_iter = std.mem.split(u8, allText, ",");
 
     while (nums_iter.next()) |num_str| {

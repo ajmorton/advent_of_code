@@ -5,13 +5,14 @@ pub const RetDay12 = struct { p1: u32, p2: u32 };
 const FooErr = std.mem.Allocator.Error || std.os.WriteError;
 
 pub fn run(alloc: std.mem.Allocator) !RetDay12 {
-    const lines = try helpers.readInAs(alloc, "input/day12.txt", []u8);
+    const lines = try helpers.asLines(alloc, "input/day12.txt");
     defer lines.deinit();
 
     var cave = try Cave.init(alloc, lines);
     defer cave.deinit();
 
     var path = std.ArrayList(Room).init(alloc);
+    defer path.deinit();
     try path.append("start");
 
     return RetDay12{
@@ -35,7 +36,7 @@ const Cave = struct {
 
     const Self = @This();
 
-    pub fn init(alloc: std.mem.Allocator, lines: std.ArrayList([]u8)) !Self {
+    pub fn init(alloc: std.mem.Allocator, lines: std.ArrayList([]const u8)) !Self {
         var connections = std.StringHashMap(Rooms).init(alloc);
         for (lines.items) |line| {
             var split = std.mem.split(u8, line, "-");

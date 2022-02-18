@@ -55,6 +55,8 @@ fn part2(alloc: std.mem.Allocator) !u64 {
     };
 
     var all_states = helpers.Counter(GameState).init(alloc);
+    defer all_states.deinit();
+
     var start_state = GameState.init(8, 2);
     try all_states.incr(start_state);
 
@@ -82,6 +84,7 @@ fn part2(alloc: std.mem.Allocator) !u64 {
             }
         }
         turn += 1;
+        all_states.deinit();
         all_states = next_states;
     }
 

@@ -4,7 +4,7 @@ const helpers = @import("../helpers.zig");
 pub const RetDay22 = struct { p1: u64, p2: u64 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay22 {
-    const lines = try helpers.readInAs(alloc, "input/day22.txt", []u8);
+    const lines = try helpers.asLines(alloc, "input/day22.txt");
     defer lines.deinit();
 
     var box_list = BoxList.init(alloc);

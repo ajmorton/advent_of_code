@@ -4,7 +4,7 @@ const helpers = @import("../helpers.zig");
 pub const RetDay15 = struct { p1: u32, p2: u32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay15 {
-    const lines = try helpers.readInAs(alloc, "input/day15.txt", []u8);
+    const lines = try helpers.asLines(alloc, "input/day15.txt");
     defer lines.deinit();
 
     var grid = try Grid.init(alloc, lines);
@@ -33,7 +33,7 @@ const Grid = struct {
 
     const Self = @This();
 
-    pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]u8)) !Self {
+    pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]const u8)) !Self {
         var width: i32 = @intCast(i32, input.items[0].len);
         var height: i32 = 0;
         var cells = std.ArrayList(u32).init(alloc);

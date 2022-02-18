@@ -33,8 +33,10 @@ fn Problem(room_size: u32) type {
         const NodeQueue = std.PriorityQueue(State, void, nodeLT);
         fn findShortestPathP1(alloc: std.mem.Allocator, init_rooms: [4][room_size]Amphipod) !u32 {
             var explored_states = std.AutoHashMap(Map(room_size), void).init(alloc);
+            defer explored_states.deinit();
 
             var queue = NodeQueue.init(alloc, {});
+            defer queue.deinit();
             var start_state = State{ .path_cost = 0, .map = Map(room_size).init(init_rooms) };
 
             try queue.add(start_state);

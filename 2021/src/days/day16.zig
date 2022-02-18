@@ -20,17 +20,26 @@ pub fn run(alloc: std.mem.Allocator) !RetDay16 {
     defer alloc.free(hex_str);
 
     var bin_str = try hexToBin(alloc, hex_str);
+    defer alloc.free(bin_str);
 
     var pointer: u64 = 0;
     var packets = try parse(alloc, bin_str, &pointer);
-    // TODO - free packets
-    // printPacket(packets, 0);
+    defer deinit(&packets);
 
     return RetDay16{ .p1 = versionSum(packets), .p2 = performComputation(packets) };
 }
 
+fn deinit(p: *Packet) void {
+    if(p.* == .operator) {
+        for(p.*.operator.subpackets.items) |*subp| deinit(subp);
+        p.*.operator.subpackets.deinit();
+    }
+    p.* = undefined;
+}
+
 fn hexToBin(alloc: std.mem.Allocator, hex_str: []const u8) ![]u8 {
     var binary_str = std.ArrayList([]const u8).init(alloc);
+    defer binary_str.deinit();
 
     const num_strs = [_][]const u8{ "0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001" };
     const letter_strs = [_][]const u8{ "1010", "1011", "1100", "1101", "1110", "1111" };

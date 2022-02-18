@@ -7,7 +7,7 @@ const Node = union(enum) { up, down, val: u32 };
 const Num = std.ArrayList(Node);
 
 pub fn run(alloc: std.mem.Allocator) !RetDay18 {
-    const lines = try helpers.readInAs(alloc, "input/day18.txt", []u8);
+    const lines = try helpers.asLines(alloc, "input/day18.txt");
     defer lines.deinit();
 
     var p1 = try magnitudeOfSum(alloc, lines.items);
@@ -15,16 +15,17 @@ pub fn run(alloc: std.mem.Allocator) !RetDay18 {
     var p2: u32 = std.math.minInt(u32);
     for (lines.items) |line1, i| {
         for (lines.items[i + 1 ..]) |line2| {
-            p2 = std.math.max(p2, try magnitudeOfSum(alloc, &[_][]u8{ line1, line2 }));
-            p2 = std.math.max(p2, try magnitudeOfSum(alloc, &[_][]u8{ line2, line1 }));
+            p2 = std.math.max(p2, try magnitudeOfSum(alloc, &[_][]const u8{ line1, line2 }));
+            p2 = std.math.max(p2, try magnitudeOfSum(alloc, &[_][]const u8{ line2, line1 }));
         }
     }
 
     return RetDay18{ .p1 = p1, .p2 = p2 };
 }
 
-fn magnitudeOfSum(alloc: std.mem.Allocator, numbers: [][]u8) !u32 {
+fn magnitudeOfSum(alloc: std.mem.Allocator, numbers: [][]const u8) !u32 {
     var sum: ?Num = null;
+    defer sum.?.deinit();
     for (numbers) |number| {
         var num = try parseNum(alloc, number);
         sum = if (sum) |n| try addNums(alloc, n, num) else num;
@@ -40,6 +41,8 @@ fn addNums(alloc: std.mem.Allocator, a: Num, b: Num) !Num {
     try sum.appendSlice(a.items);
     try sum.appendSlice(b.items);
     try sum.append(.up);
+    a.deinit();
+    b.deinit();
     return sum;
 }
 
@@ -117,7 +120,7 @@ fn split(num: *Num) !bool {
     return false;
 }
 
-fn parseNum(alloc: std.mem.Allocator, str: []u8) !Num {
+fn parseNum(alloc: std.mem.Allocator, str: []const u8) !Num {
     var num = Num.init(alloc);
     for (str) |char| {
         switch (char) {

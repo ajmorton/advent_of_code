@@ -4,11 +4,11 @@ const helpers = @import("../helpers.zig");
 pub const RetDay10 = struct { p1: u64, p2: u64 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay10 {
-    const lines = try helpers.readInAs(alloc, "input/day10.txt", []u8);
+    const lines = try helpers.asLines(alloc, "input/day10.txt");
     defer lines.deinit();
 
     var incomplete_scores = std.ArrayList(u64).init(alloc);
-    incomplete_scores.deinit();
+    defer incomplete_scores.deinit();
 
     var sum: u64 = 0;
     for (lines.items) |line| {

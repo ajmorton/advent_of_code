@@ -8,7 +8,7 @@ const Direction = enum { up, down, forward };
 const Move = struct { dir: Direction, dist: i32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay2 {
-    const lines = try helpers.readInAs(alloc, "input/day02.txt", []u8);
+    var lines = try helpers.asLines(alloc, "input/day02.txt");
     defer lines.deinit();
     return try solve(lines.items);
 }

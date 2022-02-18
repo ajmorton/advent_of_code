@@ -7,6 +7,7 @@ pub const RetDay6 = struct { p1: u64, p2: u64 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay6 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day06.txt", 1000000);
+    defer alloc.free(allText);
     var fish: Fish = try Fish.init(alloc, allText);
     defer fish.deinit();
 

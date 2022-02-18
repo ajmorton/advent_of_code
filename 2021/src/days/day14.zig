@@ -6,10 +6,12 @@ const Pair = [2]u8;
 
 pub fn run(alloc: std.mem.Allocator) !RetDay14 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day14.txt", 1000000);
+    defer alloc.free(allText);
     var sections = std.mem.split(u8, allText, "\n\n");
 
     var initial_molecule = sections.next().?;
     var insertion_map = try parseInsertionMap(alloc, sections.next().?);
+    defer insertion_map.deinit();
 
     var letter_freqs = std.mem.zeroes([26]u64);
     var pair_freqs = helpers.Counter(Pair).init(alloc);

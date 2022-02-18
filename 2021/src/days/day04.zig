@@ -5,6 +5,7 @@ pub const RetDay4 = struct { p1: u32, p2: u32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay4 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day04.txt", 1000000);
+    defer alloc.free(allText);
     var sections = std.mem.split(u8, allText, "\n\n");
 
     var nums_iter = std.mem.split(u8, sections.next().?, ",");

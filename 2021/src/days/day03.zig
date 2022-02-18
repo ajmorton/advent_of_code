@@ -4,16 +4,16 @@ const helpers = @import("../helpers.zig");
 
 pub const RetDay3 = struct { p1: u32, p2: u32 };
 
-fn parseBin(str: []u8) helpers.ConversionError!u32 {
+fn parseBin(str: []const u8) helpers.ConversionError!u32 {
     return std.fmt.parseInt(u32, str, 2) catch helpers.ConversionError.ConvFailed;
 }
 
 pub fn run(alloc: std.mem.Allocator) !RetDay3 {
-    const lines = try helpers.readInAs(alloc, "input/day03.txt", []u8);
+    var lines = try helpers.asLines(alloc, "input/day03.txt");
     defer lines.deinit();
 
     const num_bits = @intCast(u5, lines.items[0].len);
-    var nums = try helpers.mapArrayList(alloc, []u8, u32, lines, parseBin);
+    var nums = try helpers.mapArrayList(alloc, []const u8, u32, lines, parseBin);
     defer nums.deinit();
 
     return RetDay3{

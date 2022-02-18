@@ -4,7 +4,7 @@ const helpers = @import("../helpers.zig");
 pub const RetDay8 = struct { p1: u64, p2: u64 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay8 {
-    const lines = try helpers.readInAs(alloc, "input/day08.txt", []u8);
+    const lines = try helpers.asLines(alloc, "input/day08.txt");
     defer lines.deinit();
 
     var num_knowns: u32 = 0;
@@ -46,7 +46,10 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     var seg_strs = std.mem.split(u8, str, " ");
 
     var len_fives = std.ArrayList(SevenSeg).init(alloc);
+    defer len_fives.deinit();
+
     var len_sixes = std.ArrayList(SevenSeg).init(alloc);
+    defer len_sixes.deinit();
 
     while (seg_strs.next()) |seg_str| {
         var seven_seg = createSevenSeg(seg_str);

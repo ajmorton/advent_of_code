@@ -5,9 +5,14 @@ pub const RetDay19 = struct { p1: i32, p2: i32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay19 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day19.txt", 1000000);
+    defer alloc.free(allText);
     var sections = std.mem.split(u8, allText, "\n\n");
 
     var scanners = std.ArrayList(Scanner).init(alloc);
+    defer {
+        for(scanners.items) |scanner| scanner.beacons.deinit();
+        scanners.deinit();
+    }
 
     while (sections.next()) |scanner_str| {
         var lines = std.mem.split(u8, scanner_str, "\n");
@@ -15,11 +20,14 @@ pub fn run(alloc: std.mem.Allocator) !RetDay19 {
     }
 
     var map = try buildMap(alloc, scanners);
+    defer map.deinit();
 
     // P1
     var machines = map.keyIterator();
     var num_beacons: i32 = 0;
     var scanner_locs = std.ArrayList(Pos).init(alloc);
+    defer scanner_locs.deinit();
+
     while (machines.next()) |machine| {
         if (machine.* == .scanner) {
             try scanner_locs.append(machine.*.scanner);

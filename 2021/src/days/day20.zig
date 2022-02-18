@@ -5,10 +5,12 @@ pub const RetDay20 = struct { p1: i32, p2: i32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay20 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day20.txt", 1000000);
+    defer alloc.free(allText);
     var sections = std.mem.split(u8, allText, "\n\n");
 
     var algorithm: []const u8 = sections.next().?;
     var image = try Image.init(alloc, sections.next().?);
+    defer image.deinit();
 
     var p1: i32 = 0;
     var step: i32 = 0;
