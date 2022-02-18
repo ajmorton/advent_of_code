@@ -1,14 +1,10 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay20 = struct { p1: u32, p2: u64 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay20 {
     _ = alloc;
-
     return RetDay20{ .p1 = part1(), .p2 = try part2(alloc) };
 }
 
@@ -28,7 +24,10 @@ const GameState = struct {
     turn: u32,
     const Self = @This();
     fn init(pos_p1: u32, pos_p2: u32) Self {
-        return GameState{ .players = [2]Pawn{ .{ .pos = pos_p1, .score = 0 }, .{ .pos = pos_p2, .score = 0 } }, .turn = 0 };
+        return GameState{
+            .players = [2]Pawn{ .{ .pos = pos_p1, .score = 0 }, .{ .pos = pos_p2, .score = 0 } },
+            .turn = 0,
+        };
     }
 };
 
@@ -60,7 +59,6 @@ fn part2(alloc: std.mem.Allocator) !u64 {
     try all_states.incr(start_state);
 
     var wins: [2]u64 = .{ 0, 0 };
-    _ = wins;
 
     var turn: u32 = 0;
     var finished = false;

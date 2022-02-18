@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay17 = struct { p1: i32, p2: i32 };
@@ -46,9 +43,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay17 {
                 }
 
                 x += vx;
-                if (vx > 0) {
-                    vx -= 1;
-                }
+                if (vx > 0) vx -= 1;
                 y += vy;
                 vy -= 1;
             }

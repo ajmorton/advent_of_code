@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay5 = struct { p1: u32, p2: u32 };
@@ -19,16 +16,12 @@ pub fn run(alloc: std.mem.Allocator) !RetDay5 {
     defer grid.deinit();
 
     for (pipes.items) |pipe| {
-        if (pipe.direction != Direction.Diagonal) {
-            try grid.layPipe(pipe);
-        }
+        if (pipe.direction != Direction.Diagonal) try grid.layPipe(pipe);
     }
     ret.p1 = grid.countIntersections();
 
     for (pipes.items) |pipe| {
-        if (pipe.direction == Direction.Diagonal) {
-            try grid.layPipe(pipe);
-        }
+        if (pipe.direction == Direction.Diagonal) try grid.layPipe(pipe);
     }
     ret.p2 = grid.countIntersections();
 
@@ -63,14 +56,11 @@ fn parsePipe(str: []const u8) helpers.ConversionError!Pipe {
 }
 
 const Point = struct { x: i32, y: i32 };
-
 const Direction = enum { Vertical, Horizontal, Diagonal };
-
 const Pipe = struct { direction: Direction, start: Point, end: Point };
 
 const Grid = struct {
     cells: helpers.Counter(Point),
-
     const Self = @This();
 
     fn init(alloc: std.mem.Allocator) Self {
@@ -83,13 +73,9 @@ const Grid = struct {
     }
 
     fn gradient(start: i32, end: i32) i32 {
-        if (start < end) {
-            return 1;
-        } else if (start == end) {
-            return 0;
-        } else {
-            return -1;
-        }
+        if (start < end) return 1;
+        if (start == end) return 0;
+        return -1;
     }
 
     fn layPipe(self: *Self, pipe: Pipe) !void {
@@ -113,9 +99,7 @@ const Grid = struct {
         var count: u32 = 0;
         var vals = self.cells.valueIterator();
         while (vals.next()) |val| {
-            if (val.* > 1) {
-                count += 1;
-            }
+            if (val.* > 1) count += 1;
         }
         return count;
     }

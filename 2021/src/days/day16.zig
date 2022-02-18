@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay16 = struct { p1: u64, p2: u64 };
@@ -12,11 +9,7 @@ const OperatorPacket = struct {
     oper: u64,
     subpackets: std.ArrayList(Packet),
 };
-const LiteralPacket = struct {
-    version: u64,
-    type_id: ID,
-    val: u64,
-};
+const LiteralPacket = struct { version: u64, type_id: ID, val: u64 };
 const Packet = union(enum) { operator: OperatorPacket, literal: LiteralPacket };
 
 const ID = enum(u64) { sum = 0, product = 1, min = 2, max = 3, literal = 4, greater_than = 5, less_than = 6, equal_to = 7 };
@@ -70,9 +63,7 @@ fn versionSum(packet: Packet) u64 {
         .literal => |lit| return lit.version,
         .operator => |op| {
             var sum: u64 = op.version;
-            for (op.subpackets.items) |subp| {
-                sum += versionSum(subp);
-            }
+            for (op.subpackets.items) |subp| sum += versionSum(subp);
             return sum;
         },
     }

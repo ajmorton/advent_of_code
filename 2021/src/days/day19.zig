@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay19 = struct { p1: i32, p2: i32 };
@@ -225,17 +222,13 @@ fn offsetOverlapScore(alloc: std.mem.Allocator, offset: Pos, rotated: []Pos, kno
     var known_poses = std.ArrayList(Pos).init(alloc);
     defer known_poses.deinit();
     while (known_positions.next()) |kp| {
-        if (kp.* == .beacon) {
-            try known_poses.append(kp.*.beacon);
-        }
+        if (kp.* == .beacon) try known_poses.append(kp.*.beacon);
     }
 
     for (rotated) |point| {
         var offset_point = add(point, offset);
         for (known_poses.items) |known_pos| {
-            if (std.meta.eql(offset_point, known_pos)) {
-                sum += 1;
-            }
+            if (std.meta.eql(offset_point, known_pos)) sum += 1;
         }
     }
     return sum;

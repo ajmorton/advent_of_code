@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay20 = struct { p1: i32, p2: i32 };
@@ -19,9 +16,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay20 {
         var new_image = try image.step(alloc, algorithm, @mod(step, 2) == 1);
         image.deinit();
         image = new_image;
-        if (step == 1) {
-            p1 = image.countPixels();
-        }
+        if (step == 1) p1 = image.countPixels();
     }
 
     return RetDay20{ .p1 = p1, .p2 = image.countPixels() };
@@ -47,9 +42,7 @@ const Image = struct {
             max_c = @intCast(i32, line.len) - 1;
             var c: i32 = 0;
             for (line) |char| {
-                if (char == '#') {
-                    try lit_pixels.put(Pos{ .r = r, .c = c }, {});
-                }
+                if (char == '#') try lit_pixels.put(Pos{ .r = r, .c = c }, {});
                 c += 1;
             }
             r += 1;
@@ -95,9 +88,7 @@ const Image = struct {
             var cc: i32 = c - 1;
             while (cc <= c + 1) : (cc += 1) {
                 score <<= 1;
-                if (self.pixelIsLit(rr, cc, odd_step)) {
-                    score += 1;
-                }
+                if (self.pixelIsLit(rr, cc, odd_step)) score += 1;
             }
         }
 
@@ -130,9 +121,7 @@ const Image = struct {
     fn countPixels(self: Self) i32 {
         var count: i32 = 0;
         var iter = self.lit_pixels.keyIterator();
-        while (iter.next()) |_| {
-            count += 1;
-        }
+        while (iter.next()) |_| count += 1;
         return count;
     }
 };

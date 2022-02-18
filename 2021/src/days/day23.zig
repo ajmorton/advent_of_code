@@ -1,17 +1,9 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay23 = struct { p1: u64, p2: u64 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay23 {
-    _ = alloc;
-
-    const room_size_p1: u32 = 3;
-    _ = room_size_p1;
-
     return RetDay23{
         .p1 = try Problem(3).findShortestPathP1(alloc, [4][3]Amphipod{
             .{ .None, .D, .B },
@@ -96,10 +88,7 @@ fn Problem(room_size: u32) type {
             }
         }
 
-        const State = struct {
-            map: Map(room_size),
-            path_cost: u32,
-        };
+        const State = struct { map: Map(room_size), path_cost: u32 };
     };
 }
 

@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay15 = struct { p1: u32, p2: u32 };
@@ -42,9 +39,7 @@ const Grid = struct {
         var cells = std.ArrayList(u32).init(alloc);
 
         for (input.items) |line| {
-            for (line) |cell| {
-                try cells.append(cell - '0');
-            }
+            for (line) |cell| try cells.append(cell - '0');
             height += 1;
         }
         return Self{ .cells = cells, .width = width, .height = height };
@@ -72,9 +67,7 @@ const Grid = struct {
         var cell_orig_map = self.cells.items[rr * @intCast(u32, self.height) + cc];
         var cell_additional_score = (@intCast(u32, r) / @intCast(u32, self.height)) + (@intCast(u32, c) / @intCast(u32, self.width));
         var cell_score = cell_orig_map + cell_additional_score;
-        while (cell_score > 9) {
-            cell_score -= 9;
-        }
+        while (cell_score > 9) cell_score -= 9;
 
         return cell_score;
     }

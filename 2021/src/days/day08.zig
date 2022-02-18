@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay8 = struct { p1: u64, p2: u64 };
@@ -13,6 +10,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay8 {
     var num_knowns: u32 = 0;
     var p2: u32 = 0;
     for (lines.items) |line| {
+        // TODO - scanf function
         var inOut = std.mem.split(u8, line, " | ");
         var in = inOut.next().?;
         var out = inOut.next().?;
@@ -68,8 +66,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     var i: u32 = 0;
     while (i < len_sixes.items.len) : (i += 1) {
         if (!canMask(knownNums[1], len_sixes.items[i])) {
-            knownNums[6] = len_sixes.items[i];
-            _ = len_sixes.swapRemove(i);
+            knownNums[6] = len_sixes.swapRemove(i);
             break;
         }
     }
@@ -78,8 +75,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     i = 0;
     while (i < len_sixes.items.len) : (i += 1) {
         if (canMask(knownNums[4], len_sixes.items[i])) {
-            knownNums[9] = len_sixes.items[i];
-            _ = len_sixes.swapRemove(i);
+            knownNums[9] = len_sixes.swapRemove(i);
             break;
         }
     }
@@ -91,8 +87,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     i = 0;
     while (i < len_fives.items.len) : (i += 1) {
         if (!canMask(len_fives.items[i], knownNums[9])) {
-            knownNums[2] = len_fives.items[i];
-            _ = len_fives.swapRemove(i);
+            knownNums[2] = len_fives.swapRemove(i);
             break;
         }
     }
@@ -101,8 +96,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     i = 0;
     while (i < len_fives.items.len) : (i += 1) {
         if (canMask(knownNums[1], len_fives.items[i])) {
-            knownNums[3] = len_fives.items[i];
-            _ = len_fives.swapRemove(i);
+            knownNums[3] = len_fives.swapRemove(i);
             break;
         }
     }
@@ -111,9 +105,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     knownNums[5] = len_fives.pop();
 
     i = 0;
-    while (i <= 9) : (i += 1) {
-        try map.put(knownNums[i], i);
-    }
+    while (i <= 9) : (i += 1) try map.put(knownNums[i], i);
 
     return map;
 }

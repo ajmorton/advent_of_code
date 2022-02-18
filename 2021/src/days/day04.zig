@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay4 = struct { p1: u32, p2: u32 };
@@ -11,12 +8,9 @@ pub fn run(alloc: std.mem.Allocator) !RetDay4 {
     var sections = std.mem.split(u8, allText, "\n\n");
 
     var nums_iter = std.mem.split(u8, sections.next().?, ",");
-
     var boards = std.ArrayList(Board).init(alloc);
     defer {
-        for (boards.items) |*board| {
-            board.deinit();
-        }
+        for (boards.items) |*board| board.deinit();
         boards.deinit();
     }
 
@@ -78,9 +72,7 @@ const Board = struct {
     fn score(self: Self) u32 {
         var sum: u32 = 0;
         for (self.cells.items) |cell| {
-            if (!cell.hit) {
-                sum += cell.val;
-            }
+            if (!cell.hit) sum += cell.val;
         }
         return sum;
     }
@@ -88,9 +80,7 @@ const Board = struct {
     fn colWin(self: Self, c: u32) bool {
         var r: u32 = 0;
         while (r < self.n) : (r += 1) {
-            if (!self.cells.items[r * self.n + c].hit) {
-                return false;
-            }
+            if (!self.cells.items[r * self.n + c].hit) return false;
         }
         return true;
     }
@@ -98,9 +88,7 @@ const Board = struct {
     fn rowWin(self: Self, r: u32) bool {
         var c: u32 = 0;
         while (c < self.n) : (c += 1) {
-            if (!self.cells.items[r * self.n + c].hit) {
-                return false;
-            }
+            if (!self.cells.items[r * self.n + c].hit) return false;
         }
         return true;
     }

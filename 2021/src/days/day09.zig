@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay9 = struct { p1: i32, p2: i32 };
@@ -111,9 +108,7 @@ const Grid = struct {
 
         std.sort.sort(i32, basin_sizes.items, {}, comptime std.sort.desc(i32));
         var prod: i32 = 1;
-        for (basin_sizes.items[0..3]) |size| {
-            prod *= size;
-        }
+        for (basin_sizes.items[0..3]) |size| prod *= size;
 
         return prod;
     }

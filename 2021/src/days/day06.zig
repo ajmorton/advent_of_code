@@ -1,6 +1,5 @@
 const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
 
 const helpers = @import("../helpers.zig");
 
@@ -15,9 +14,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay6 {
     var num_days: i32 = 1;
     while (num_days <= 256) : (num_days += 1) {
         try fish.step();
-        if (num_days == 80) {
-            p1 = fish.count();
-        }
+        if (num_days == 80) p1 = fish.count();
     }
 
     return RetDay6{ .p1 = p1, .p2 = fish.count() };
@@ -32,9 +29,7 @@ const Fish = struct {
         var countdowns = std.ArrayList(u64).init(alloc);
 
         var i: u32 = 9;
-        while (i > 0) : (i -= 1) {
-            try countdowns.append(0);
-        }
+        while (i > 0) : (i -= 1) try countdowns.append(0);
 
         while (nums_iter.next()) |n_str| {
             var n = try std.fmt.parseInt(u64, n_str, 10);
@@ -60,9 +55,7 @@ const Fish = struct {
 
     fn count(self: Self) u64 {
         var sum: u64 = 0;
-        for (self.countdowns.items) |num_fish| {
-            sum += num_fish;
-        }
+        for (self.countdowns.items) |num_fish| sum += num_fish;
         return sum;
     }
 };

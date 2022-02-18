@@ -1,7 +1,5 @@
 const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay3 = struct { p1: u32, p2: u32 };
@@ -15,7 +13,6 @@ pub fn run(alloc: std.mem.Allocator) !RetDay3 {
     defer lines.deinit();
 
     const num_bits = @intCast(u5, lines.items[0].len);
-
     var nums = try helpers.mapArrayList(alloc, []u8, u32, lines, parseBin);
     defer nums.deinit();
 
@@ -64,13 +61,8 @@ fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, b
             helpers.filterArrayList(u32, VarArg, &nums_local, matchesMask, v);
         }
 
-        if (nums_local.items.len == 1) {
-            return nums_local.pop();
-        }
-
-        if (mask_len == num_bits) {
-            return mask;
-        }
+        if (nums_local.items.len == 1) return nums_local.pop();
+        if (mask_len == num_bits) return mask;
     }
 
     unreachable;

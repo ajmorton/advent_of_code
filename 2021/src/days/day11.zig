@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay11 = struct { p1: i32, p2: i32 };
@@ -23,9 +20,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay11 {
         var new_flashes = grid.step();
         total_flashes += new_flashes;
 
-        if (step == 100) {
-            res.p1 = total_flashes;
-        }
+        if (step == 100) res.p1 = total_flashes;
         if (new_flashes == 100) {
             res.p2 = step;
             all_flashed = true;
@@ -84,13 +79,9 @@ const Grid = struct {
     fn incrNeigbours(self: *Self, r: i32, c: i32) void {
         for ([_]i32{ -1, 0, 1 }) |rr| {
             for ([_]i32{ -1, 0, 1 }) |cc| {
-                if (rr == 0 and cc == 0) {
-                    continue;
-                }
+                if (rr == 0 and cc == 0) continue;
                 if (self.getCell(r + rr, c + cc)) |neighbour| {
-                    if (!neighbour.has_flashed) {
-                        neighbour.charge += 1;
-                    }
+                    if (!neighbour.has_flashed) neighbour.charge += 1;
                 }
             }
         }

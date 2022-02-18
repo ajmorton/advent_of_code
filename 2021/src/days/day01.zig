@@ -1,6 +1,5 @@
 const expect = @import("std").testing.expect;
 const std = @import("std");
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay1 = struct { p1: u32, p2: u32 };

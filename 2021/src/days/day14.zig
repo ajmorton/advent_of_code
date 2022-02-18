@@ -1,11 +1,7 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay14 = struct { p1: u64, p2: u64 };
-
 const Pair = [2]u8;
 
 pub fn run(alloc: std.mem.Allocator) !RetDay14 {
@@ -13,8 +9,6 @@ pub fn run(alloc: std.mem.Allocator) !RetDay14 {
     var sections = std.mem.split(u8, allText, "\n\n");
 
     var initial_molecule = sections.next().?;
-    _ = initial_molecule;
-
     var insertion_map = try parseInsertionMap(alloc, sections.next().?);
 
     var letter_freqs = std.mem.zeroes([26]u64);
@@ -26,15 +20,10 @@ pub fn run(alloc: std.mem.Allocator) !RetDay14 {
     var step: u64 = 1;
     while (step <= 40) : (step += 1) {
         try performExpansion(alloc, &insertion_map, &letter_freqs, &pair_freqs);
-        if (step == 10) {
-            p1 = letterScore(letter_freqs);
-        }
+        if (step == 10) p1 = letterScore(letter_freqs);
     }
 
-    return RetDay14{
-        .p1 = p1,
-        .p2 = letterScore(letter_freqs),
-    };
+    return RetDay14{ .p1 = p1, .p2 = letterScore(letter_freqs) };
 }
 
 fn parseInsertionMap(alloc: std.mem.Allocator, lines: []const u8) !std.AutoHashMap(Pair, u8) {

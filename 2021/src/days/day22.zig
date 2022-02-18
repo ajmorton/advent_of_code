@@ -1,7 +1,4 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay22 = struct { p1: u64, p2: u64 };
@@ -88,13 +85,8 @@ const Box = struct {
             z_overlap.?.max,
         );
 
-        if (std.meta.eql(other, overlap)) {
-            return .engulfs;
-        }
-
-        if (std.meta.eql(self, overlap)) {
-            return .engulfed;
-        }
+        if (std.meta.eql(other, overlap)) return .engulfs;
+        if (std.meta.eql(self, overlap)) return .engulfed;
 
         return .{ .overlaps = overlap };
     }

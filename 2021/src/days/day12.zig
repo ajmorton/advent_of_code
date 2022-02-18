@@ -1,11 +1,7 @@
-const expect = @import("std").testing.expect;
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
-
 const helpers = @import("../helpers.zig");
 
 pub const RetDay12 = struct { p1: u32, p2: u32 };
-
 const FooErr = std.mem.Allocator.Error || std.os.WriteError;
 
 pub fn run(alloc: std.mem.Allocator) !RetDay12 {
@@ -26,9 +22,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay12 {
 
 fn isLowerCase(room: Room) bool {
     for (room) |char| {
-        if (char < 'a' or char > 'z') {
-            return false;
-        }
+        if (char < 'a' or char > 'z') return false;
     }
     return true;
 }
@@ -50,16 +44,12 @@ const Cave = struct {
 
             // conn to-from
             var kv = try connections.getOrPut(from);
-            if (!kv.found_existing) {
-                kv.value_ptr.* = Rooms.init(alloc);
-            }
+            if (!kv.found_existing) kv.value_ptr.* = Rooms.init(alloc);
             try kv.value_ptr.*.put(to, {});
 
             // conn from-to
             kv = try connections.getOrPut(to);
-            if (!kv.found_existing) {
-                kv.value_ptr.* = Rooms.init(alloc);
-            }
+            if (!kv.found_existing) kv.value_ptr.* = Rooms.init(alloc);
             try kv.value_ptr.*.put(from, {});
         }
 
@@ -68,9 +58,7 @@ const Cave = struct {
 
     pub fn deinit(self: *Self) void {
         var iter = self.connections.iterator();
-        while (iter.next()) |kv| {
-            kv.value_ptr.*.deinit();
-        }
+        while (iter.next()) |kv| kv.value_ptr.*.deinit();
         self.connections.deinit();
         self.* = undefined;
     }
@@ -81,9 +69,7 @@ const Cave = struct {
         var path_str = try std.mem.join(alloc, ",", path.items);
         defer alloc.free(path_str);
 
-        if (std.mem.eql(u8, cur_room, "end")) {
-            return 1;
-        }
+        if (std.mem.eql(u8, cur_room, "end")) return 1;
 
         var total_paths: u32 = 0;
 
@@ -93,9 +79,7 @@ const Cave = struct {
 
         var next_rooms = self.connections.get(cur_room).?.keyIterator();
         while (next_rooms.next()) |next_room| {
-            if (std.mem.eql(u8, next_room.*, "start")) {
-                continue;
-            }
+            if (std.mem.eql(u8, next_room.*, "start")) continue;
 
             var has_revisited2 = has_revisited;
             if (isLowerCase(next_room.*)) {
