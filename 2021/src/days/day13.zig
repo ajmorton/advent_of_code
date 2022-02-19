@@ -8,6 +8,7 @@ const Fold = union(enum) { vertical: i32, horizontal: i32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay13 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day13.txt", 1000000);
+    defer alloc.free(allText);
     var sections = std.mem.split(u8, allText, "\n\n");
 
     var points = std.AutoHashMap(Point, void).init(alloc);
