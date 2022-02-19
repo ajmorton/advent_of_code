@@ -13,7 +13,8 @@ pub fn run(alloc: std.mem.Allocator) !RetDay3 {
     defer lines.deinit();
 
     const num_bits = @intCast(u5, lines.items[0].len);
-    var nums = try helpers.mapArrayList(alloc, []const u8, u32, lines, parseBin);
+    var nums = std.ArrayList(u32).init(alloc);
+    for(lines.items) |line| try nums.append(try parseBin(line));
     defer nums.deinit();
 
     return RetDay3{
@@ -58,7 +59,14 @@ fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, b
 
         if (runningFilter) {
             var v = VarArg{ .mask = mask, .start_bit = num_bits - 1, .mask_len = mask_len };
-            helpers.filterArrayList(u32, VarArg, &nums_local, matchesMask, v);
+            var i: u32 = 0;
+            while(i < nums_local.items.len) {
+                if(!matchesMask(nums_local.items[i], v)) {
+                    _ = nums_local.orderedRemove(i);
+                } else {
+                    i += 1;
+                }
+            }
         }
 
         if (nums_local.items.len == 1) return nums_local.pop();

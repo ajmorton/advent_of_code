@@ -7,7 +7,8 @@ pub fn run(alloc: std.mem.Allocator) !RetDay5 {
     const lines = try helpers.asLines(alloc, "input/day05.txt");
     defer lines.deinit();
 
-    var pipes = try helpers.mapArrayList(alloc, []const u8, Pipe, lines, parsePipe);
+    var pipes = std.ArrayList(Pipe).init(alloc);
+    for(lines.items) |line| try pipes.append(try parsePipe(line));
     defer pipes.deinit();
 
     var ret: RetDay5 = .{ .p1 = 0, .p2 = 0 };

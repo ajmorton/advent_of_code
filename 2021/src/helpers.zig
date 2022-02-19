@@ -32,38 +32,6 @@ pub fn readInAs(alloc: std.mem.Allocator, file_name: []const u8, comptime T: typ
 
 pub const ConversionError = error{ConvFailed};
 
-/// Given an arrayList and a map function return an arrayList of converted values
-pub fn mapArrayList(
-    alloc: std.mem.Allocator,
-    comptime S: type,
-    comptime T: type,
-    arr: std.ArrayList(S),
-    map_fn: fn (S) ConversionError!T,
-) !std.ArrayList(T) {
-    var new_arr = std.ArrayList(T).init(alloc);
-    for (arr.items) |elem| {
-        try new_arr.append(try map_fn(elem));
-    }
-    return new_arr;
-}
-
-pub fn filterArrayList(
-    comptime T: type,
-    comptime VarArgs: type,
-    arr: *std.ArrayList(T),
-    filter_fn: fn (T, VarArgs) bool,
-    v: VarArgs,
-) void {
-    var i: u32 = 0;
-    while (i < arr.items.len) {
-        if (!filter_fn(arr.items[i], v)) {
-            _ = arr.orderedRemove(i);
-        } else {
-            i += 1;
-        }
-    }
-}
-
 pub fn Counter(comptime T: type) type {
     const MapType = if (T == []u8) std.StringHashMap(T) else std.AutoHashMap(T, u64);
 
