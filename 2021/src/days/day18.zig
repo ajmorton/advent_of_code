@@ -72,10 +72,8 @@ fn explode(num: *Num) bool {
         if (node == .down) depth += 1;
         if (node == .up) depth -= 1;
         if (depth >= 5) {
-            var left = num.items[i + 1];
-            var right = num.items[i + 2];
-            addLeft(num, @intCast(u32, i + 1), left.val);
-            addRight(num, @intCast(u32, i + 2), right.val);
+            addLeft(num, @intCast(u32, i + 1), num.items[i + 1].val);
+            addRight(num, @intCast(u32, i + 2), num.items[i + 2].val);
             num.items[i + 1] = .{ .val = 0 };
             _ = num.orderedRemove(i); // [
             _ = num.orderedRemove(@intCast(u32, i + 1)); // second val

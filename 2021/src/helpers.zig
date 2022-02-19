@@ -30,8 +30,6 @@ pub fn readInAs(alloc: std.mem.Allocator, file_name: []const u8, comptime T: typ
     return file_contents;
 }
 
-pub const ConversionError = error{ConvFailed};
-
 pub fn Counter(comptime T: type) type {
     const MapType = if (T == []u8) std.StringHashMap(T) else std.AutoHashMap(T, u64);
 
@@ -75,11 +73,7 @@ pub fn Counter(comptime T: type) type {
         }
 
         pub fn count(self: Self, val: T) u64 {
-            if (self.internal.get(val)) |v| {
-                return v;
-            } else {
-                return 0;
-            }
+            return if (self.internal.get(val)) |v| v else 0;
         }
 
         pub fn iterator(self: *const Self) MapType.Iterator {

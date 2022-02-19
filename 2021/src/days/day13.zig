@@ -16,49 +16,40 @@ pub fn run(alloc: std.mem.Allocator) !RetDay13 {
     var point_strs = std.mem.split(u8, sections.next().?, "\n");
     while (point_strs.next()) |point_str| {
         var coords = std.mem.split(u8, point_str, ",");
-        var point = Point{
+        try points.put(Point{
             .x = try std.fmt.parseInt(i32, coords.next().?, 10),
             .y = try std.fmt.parseInt(i32, coords.next().?, 10),
-        };
-        try points.put(point, {});
+        }, {});
     }
 
     var commands = std.ArrayList(Fold).init(alloc);
     var commands_str = std.mem.split(u8, sections.next().?, "\n");
     while (commands_str.next()) |command_str| {
-        var fold_line = command_str[11..];
-        if (fold_line[0] == 'x') {
-            try commands.append(.{ .vertical = try std.fmt.parseInt(i32, fold_line[2..], 10) });
-        } else if (fold_line[0] == 'y') {
-            try commands.append(.{ .horizontal = try std.fmt.parseInt(i32, fold_line[2..], 10) });
-        }
+        try commands.append(switch (command_str[11]) {
+            'x' => .{ .vertical = try std.fmt.parseInt(i32, command_str[13..], 10) },
+            'y' => .{ .horizontal = try std.fmt.parseInt(i32, command_str[13..], 10) },
+            else => unreachable,
+        });
     }
 
     var p1: ?u32 = null;
     for (commands.items) |command| {
-        switch (command) {
-            .vertical => |fold_x_pos| {
-                var pt_iter = points.keyIterator();
-                while (pt_iter.next()) |point| {
+        var pt_iter = points.keyIterator();
+        while (pt_iter.next()) |point| {
+            switch (command) {
+                .vertical => |fold_x_pos| {
                     if (point.x > fold_x_pos) {
-                        var tmp_point = point.*;
-                        tmp_point.x = (fold_x_pos) - (point.x - fold_x_pos);
+                        try points.put(Point{ .x = 2 * fold_x_pos - point.x, .y = point.y }, {});
                         _ = points.remove(point.*);
-                        try points.put(tmp_point, {});
                     }
-                }
-            },
-            .horizontal => |fold_y_pos| {
-                var pt_iter = points.keyIterator();
-                while (pt_iter.next()) |point| {
+                },
+                .horizontal => |fold_y_pos| {
                     if (point.y > fold_y_pos) {
-                        var tmp_point = point.*;
-                        tmp_point.y = (fold_y_pos) - (point.y - fold_y_pos);
+                        try points.put(Point{ .x = point.x, .y = 2 * fold_y_pos - point.y }, {});
                         _ = points.remove(point.*);
-                        try points.put(tmp_point, {});
                     }
-                }
-            },
+                },
+            }
         }
         p1 = p1 orelse points.count();
     }
@@ -88,8 +79,5 @@ pub fn run(alloc: std.mem.Allocator) !RetDay13 {
         try str_acc.append('\n');
     }
 
-    return RetDay13{
-        .p1 = p1.?,
-        .p2 = str_acc.items,
-    };
+    return RetDay13{ .p1 = p1.?, .p2 = str_acc.items };
 }

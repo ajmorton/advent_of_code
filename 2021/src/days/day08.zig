@@ -66,18 +66,16 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     }
 
     // 6 is the only SevenSeg with 6 arms set not masked by 1
-    var i: u32 = 0;
-    while (i < len_sixes.items.len) : (i += 1) {
-        if (!canMask(knownNums[1], len_sixes.items[i])) {
+    for (len_sixes.items) |num, i| {
+        if (!canMask(knownNums[1], num)) {
             knownNums[6] = len_sixes.swapRemove(i);
             break;
         }
     }
 
     // 9 is the only SevenSeg with 6 arms and masked by 4
-    i = 0;
-    while (i < len_sixes.items.len) : (i += 1) {
-        if (canMask(knownNums[4], len_sixes.items[i])) {
+    for (len_sixes.items) |num, i| {
+        if (canMask(knownNums[4], num)) {
             knownNums[9] = len_sixes.swapRemove(i);
             break;
         }
@@ -87,18 +85,16 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     knownNums[0] = len_sixes.pop();
 
     // 2 is the only SevenSeg with 5 arms that 9 is not masked by
-    i = 0;
-    while (i < len_fives.items.len) : (i += 1) {
-        if (!canMask(len_fives.items[i], knownNums[9])) {
+    for (len_fives.items) |num, i| {
+        if (!canMask(num, knownNums[9])) {
             knownNums[2] = len_fives.swapRemove(i);
             break;
         }
     }
 
     // 3 is the only SevenSeg with 5 arms and masked by 1
-    i = 0;
-    while (i < len_fives.items.len) : (i += 1) {
-        if (canMask(knownNums[1], len_fives.items[i])) {
+    for (len_fives.items) |num, i| {
+        if (canMask(knownNums[1], num)) {
             knownNums[3] = len_fives.swapRemove(i);
             break;
         }
@@ -107,7 +103,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     // 5 is the last SevenSeg with 5 arms
     knownNums[5] = len_fives.pop();
 
-    i = 0;
+    var i: u32 = 0;
     while (i <= 9) : (i += 1) try map.put(knownNums[i], i);
 
     return map;

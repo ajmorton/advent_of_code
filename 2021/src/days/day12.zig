@@ -67,9 +67,6 @@ const Cave = struct {
     pub fn countPaths(self: Self, alloc: std.mem.Allocator, path: std.ArrayList(Room), can_revisit_once: bool, has_revisited: bool) FooErr!u32 {
         var cur_room = path.items[path.items.len - 1];
 
-        var path_str = try std.mem.join(alloc, ",", path.items);
-        defer alloc.free(path_str);
-
         if (std.mem.eql(u8, cur_room, "end")) return 1;
 
         var total_paths: u32 = 0;

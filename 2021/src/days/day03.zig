@@ -4,17 +4,13 @@ const helpers = @import("../helpers.zig");
 
 pub const RetDay3 = struct { p1: u32, p2: u32 };
 
-fn parseBin(str: []const u8) helpers.ConversionError!u32 {
-    return std.fmt.parseInt(u32, str, 2) catch helpers.ConversionError.ConvFailed;
-}
-
 pub fn run(alloc: std.mem.Allocator) !RetDay3 {
     var lines = try helpers.asLines(alloc, "input/day03.txt");
     defer lines.deinit();
 
     const num_bits = @intCast(u5, lines.items[0].len);
     var nums = std.ArrayList(u32).init(alloc);
-    for(lines.items) |line| try nums.append(try parseBin(line));
+    for (lines.items) |line| try nums.append(try std.fmt.parseInt(u32, line, 2));
     defer nums.deinit();
 
     return RetDay3{
@@ -37,8 +33,6 @@ fn getRatings(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, 
     return oxygenRating * c02Rating;
 }
 
-const VarArg = struct { mask: u32, start_bit: u5, mask_len: u5 };
-
 fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, bitCriterion: fn (u1) u1, runningFilter: bool) !u32 {
     var nums_local = std.ArrayList(u32).init(alloc);
     defer nums_local.deinit();
@@ -54,14 +48,13 @@ fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, b
         index -= 1;
 
         mask <<= 1;
-        mask += bitCriterion(most_common_bit);
+        mask |= bitCriterion(most_common_bit);
         mask_len += 1;
 
         if (runningFilter) {
-            var v = VarArg{ .mask = mask, .start_bit = num_bits - 1, .mask_len = mask_len };
             var i: u32 = 0;
-            while(i < nums_local.items.len) {
-                if(!matchesMask(nums_local.items[i], v)) {
+            while (i < nums_local.items.len) {
+                if (!matchesMask(nums_local.items[i], mask, num_bits - 1, mask_len)) {
                     _ = nums_local.orderedRemove(i);
                 } else {
                     i += 1;
@@ -76,47 +69,39 @@ fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, b
     unreachable;
 }
 
-fn matchesMask(n: u32, v: VarArg) bool {
+fn matchesMask(n: u32, mask: u32, start_bit: u5, mask_len: u5) bool {
     // Shift left to clear top bits
-    var nn = n & ((@intCast(u32, 1) << (v.start_bit + 1)) - 1);
+    var nn = n & ((@intCast(u32, 1) << (start_bit + 1)) - 1);
     // Shift right to clear low bits
-    nn >>= (v.start_bit + 1 - v.mask_len);
-    return nn == v.mask;
+    nn >>= (start_bit + 1 - mask_len);
+    return nn == mask;
 }
 
 test "maskTest" {
-    try expect(matchesMask(0b10101, .{ .mask = 0b10, .start_bit = 2, .mask_len = 2 }) == true);
-    try expect(matchesMask(0b10101, .{ .mask = 0b10, .start_bit = 1, .mask_len = 2 }) == false);
-    try expect(matchesMask(0b10101, .{ .mask = 0b101, .start_bit = 2, .mask_len = 3 }) == true);
-    try expect(matchesMask(0b10101, .{ .mask = 0b101, .start_bit = 4, .mask_len = 3 }) == true);
-    try expect(matchesMask(0b10101, .{ .mask = 0b111, .start_bit = 4, .mask_len = 3 }) == false);
+    try expect(matchesMask(0b10101, 0b10, 2, 2) == true);
+    try expect(matchesMask(0b10101, 0b10, 1, 2) == false);
+    try expect(matchesMask(0b10101, 0b101, 2, 3) == true);
+    try expect(matchesMask(0b10101, 0b101, 4, 3) == true);
+    try expect(matchesMask(0b10101, 0b111, 4, 3) == false);
 }
 
 fn mostCommonBit(nums: std.ArrayList(u32), index: i32) u1 {
     var count_ones: i32 = 0;
-    var count_zeros: i32 = 0;
     var shift = @intCast(u5, index);
 
     for (nums.items) |n| {
-        if (((n >> shift) & 1) == 1) {
-            count_ones += 1;
-        } else {
-            count_zeros += 1;
-        }
+        if (((n >> shift) & 1) == 1) count_ones += 1;
     }
 
-    return if (count_ones >= count_zeros) 1 else 0;
+    return if (count_ones >= (nums.items.len + 1) / 2) 1 else 0;
 }
 
 test "mostCommonBit test" {
     var tst = std.ArrayList(u32).init(std.testing.allocator_instance.allocator());
     defer tst.deinit();
-    try tst.append(1);
-    try tst.append(2);
-    try tst.append(3);
+    try tst.appendSlice(&[_]u32{ 1, 2, 3 });
     try expect(mostCommonBit(tst, 1) == 1);
     try expect(mostCommonBit(tst, 0) == 1);
-    try tst.append(4);
-    try tst.append(6);
+    try tst.appendSlice(&[_]u32{ 4, 6 });
     try expect(mostCommonBit(tst, 0) == 0);
 }

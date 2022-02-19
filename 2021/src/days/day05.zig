@@ -8,7 +8,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay5 {
     defer lines.deinit();
 
     var pipes = std.ArrayList(Pipe).init(alloc);
-    for(lines.items) |line| try pipes.append(try parsePipe(line));
+    for (lines.items) |line| try pipes.append(try parsePipe(line));
     defer pipes.deinit();
 
     var ret: RetDay5 = .{ .p1 = 0, .p2 = 0 };
@@ -29,18 +29,15 @@ pub fn run(alloc: std.mem.Allocator) !RetDay5 {
     return ret;
 }
 
-fn parsePoint(str: []const u8) helpers.ConversionError!Point {
+fn parsePoint(str: []const u8) !Point {
     var coords = std.mem.split(u8, str, ",");
-    var x = std.fmt.parseInt(i32, coords.next().?, 10) catch {
-        return helpers.ConversionError.ConvFailed;
+    return Point{
+        .x = try std.fmt.parseInt(i32, coords.next().?, 10),
+        .y = try std.fmt.parseInt(i32, coords.next().?, 10),
     };
-    var y = std.fmt.parseInt(i32, coords.next().?, 10) catch {
-        return helpers.ConversionError.ConvFailed;
-    };
-    return Point{ .x = x, .y = y };
 }
 
-fn parsePipe(str: []const u8) helpers.ConversionError!Pipe {
+fn parsePipe(str: []const u8) !Pipe {
     var points = std.mem.split(u8, str, " -> ");
     var start = try parsePoint(points.next().?);
     var end = try parsePoint(points.next().?);

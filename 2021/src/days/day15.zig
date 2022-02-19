@@ -10,9 +10,10 @@ pub fn run(alloc: std.mem.Allocator) !RetDay15 {
     var grid = try Grid.init(alloc, lines);
     defer grid.deinit();
 
-    var p1 = try grid.findShortestPath(alloc, true);
-    var p2 = try grid.findShortestPath(alloc, false);
-    return RetDay15{ .p1 = p1.?, .p2 = p2.? };
+    return RetDay15{
+        .p1 = (try grid.findShortestPath(alloc, true)).?,
+        .p2 = (try grid.findShortestPath(alloc, false)).?,
+    };
 }
 
 const Point = struct { r: i32, c: i32 };

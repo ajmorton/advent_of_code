@@ -42,7 +42,7 @@ pub fn naiveBenchmark(mod: anytype, run_for: u64) !void {
     const baseline_runtime = std.time.nanoTimestamp() - baseline_start;
     var final_time: u64 = 0;
 
-    if(baseline_runtime > std.time.ns_per_us or baseline_runtime < std.time.ns_per_s * (run_for / 2)) {
+    if (baseline_runtime > std.time.ns_per_us and baseline_runtime < std.time.ns_per_s * (run_for / 2)) {
         var total: u64 = 0;
         var run: u32 = 1;
         var num_runs = @intCast(u64, @divFloor(run_for * std.time.ns_per_s, baseline_runtime) + 1);
