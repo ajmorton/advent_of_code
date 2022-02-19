@@ -10,7 +10,7 @@ pub fn main() !void {
     // const result = try days.d25.run(gpa);
     // std.debug.print("===== Results =====\n", .{});
     // std.debug.print("{any}\n", .{result});
-    try benchmark.naiveBenchmarkAll(10);
+    try benchmark.naiveBenchmarkAll(5);
 }
 
 const test_allocator = std.testing.allocator;

@@ -40,25 +40,30 @@ pub fn naiveBenchmark(mod: anytype, run_for: u64) !void {
     const baseline_start = std.time.nanoTimestamp();
     _ = try mod.run(gpa);
     const baseline_runtime = std.time.nanoTimestamp() - baseline_start;
-    var total: u64 = 0;
+    var final_time: u64 = 0;
 
-    var run: u32 = 1;
-    var num_runs = @intCast(u64, @divFloor(run_for * std.time.ns_per_s, baseline_runtime) + 1);
-    if (num_runs == 1) {
-        // Test is too slow to run multiple times. Just take the baseline run time
-        total = @intCast(u64, baseline_runtime);
-        run = std.math.maxInt(u32);
+    if(baseline_runtime > std.time.ns_per_us or baseline_runtime < std.time.ns_per_s * (run_for / 2)) {
+        var total: u64 = 0;
+        var run: u32 = 1;
+        var num_runs = @intCast(u64, @divFloor(run_for * std.time.ns_per_s, baseline_runtime) + 1);
+        if (num_runs == 1) {
+            // Test is too slow to run multiple times. Just take the baseline run time
+            total = @intCast(u64, baseline_runtime);
+            run = std.math.maxInt(u32);
+        }
+
+        while (run <= num_runs) : (run += 1) {
+            std.debug.print("\x1B[8G{} of {}", .{ run, num_runs });
+            const start_time = std.time.nanoTimestamp();
+            _ = try mod.run(gpa);
+            const run_time = @intCast(u64, std.time.nanoTimestamp() - start_time);
+            total += run_time;
+        }
+
+        final_time = @divFloor(total, num_runs);
+    } else {
+        final_time = @intCast(u64, baseline_runtime);
     }
-
-    while (run <= num_runs) : (run += 1) {
-        std.debug.print("\x1B[8G{} of {}", .{ run, num_runs });
-        const start_time = std.time.nanoTimestamp();
-        _ = try mod.run(gpa);
-        const run_time = @intCast(u64, std.time.nanoTimestamp() - start_time);
-        total += run_time;
-    }
-
-    const final_time = @divFloor(total, num_runs);
 
     const green = "\x1B[;32m";
     const red = "\x1B[;31m";
