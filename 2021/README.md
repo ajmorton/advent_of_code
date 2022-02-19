@@ -27,7 +27,7 @@ Zig 0.9.0, no toolchain
 | day16  |    2.324ms   |     |
 | day17  |        0ns   |  ✅ |
 | day18  |  303.196ms   |     |
-| day19  |      4m35s   |  💀 | 
+| day19  |  471.038ms   |     | 
 | day20  |  158.987ms   |     |
 | day21  |    9.857ms   |     |
 | day22  |   27.401ms   |     |

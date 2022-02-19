@@ -52,7 +52,7 @@ test "Day 15" { try expectResults(days.d15, 687, 2957);}
 test "Day 16" { try expectResults(days.d16, 951, 902198718880);}
 test "Day 17" { try expectResults(days.d17, 11175, 3540);}
 test "Day 18" { try expectResults(days.d18, 3699, 4735);}
-// test "Day 19" { try expectResults(days.d19, 318, 12166);} // TODO - This is slow. Speed up and re-enable
+test "Day 19" { try expectResults(days.d19, 318, 12166);}
 test "Day 20" { try expectResults(days.d20, 5475, 17548);}
 test "Day 21" { try expectResults(days.d21, 1073709, 148747830493442);}
 test "Day 22" { try expectResults(days.d22, 591365, 1211172281877240);}

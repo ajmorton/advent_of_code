@@ -24,7 +24,7 @@ pub fn naiveBenchmarkAll(run_for: u64) !void {
     try naiveBenchmark(days.d16, run_for);
     try naiveBenchmark(days.d17, run_for);
     try naiveBenchmark(days.d18, run_for);
-    // try naiveBenchmark(days.d19, run_for);  // TODO - This is slow. Speed up and re-enable
+    try naiveBenchmark(days.d19, run_for);
     try naiveBenchmark(days.d20, run_for);
     try naiveBenchmark(days.d21, run_for);
     try naiveBenchmark(days.d22, run_for);
