@@ -69,7 +69,6 @@ pub fn naiveBenchmark(mod: anytype, run_for: u64) !void {
 
     var buf: [24]u8 = undefined;
     const final_time_str = try std.fmt.bufPrint(&buf, "{}", .{std.fmt.fmtDuration(final_time)});
-    _ = final_time_str;
 
     std.debug.print("{s}\x1B[8G{s:>10}\x1B[0K{s}\n", .{ color, final_time_str, end });
 }

@@ -7,7 +7,7 @@ var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
 const gpa = general_purpose_allocator.allocator();
 
 pub fn main() !void {
-    // const result = try d25.run(gpa);
+    // const result = try days.d25.run(gpa);
     // std.debug.print("===== Results =====\n", .{});
     // std.debug.print("{any}\n", .{result});
     try benchmark.naiveBenchmarkAll(10);

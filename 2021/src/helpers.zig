@@ -6,7 +6,7 @@ pub fn asLines(alloc: std.mem.Allocator, file_name: []const u8) !std.ArrayList([
     var buf: [100000]u8 = undefined;
     var allText = try std.fs.cwd().readFile(file_name, &buf);
     var iter = std.mem.split(u8, allText, "\n");
-    while(iter.next()) |line| try lines.append(line);
+    while (iter.next()) |line| try lines.append(line);
 
     return lines;
 }

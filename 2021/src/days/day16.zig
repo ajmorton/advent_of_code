@@ -30,8 +30,8 @@ pub fn run(alloc: std.mem.Allocator) !RetDay16 {
 }
 
 fn deinit(p: *Packet) void {
-    if(p.* == .operator) {
-        for(p.*.operator.subpackets.items) |*subp| deinit(subp);
+    if (p.* == .operator) {
+        for (p.*.operator.subpackets.items) |*subp| deinit(subp);
         p.*.operator.subpackets.deinit();
     }
     p.* = undefined;
