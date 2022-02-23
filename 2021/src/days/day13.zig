@@ -1,7 +1,7 @@
 const std = @import("std");
 const helpers = @import("../helpers.zig");
 
-pub const RetDay13 = struct { p1: u32, p2: []u8 };
+pub const RetDay13 = struct { p1: u32, p2: std.ArrayList(u8) };
 
 const Point = struct { x: i32, y: i32 };
 const Fold = union(enum) { vertical: i32, horizontal: i32 };
@@ -24,6 +24,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay13 {
     }
 
     var commands = std.ArrayList(Fold).init(alloc);
+    defer commands.deinit();
     var commands_str = std.mem.split(u8, sections.next().?, "\n");
     while (commands_str.next()) |command_str| {
         try commands.append(switch (command_str[11]) {
@@ -80,5 +81,5 @@ pub fn run(alloc: std.mem.Allocator) !RetDay13 {
         try str_acc.append('\n');
     }
 
-    return RetDay13{ .p1 = p1.?, .p2 = str_acc.items };
+    return RetDay13{ .p1 = p1.?, .p2 = str_acc };
 }

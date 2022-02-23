@@ -21,10 +21,10 @@ Zig 0.9.0, no toolchain
 | day10  |  912.073us   |  ✅  |
 | day11  |  213.234us   |  ✅  |
 | day12  |  204.580ms   |     |
-| day13  |  586.096us   |  ✅  |
-| day14  |    1.641ms   |     |
+| day13  |  390.796us   |  ✅  |
+| day14  |    1.021ms   |     |
 | day15  |   44.519ms   |     |
-| day16  |  250.679us   |  ✅  |
+| day16  |  191.541us   |  ✅  |
 | day17  |        0ns   |  ✅ |
 | day18  |  303.196ms   |     |
 | day19  |  471.038ms   |     | 
@@ -33,4 +33,4 @@ Zig 0.9.0, no toolchain
 | day22  |   27.401ms   |     |
 | day23  |  305.645ms   |     |
 | day24  |        0ns   |  ✅ |
-| day25  |   94.261ms   |     |
+| day25  |   36.382ms   |     |

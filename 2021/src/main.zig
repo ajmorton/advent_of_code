@@ -34,7 +34,8 @@ test "Day 10" { try expectResults(days.d10, 462693, 3094671161); }
 test "Day 11" { try expectResults(days.d11, 1741, 440); }
 test "Day 12" { try expectResults(days.d12, 4970, 137948); }
 test "Day 13" {
-    var res_d13 = try days.d13.run(gpa);
+    var res_d13 = try days.d13.run(test_allocator);
+    defer res_d13.p2.deinit();
     try expect(res_d13.p1 == 638);
     const p2 =
         \\ ##    ##  ##  #  # ###   ##  ###  ### 
@@ -45,7 +46,7 @@ test "Day 13" {
         \\ ##   ##   ##  #  # ###  #  # #    ### 
         \\
     ;
-    try std.testing.expectEqualStrings(p2, res_d13.p2);
+    try std.testing.expectEqualStrings(p2, res_d13.p2.items);
 }
 test "Day 14" { try expectResults(days.d14, 3009, 3459822539451);}
 test "Day 15" { try expectResults(days.d15, 687, 2957);}
