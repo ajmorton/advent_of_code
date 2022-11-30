@@ -5,6 +5,9 @@ Fun languages to try for new ideas / concepts.
 
 - `Pony`    Compile time type, memory, and thread safety. Reference Capabilites.
 - `Clojure` Lisp-y
+- `Vale`    Memory regions, higher order RAII
+- `Tao`     Early days functional lang
+- `Koka`    Effect types 
 
 
 ## Industry standards
