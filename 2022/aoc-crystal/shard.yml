@@ -1,0 +1,13 @@
+name: aoc-crystal
+version: 0.1.0
+
+authors:
+  - ajmorton <ajmorton2@gmail.com>
+
+targets:
+  aoc-crystal:
+    main: src/aoc-crystal.cr
+
+crystal: 1.6.1
+
+license: MIT

@@ -4,6 +4,7 @@ Solutions for Advent of Code, written in different languages when I feel like pl
 
 | Year            | Language       | Toolchain        |
 | :-------------: | :------------- | :--------------: |
+| [2022](./2021)  | Crystal 1.6.1  | N/A              |
 | [2021](./2021)  | Zig 0.9.0      | N/A              |
 | [2020](./2020)  | Python 3.8.5   | N/A              |
 | 2019            | -              |                  |
