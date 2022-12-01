@@ -1,13 +1,11 @@
-require "./common.cr"
+module Day01
+  extend self
 
-class Day01
-  extend DayInterface
-
-  def self.part1(input_file : String)
-    return "Part1"
-  end
-
-  def self.part2(input_file : String)
-    return 2.0
+  def run(input_file : String) : {Int32, Int32}
+    input = File.read(input_file)
+      .split("\n\n")
+      .map(&.lines.map(&.to_i).sum)
+      .sort
+    return input.last, input.last(3).sum
   end
 end
