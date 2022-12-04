@@ -15,11 +15,12 @@ Once done add the full path to the compiled `crystalline` binary to VSCode.
 ## How to run
 ```bash
 # interpreted
-crystal src/aoc-crystal.cr`
+crystal src/aoc-crystal.cr [-d DAY]
 
 # compiled
-crystal build src/aoc-crystal.cr
-./aoc-crystal
+crystal build src/aoc-crystal.cr [--release]
+./aoc-crystal [-d DAY] [-b] [-h]
+# -b runs in benchmark mode. This should only be used when compiled with --release
 
 # run tests
 crystal spec # Add -t to measure runtime
@@ -29,9 +30,9 @@ crystal spec # Add -t to measure runtime
 
 | Day    | Runtime      |     |
 | :----: | :----------: | :-: |
-| day01  |              |     |
-| day02  |              |     |
-| day03  |              |     |
+| day01  |  108.80 µs   |  ✅  |
+| day02  |   72.35 µs   |  ✅  |
+| day03  |  351.76 µs   |  ✅  |
 | day04  |              |     |
 | day05  |              |     |
 | day06  |              |     |
