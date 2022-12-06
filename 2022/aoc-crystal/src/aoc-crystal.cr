@@ -31,9 +31,10 @@ def run_day(n : Number, benchmark : Bool)
   when 3 then run_day("Day03", ->{ Day03.run("./src/inputs/day03.txt") }, benchmark)
   when 4 then run_day("Day04", ->{ Day04.run("./src/inputs/day04.txt") }, benchmark)
   when 5 then run_day("Day05", ->{ Day05.run("./src/inputs/day05.txt") }, benchmark)
+  when 6 then run_day("Day06", ->{ Day06.run("./src/inputs/day06.txt") }, benchmark)
   else
     puts "Running all days:"
-    (1..5).each { |n| run_day(n, benchmark) }
+    (1..6).each { |n| run_day(n, benchmark) }
   end
 end
 
