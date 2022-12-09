@@ -23,7 +23,7 @@ module Day07
 
     cur_free_space = 70000000 - dir_size["/"]
     need_to_delete = 30000000 - cur_free_space
-    p2 = dir_size.values.select{ |size| size >= need_to_delete }.min
+    p2 = dir_size.values.select { |size| size >= need_to_delete }.min
 
     return p1, p2
   end

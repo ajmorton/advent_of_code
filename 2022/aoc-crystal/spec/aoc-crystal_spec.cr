@@ -27,3 +27,7 @@ end
 describe Day07 do
   it { Day07.run("./src/inputs/day07.txt").should eq({1543140, 1117448}) }
 end
+
+describe Day08 do
+  it { Day08.run("./src/inputs/day08.txt").should eq({1859, 332640}) }
+end
