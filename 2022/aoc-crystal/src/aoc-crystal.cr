@@ -26,18 +26,19 @@ end
 
 def run_day(n : Number, benchmark : Bool)
   case n
-  when 1 then run_day("Day01", ->{ Day01.run("./src/inputs/day01.txt") }, benchmark)
-  when 2 then run_day("Day02", ->{ Day02.run("./src/inputs/day02.txt") }, benchmark)
-  when 3 then run_day("Day03", ->{ Day03.run("./src/inputs/day03.txt") }, benchmark)
-  when 4 then run_day("Day04", ->{ Day04.run("./src/inputs/day04.txt") }, benchmark)
-  when 5 then run_day("Day05", ->{ Day05.run("./src/inputs/day05.txt") }, benchmark)
-  when 6 then run_day("Day06", ->{ Day06.run("./src/inputs/day06.txt") }, benchmark)
-  when 7 then run_day("Day07", ->{ Day07.run("./src/inputs/day07.txt") }, benchmark)
-  when 8 then run_day("Day08", ->{ Day08.run("./src/inputs/day08.txt") }, benchmark)
-  when 9 then run_day("Day09", ->{ Day09.run("./src/inputs/day09.txt") }, benchmark)
+  when  1 then run_day("Day01", ->{ Day01.run("./src/inputs/day01.txt") }, benchmark)
+  when  2 then run_day("Day02", ->{ Day02.run("./src/inputs/day02.txt") }, benchmark)
+  when  3 then run_day("Day03", ->{ Day03.run("./src/inputs/day03.txt") }, benchmark)
+  when  4 then run_day("Day04", ->{ Day04.run("./src/inputs/day04.txt") }, benchmark)
+  when  5 then run_day("Day05", ->{ Day05.run("./src/inputs/day05.txt") }, benchmark)
+  when  6 then run_day("Day06", ->{ Day06.run("./src/inputs/day06.txt") }, benchmark)
+  when  7 then run_day("Day07", ->{ Day07.run("./src/inputs/day07.txt") }, benchmark)
+  when  8 then run_day("Day08", ->{ Day08.run("./src/inputs/day08.txt") }, benchmark)
+  when  9 then run_day("Day09", ->{ Day09.run("./src/inputs/day09.txt") }, benchmark)
+  when 10 then run_day("Day10", ->{ Day10.run("./src/inputs/day10.txt") }, benchmark)
   else
     puts "Running all days:"
-    (1..9).each { |n| run_day(n, benchmark) }
+    (1..10).each { |n| run_day(n, benchmark) }
   end
 end
 
