@@ -25,7 +25,8 @@ def main
 end
 
 def run_day(n : Number?, benchmark : Bool)
-  days = [Day01, Day02, Day03, Day04, Day05, Day06, Day07, Day08, Day09, Day10]
+  days = [Day01, Day02, Day03, Day04, Day05, Day06, Day07, Day08, Day09, Day10,
+          Day11]
 
   if n && days[n - 1]?
     run_day(days[n - 1], benchmark)
