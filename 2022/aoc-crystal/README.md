@@ -44,7 +44,7 @@ crystal spec # Add -t to measure runtime
 | day12  |  822.18 µs   |  ✅  |
 | day13  |  548.50 µs   |  ✅  |
 | day14  |    3.42 ms   |     |
-| day15  |              |     |
+| day15  |      💀      |  💀   |
 | day16  |              |     |
 | day17  |              |     |
 | day18  |              |     |
