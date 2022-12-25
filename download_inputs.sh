@@ -26,9 +26,9 @@ function download_for_year() {
     done
 }
 
-download_for_year "2022" "2022/aoc-crystal/input"
-download_for_year "2021" "2021/input"
-download_for_year "2020" "2020/input"
-download_for_year "2018" "2018/input"
-download_for_year "2016" "2016/aoc-haskell/input"
-download_for_year "2015" "2015/input"
+download_for_year "2022" "2022-crystal/input"
+download_for_year "2021" "2021-zig/input"
+download_for_year "2020" "2020-python/input"
+download_for_year "2018" "2018-rust/input"
+download_for_year "2016" "2016-haskell/input"
+download_for_year "2015" "2015-cpp/input"
