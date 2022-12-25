@@ -144,7 +144,7 @@ fn search(erosion_level: &[Vec<usize>], target: &(usize, usize)) -> Option<usize
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let input: Vec<&str> = include_str!("../input/22.txt").trim_end_matches('\n').split('\n').into_iter().collect();
+    let input: Vec<&str> = include_str!("../input/day22.txt").trim_end_matches('\n').split('\n').into_iter().collect();
     let depth: usize = input[0].trim_start_matches("depth: ").parse::<usize>().unwrap();
     let target: Vec<&str> = input[1].trim_start_matches("target: ").split(',').collect();
     let target_c = target[0].parse::<usize>().unwrap();

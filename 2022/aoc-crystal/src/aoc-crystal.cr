@@ -38,7 +38,7 @@ def run_day(n : Number?, benchmark : Bool)
 end
 
 def run_day(day : Class, benchmark : Bool)
-  func = ->{ day.run("./src/inputs/#{day.to_s.downcase}.txt") }
+  func = ->{ day.run("./input/#{day.to_s.downcase}.txt") }
   if benchmark
     Benchmark.ips { |x| x.report(day.to_s) { func.call } }
   else

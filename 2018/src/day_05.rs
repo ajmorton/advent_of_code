@@ -26,7 +26,7 @@ fn reduce(polymer: Vec<char>) -> Vec<char> {
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let polymer: Vec<char> = include_str!("../input/5.txt").trim_end().chars().collect();
+    let polymer: Vec<char> = include_str!("../input/day05.txt").trim_end().chars().collect();
 
     // p2
     let letters: HashSet<char> = polymer.iter().map(char::to_ascii_lowercase).collect();

@@ -22,7 +22,7 @@ def has_fields(passport: dict) -> bool:
 
 def run() -> (int, int):
 
-    lines = [" ".join(group) for group in read_as.groups("input/4.txt")]
+    lines = [" ".join(group) for group in read_as.groups("input/day04.txt")]
     passports = [ dict(val.split(":") for val in line.split()) 
                     for line in lines ]
     all_fields = [p for p in passports if has_fields(p)]

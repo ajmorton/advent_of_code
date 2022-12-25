@@ -52,7 +52,7 @@ fn matches_opcodes(exec: &Execution) -> Vec<Opcode> {
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let input = include_str!("../input/16.txt").trim_end_matches('\n');
+    let input = include_str!("../input/day16.txt").trim_end_matches('\n');
     let breakpoint = input.find("\n\n\n").unwrap();
     let (examples, program) = input.split_at(breakpoint);
     let before_after_regex =

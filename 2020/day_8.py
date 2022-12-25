@@ -18,7 +18,7 @@ def execute(prog):
 def run() -> (int, int):
 
     to_instr = lambda x: (x[0], int(x[1]))
-    prog = [to_instr(line.split(' ')) for line in read_as.lines("input/8.txt")]
+    prog = [to_instr(line.split(' ')) for line in read_as.lines("input/day08.txt")]
 
     _, p1 = execute(prog)
 

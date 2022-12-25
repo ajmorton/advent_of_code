@@ -33,7 +33,7 @@ class Links():
             cur_cup = self.get(cur_cup)
 
 def run() -> (int, int):
-    cups = [int(c) for c in read_as.lines("input/23.txt")[0]]
+    cups = [int(c) for c in read_as.lines("input/day23.txt")[0]]
 
     links_p1, links_p2 = Links(), Links()
 

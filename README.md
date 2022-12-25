@@ -2,6 +2,8 @@
 
 Solutions for Advent of Code, written in different languages when I feel like playing around with a new language or toolchain.
 
+:warning: **Note:** As of Dec 26th 2022 input files are [no longer present in the repo](https://old.reddit.com/r/adventofcode/wiki/faqs/copyright/inputs) and have stripped from git history. If checking out older commits you'll need to manually add these files back in.
+
 | Year            | Language       | Toolchain        |
 | :-------------: | :------------- | :--------------: |
 | [2022](./2021)  | Crystal 1.6.1  | N/A              |

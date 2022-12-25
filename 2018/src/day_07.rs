@@ -67,7 +67,7 @@ fn assemble(
 
 #[must_use]
 pub fn run() -> (String, usize) {
-    let input = include_str!("../input/7.txt").trim().split('\n');
+    let input = include_str!("../input/day07.txt").trim().split('\n');
     let dependency_pattern = Regex::new(r"Step ([A-Z]) must be finished before step ([A-Z]) can begin.").unwrap();
 
     let mut deps_map: HashMap<String, HashSet<String>> = HashMap::new();

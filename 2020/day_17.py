@@ -4,7 +4,7 @@ from copy import deepcopy
 import itertools
 
 def run() -> (int, int):
-    slice = read_as.grid("input/17.txt")
+    slice = read_as.grid("input/day17.txt")
 
     state = defaultdict(lambda: (False,False))
 

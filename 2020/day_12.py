@@ -23,7 +23,7 @@ class Ship():
 def run() -> (int, int):
     ship = Ship(1 + 0j, False)
     ship_wp = Ship(10 + 1j, True)
-    for instr in read_as.lines("input/12.txt"):
+    for instr in read_as.lines("input/day12.txt"):
         command, val = instr[0], int(instr[1:])
         ship.move(command, val) 
         ship_wp.move(command, val)

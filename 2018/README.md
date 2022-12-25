@@ -4,8 +4,7 @@ Rust 2018, criterion for benchmarking
 
 ## How to run
 For an individual test: `cargo run 01`  
-To run all days: `cargo run`  
-To run all tests: `cargo test 0`  
+To run all days: `cargo test 0`  
 To run bench marks: `cargo bench`  
 
 ## Execution times

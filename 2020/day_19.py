@@ -15,7 +15,7 @@ def rules_to_regex(rules: dict) -> dict:
     return rules
 
 def run() -> (int, int):
-    groups = read_as.groups("input/19.txt")
+    groups = read_as.groups("input/day19.txt")
     rules = {}
     for line in groups[0]:
         rule_id, rule_contents = line.split(':')

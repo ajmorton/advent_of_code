@@ -15,7 +15,7 @@ def subseq_sum(target: int, nums: [int]) -> int:
     return -1
 
 def run() -> (int, int):
-    nums = [int(num) for num in read_as.lines("input/9.txt")]
+    nums = [int(num) for num in read_as.lines("input/day09.txt")]
     window = 25
 
     for i in range(window, len(nums)):

@@ -10,8 +10,8 @@ bazel 4.1.0 doesn't support Apple Silicon so the local_config_cc/BUILD files nee
 `compile_flags.txt` has been configured such that linting works in VSCode using the `clangd` extension.
 
 ## Commands
-`bazel run` to build and execute  
-`bazel test` to run automated tests
+`bazel run --copt=-O3` to build and execute  
+`bazel test --copt=-O3` to run automated tests
 
 ## Execution times
 

@@ -11,7 +11,7 @@ fn meets_rules(i: isize, plants: &HashSet<isize>, ruleset: &HashSet<String>) -> 
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let input: Vec<&str> = include_str!("../input/12.txt").trim().split("\n\n").collect();
+    let input: Vec<&str> = include_str!("../input/day12.txt").trim().split("\n\n").collect();
 
     let mut plants: HashSet<isize> = input[0]
         .to_string()

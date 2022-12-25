@@ -2,7 +2,7 @@ use crate::computer::{read_prog, Computer, SolveFor};
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let (prog, ip_reg) = read_prog("./input/19.txt");
+    let (prog, ip_reg) = read_prog("./input/day19.txt");
 
     let init_regs = vec![0; 6];
     let mut computer = Computer::new(init_regs, ip_reg, prog.clone());

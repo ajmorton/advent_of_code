@@ -2,6 +2,7 @@ module Lib ( run ) where
 
 import System.Environment ( getArgs )   
 import System.IO ()  
+import Text.Printf (printf)
 
 import Day01 ( runDay01 )
 import Day02 ( runDay02 )
@@ -16,7 +17,7 @@ import Day09 ( runDay09 )
 run :: IO ()
 run = do  
     day <- fmap (read . head) getArgs
-    input <- readFile $ "data/" ++ show day ++ ".txt"
+    input <- readFile $ "input/day" ++ (printf "%02d" day) ++ ".txt"
     runDay day input
 
 runDay :: Int -> String -> IO ()    

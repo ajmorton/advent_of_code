@@ -18,13 +18,13 @@ runTest day fn file expected = do
 
 main :: IO ()
 main = do
-    runTest "Day01: " Day01.runDay01 "data/1.txt" (241, 116)
-    runTest "Day02: " Day02.runDay02 "data/2.txt" ("98575","CD8D4")
-    runTest "Day03: " Day03.runDay03 "data/3.txt" (993, 1849)
-    runTest "Day04: " Day04.runDay04 "data/4.txt" (361724,482)
-    -- runTest "Day05: " Day05.runDay05 "data/5.txt" ("4543c154","1050cbbd")  skipped: runtime is 6 minutes
-    runTest "Day06: " Day06.runDay06 "data/6.txt" ("nabgqlcw","ovtrjcjh")
-    runTest "Day07: " Day07.runDay07 "data/7.txt" (115, 231)
+    runTest "Day01: " Day01.runDay01 "input/day01.txt" (241, 116)
+    runTest "Day02: " Day02.runDay02 "input/day02.txt" ("98575","CD8D4")
+    runTest "Day03: " Day03.runDay03 "input/day03.txt" (993, 1849)
+    runTest "Day04: " Day04.runDay04 "input/day04.txt" (361724,482)
+    -- runTest "Day05: " Day05.runDay05 "input/day05.txt" ("4543c154","1050cbbd")  skipped: runtime is 6 minutes
+    runTest "Day06: " Day06.runDay06 "input/day06.txt" ("nabgqlcw","ovtrjcjh")
+    runTest "Day07: " Day07.runDay07 "input/day07.txt" (115, 231)
     -- 123, AFBUPZBJPS
-    runTest "Day08: " Day08.runDay08 "data/8.txt" (123, [" ##  #### ###  #  # ###  #### ###    ## ###   ### ", "#  # #    #  # #  # #  #    # #  #    # #  # #    ", "#  # ###  ###  #  # #  #   #  ###     # #  # #    ", "#### #    #  # #  # ###   #   #  #    # ###   ##  ", "#  # #    #  # #  # #    #    #  # #  # #       # ", "#  # #    ###   ##  #    #### ###   ##  #    ###  "])
-    runTest "Day09: " Day09.runDay09 "data/9.txt" (152851,11797310782)
+    runTest "Day08: " Day08.runDay08 "input/day08.txt" (123, [" ##  #### ###  #  # ###  #### ###    ## ###   ### ", "#  # #    #  # #  # #  #    # #  #    # #  # #    ", "#  # ###  ###  #  # #  #   #  ###     # #  # #    ", "#### #    #  # #  # ###   #   #  #    # ###   ##  ", "#  # #    #  # #  # #    #    #  # #  # #       # ", "#  # #    ###   ##  #    #### ###   ##  #    ###  "])
+    runTest "Day09: " Day09.runDay09 "input/day09.txt" (152851,11797310782)

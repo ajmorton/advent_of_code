@@ -39,7 +39,7 @@ fn play(num_players: usize, num_marbles: usize) -> (Player, Score) {
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let input = include_str!("../input/9.txt").trim();
+    let input = include_str!("../input/day09.txt").trim();
     let pattern = Regex::new(r"(\d+) players; last marble is worth (\d+) points").unwrap();
     let caps = pattern.captures(input).unwrap();
     let num_players = caps[1].parse::<usize>().unwrap();

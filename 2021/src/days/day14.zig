@@ -30,7 +30,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay14 {
 
 fn parseInsertionMap(alloc: std.mem.Allocator, lines: []const u8) !std.AutoHashMap(Pair, u8) {
     var insertion_map = std.AutoHashMap(Pair, u8).init(alloc);
-    var insertions_iter = std.mem.split(u8, lines, "\n");
+    var insertions_iter = std.mem.tokenize(u8, lines, "\n");
     while (insertions_iter.next()) |insertion| {
         var in_out = std.mem.split(u8, insertion, " -> ");
         var in = in_out.next().?;

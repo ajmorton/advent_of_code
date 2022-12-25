@@ -17,8 +17,9 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver:
-  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/31.yaml
+# resolver:
+#   url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/31.yaml
+resolver: ghc-9.4.3
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -41,6 +42,23 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 # extra-deps: []
+
+extra-deps:
+- MissingH-1.5.0.1@sha256:34bdc3ddc94a5c58d76d3c36bc7af052213c2584492cf81f7b005c03b210a985,4791
+- cryptonite-0.30@sha256:12c85dea7be63e5ad90bcb487eb3846bf3c413347f94336fa1dede7b28f9936a,18301
+- parallel-3.2.2.0@sha256:6edd5a06938cea3d28b406d5231683f89737e854af144a8800aa69e1eee785e0,1821
+- sort-1.0.0.0@sha256:de275445308122c5b5f457b3a65509a0373295c5831548f012e496caaeb3d369,997
+- split-0.2.3.5@sha256:f472fa7019647cacac3267742a6f7ac0a5c816f9890e80e4b826cd937436de87,2646
+- basement-0.0.15@sha256:2bf8ea6a351fb049399ccf1fa2c2513ddb0d8274b87bd9146ed7603fa06cd8a8,5404
+- hslogger-1.3.1.0@sha256:c1b512c2ba106b57c811d493234677f740a643c2010bc698b6be4f430c953876,2966
+- memory-0.18.0@sha256:e12bde756b01c1a28c62e46f0f8433c4890898051a786794a7d88907ca14abca,4468
+- network-3.1.2.7@sha256:e3d78b13db9512aeb106e44a334ab42b7aa48d26c097299084084cb8be5c5568,4888
+- network-bsd-2.8.1.0@sha256:cd945ea08818281e4a8fa6f0a0640a1502aad3748546a3c197e071772452a9bd,3738
+- old-locale-1.0.0.7@sha256:fa998be2c7e00cd26a6e9075bea790caaf3932caa3e9497ad69bc20380dd6911,1071
+- old-time-1.1.0.3@sha256:c91fbb3ee73d20ccd015842b30f1f29a304893ebe0ae3128b7bbc13d5bb0d4c8,1328
+- regex-compat-0.95.2.1@sha256:96c83b06280ebfb6fef01864b2af9eb9e136a9832c563773f327d4197bbbb851,1705
+- regex-base-0.94.0.2@sha256:4ff4425c710cddf440dfbac6cd52310bb6b23e17902390ff71c9fc7eaafc4fcc,2643
+- regex-posix-0.96.0.1@sha256:9dbba4b65a3bb6975d9740814be5593c6b2d2d6a0b3febc8ec940edb9a9bbdf4,2954
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

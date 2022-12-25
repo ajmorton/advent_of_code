@@ -25,7 +25,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay13 {
 
     var commands = std.ArrayList(Fold).init(alloc);
     defer commands.deinit();
-    var commands_str = std.mem.split(u8, sections.next().?, "\n");
+    var commands_str = std.mem.tokenize(u8, sections.next().?, "\n");
     while (commands_str.next()) |command_str| {
         try commands.append(switch (command_str[11]) {
             'x' => .{ .vertical = try std.fmt.parseInt(i32, command_str[13..], 10) },

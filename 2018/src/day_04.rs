@@ -6,7 +6,7 @@ pub fn run() -> (usize, usize) {
     type Schedule = [usize; 60];
     type GuardID = usize;
 
-    let mut lines: Vec<&str> = include_str!("../input/4.txt").trim_end().split('\n').collect();
+    let mut lines: Vec<&str> = include_str!("../input/day04.txt").trim_end().split('\n').collect();
     lines.sort_unstable();
 
     let line_pattern = Regex::new(r"\[\d+-\d+-\d+ \d+:(\d+)\] (.*)").unwrap();

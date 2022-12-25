@@ -2,7 +2,7 @@ import read_as
 import math
 
 def run() -> (int, int):
-    lines = read_as.lines("input/13.txt")
+    lines = read_as.lines("input/day13.txt")
 
     departure_time = int(lines[0])
     buses = [ (i, int(bus)) for (i, bus) in enumerate(lines[1].split(",")) if bus != "x"]

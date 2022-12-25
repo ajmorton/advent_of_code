@@ -10,7 +10,7 @@ def all_perms(ls):
         return [['0'] + sub for sub in all_perms(ls[1:])] + [['1'] + sub for sub in all_perms(ls[1:])]
         
 def run() -> (int, int):
-    lines = read_as.lines("input/14.txt")
+    lines = read_as.lines("input/day14.txt")
 
     results_p1, results_p2 = {}, {}
     mask_bits_p1, mask_bits_p2 = [], []

@@ -4,7 +4,7 @@ using namespace std::chrono;
     
 void runTest(const string& day, auto func){
     std::cout << "Day " + day + "\n";
-    string input = readFromFile("input/day_" + day + ".txt");
+    string input = readFromFile("input/day" + day + ".txt");
     long start = duration_cast< milliseconds >( system_clock::now().time_since_epoch() ).count();
 
     auto [p1, p2] = func(input);

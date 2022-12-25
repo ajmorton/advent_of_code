@@ -4,7 +4,7 @@ from copy import deepcopy
 from collections import defaultdict
 
 def run() -> (int, int):
-    lines = read_as.lines("input/21.txt")
+    lines = read_as.lines("input/day21.txt")
 
     possible = defaultdict(list)
     all_ingreds = []

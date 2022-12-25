@@ -59,7 +59,7 @@ def pop_grid(top_left, tiles, matching_edges, matches):
 def run() -> (int, int):
 
     tiles, tile_edges = {}, {}
-    for tile_info in read_as.groups("input/20.txt"):
+    for tile_info in read_as.groups("input/day20.txt"):
         tile_id = int(re.search("Tile ([0-9]+):", tile_info[0]).groups()[0])
         tile = tile_info[1:]
         tiles[tile_id] = tile

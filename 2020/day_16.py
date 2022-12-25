@@ -3,7 +3,7 @@ import re
 from math import inf, prod
 
 def run() -> (int, int):
-    rules, my_ticket, other_tickets = read_as.groups("input/16.txt")
+    rules, my_ticket, other_tickets = read_as.groups("input/day16.txt")
 
     ruleset = {}
     for rule in rules:

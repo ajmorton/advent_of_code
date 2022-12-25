@@ -176,7 +176,7 @@ impl Map {
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let input = include_str!("../input/17.txt");
+    let input = include_str!("../input/day17.txt");
     let mut map = create_map(input);
     map.fill(false)
 }

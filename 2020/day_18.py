@@ -26,7 +26,7 @@ def compute(equation: str, part_2: bool) -> str:
     return to_int(equation, part_2)
 
 def run() -> (int, int):
-    lines = read_as.lines("input/18.txt")
+    lines = read_as.lines("input/day18.txt")
     total_p1 = sum(int(compute(line, False)) for line in lines)
     total_p2 = sum(int(compute(line, True)) for line in lines)
     return (total_p1, total_p2)

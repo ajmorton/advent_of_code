@@ -18,7 +18,7 @@ def update(tiles, n):
 def run() -> (int, int):
     visited = set()
 
-    for path in read_as.lines("input/24.txt"):
+    for path in read_as.lines("input/day24.txt"):
         north, east = 0, 0
         for move in re.findall("[ns]?[ew]", path):
             north, east = {

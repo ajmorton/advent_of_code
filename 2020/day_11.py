@@ -35,7 +35,7 @@ def occupied_counts(grid, ignore_floor, leave_threshold):
     return sum(row.count("#") for row in grid)
 
 def run() -> (int, int):
-    grid = read_as.grid("input/11.txt")
+    grid = read_as.grid("input/day11.txt")
     return(occupied_counts(grid, False, 4), occupied_counts(grid, True, 5))
 
 if __name__ == "__main__":

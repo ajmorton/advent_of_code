@@ -14,7 +14,7 @@ def xor_policy(line: str) -> bool:
     return (password[pos_a - 1] == char) ^ (password[pos_b - 1] == char)
 
 def run() -> (int, int):
-    lines = read_as.lines("input/2.txt")
+    lines = read_as.lines("input/day02.txt")
     num_freq = len([password for password in lines if freq_policy(password)])
     num_xor = len([password for password in lines if xor_policy(password)])
     return num_freq, num_xor

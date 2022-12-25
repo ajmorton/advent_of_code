@@ -45,7 +45,7 @@ where
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let input: Vec<usize> = include_str!("../input/8.txt")
+    let input: Vec<usize> = include_str!("../input/day08.txt")
         .trim()
         .split(' ')
         .map(|x| x.parse::<usize>().unwrap())

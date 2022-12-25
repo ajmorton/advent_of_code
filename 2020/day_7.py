@@ -9,7 +9,7 @@ def num_contents(colour: str, bags: dict) -> int:
 
 def run() -> (int, int):
     bags = {}
-    for line in read_as.lines("input/7.txt"):
+    for line in read_as.lines("input/day07.txt"):
         (colour, contents) = line.split(" bags contain ")
         bags[colour] = re.findall(r"([0-9]+) ([a-z ]+) bags?[,.]", contents)
 

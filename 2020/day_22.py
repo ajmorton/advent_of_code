@@ -25,7 +25,7 @@ def recursive_combat(player_cards, crab_cards, history, part_2):
     return (True, player_cards) if len(player_cards) > 0 else (False, crab_cards)
 
 def run() -> (int, int):
-    groups = read_as.groups("input/22.txt")
+    groups = read_as.groups("input/day22.txt")
     player_cards = [int(n) for n in groups[0][1:]]
     crab_cards = [int(n) for n in groups[1][1:]]
 

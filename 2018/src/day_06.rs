@@ -8,7 +8,7 @@ const fn manhattan(a: &Point, b: &Point) -> isize {
 
 #[must_use]
 pub fn run() -> (usize, isize) {
-    let input: Vec<&str> = include_str!("../input/6.txt").trim().split('\n').collect();
+    let input: Vec<&str> = include_str!("../input/day06.txt").trim().split('\n').collect();
 
     let mut points = Vec::new();
     for point in input {

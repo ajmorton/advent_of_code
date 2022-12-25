@@ -7,7 +7,7 @@ def seat_to_index(seat: str) -> int:
 
 def run() -> (int, int):
 
-    seat_indices = [seat_to_index(seat) for seat in read_as.lines("input/5.txt")]
+    seat_indices = [seat_to_index(seat) for seat in read_as.lines("input/day05.txt")]
 
     max_seat = max(seat_indices)
     min_seat = min(seat_indices)

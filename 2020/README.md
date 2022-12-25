@@ -4,7 +4,7 @@ Python 3.8.5, no toolchain
 
 ## How to run
 For an individual test: `python3 day_xx.py`  
-To run all tests checking the result and execution time: `python3 run_all_tests.py`
+To run all tests checking the result and execution time: `python3 test_all_days.py`
 
 ## Execution times
 

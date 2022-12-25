@@ -275,7 +275,7 @@ fn find_first_survivable_conflict(map: &Map, units: HashMap<Pos, Unit>, state: &
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let input_str = include_str!("../input/15.txt");
+    let input_str = include_str!("../input/day15.txt");
     let (map, units, state) = parse_input(input_str);
 
     let (tick, remaining_health, _) = fight(&map, &units, &state);
@@ -288,46 +288,4 @@ pub fn run() -> (usize, usize) {
 #[test]
 fn day_15() {
     assert_eq!(run(), (206_720, 37992));
-}
-
-#[test]
-fn scen_1() {
-    let input_str = include_str!("../input/15.test_1.txt");
-    let (map, units, state) = parse_input(input_str);
-    assert_eq!(fight(&map, &units, &state), (47, 590, 0));
-}
-
-#[test]
-fn scen_2() {
-    let input_str = include_str!("../input/15.test_2.txt");
-    let (map, units, state) = parse_input(input_str);
-    assert_eq!(fight(&map, &units, &state), (37, 982, 5));
-}
-
-#[test]
-fn scen_3() {
-    let input_str = include_str!("../input/15.test_3.txt");
-    let (map, units, state) = parse_input(input_str);
-    assert_eq!(fight(&map, &units, &state), (46, 859, 5));
-}
-
-#[test]
-fn scen_4() {
-    let input_str = include_str!("../input/15.test_4.txt");
-    let (map, units, state) = parse_input(input_str);
-    assert_eq!(fight(&map, &units, &state), (35, 793, 0));
-}
-
-#[test]
-fn scen_5() {
-    let input_str = include_str!("../input/15.test_5.txt");
-    let (map, units, state) = parse_input(input_str);
-    assert_eq!(fight(&map, &units, &state), (54, 536, 0));
-}
-
-#[test]
-fn scen_6() {
-    let input_str = include_str!("../input/15.test_6.txt");
-    let (map, units, state) = parse_input(input_str);
-    assert_eq!(fight(&map, &units, &state), (20, 937, 0));
 }

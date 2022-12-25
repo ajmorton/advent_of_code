@@ -143,7 +143,7 @@ fn find_most_connected_cell(drones: &[Drone]) -> Option<Point> {
 
 #[must_use]
 pub fn run() -> (usize, isize) {
-    let input = include_str!("../input/23.txt").trim_end_matches('\n').split('\n');
+    let input = include_str!("../input/day23.txt").trim_end_matches('\n').split('\n');
 
     let drones: Vec<Drone> = input.into_iter().map(Drone::from_str).map(Result::unwrap).collect();
 

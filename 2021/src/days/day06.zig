@@ -26,7 +26,7 @@ const Fish = struct {
     const Self = @This();
 
     fn init(alloc: std.mem.Allocator, str: []u8) !Self {
-        var nums_iter = std.mem.split(u8, str, ",");
+        var nums_iter = std.mem.tokenize(u8, str, ",\n");
         var countdowns = std.ArrayList(u64).init(alloc);
 
         var i: u32 = 9;

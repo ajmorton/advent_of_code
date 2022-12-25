@@ -79,7 +79,7 @@ fn resources_after(grid: &Grid, n: usize) -> usize {
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let input = include_str!("../input/18.txt").trim_end_matches('\n').split('\n');
+    let input = include_str!("../input/day18.txt").trim_end_matches('\n').split('\n');
     let grid: Grid = input.into_iter().map(|row| row.chars().collect()).collect();
 
     let p1 = resources_after(&grid, 10);

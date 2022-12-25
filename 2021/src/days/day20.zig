@@ -38,7 +38,7 @@ const Image = struct {
 
         var max_c: i32 = 0;
 
-        var lines = std.mem.split(u8, input_str, "\n");
+        var lines = std.mem.tokenize(u8, input_str, "\n");
         var r: i32 = 0;
         while (lines.next()) |line| {
             max_c = @intCast(i32, line.len) - 1;

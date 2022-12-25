@@ -28,7 +28,7 @@ impl FromStr for Request {
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let requests: Vec<Request> = include_str!("../input/3.txt")
+    let requests: Vec<Request> = include_str!("../input/day03.txt")
         .lines()
         .map(Request::from_str)
         .map(Result::unwrap)

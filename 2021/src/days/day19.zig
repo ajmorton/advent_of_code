@@ -15,7 +15,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay19 {
     }
 
     while (sections.next()) |scanner_str| {
-        var lines = std.mem.split(u8, scanner_str, "\n");
+        var lines = std.mem.tokenize(u8, scanner_str, "\n");
         try scanners.append(try Scanner.init(alloc, &lines));
     }
 
@@ -113,7 +113,7 @@ const Scanner = struct {
     beacons: std.ArrayList(Pos),
     const Self = @This();
 
-    fn init(alloc: std.mem.Allocator, lines: *std.mem.SplitIterator(u8)) !Self {
+    fn init(alloc: std.mem.Allocator, lines: *std.mem.TokenIterator(u8)) !Self {
         var beacons = std.ArrayList(Pos).init(alloc);
         var scanner_name = lines.next().?;
         var split = std.mem.split(u8, scanner_name, " ");

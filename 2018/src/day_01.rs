@@ -17,7 +17,7 @@ fn first_repeated_freq(nums: &[isize]) -> Option<isize> {
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let nums: Vec<isize> = include_str!("../input/1.txt")
+    let nums: Vec<isize> = include_str!("../input/day01.txt")
         .lines()
         .map(|x| x.parse().unwrap())
         .collect();

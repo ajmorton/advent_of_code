@@ -9,7 +9,7 @@ def paths_to_target(adapters) -> int:
     return paths_to[adapters[-1]]
 
 def run() -> (int, int):
-    adapters = sorted([int(line) for line in read_as.lines("input/10.txt")])
+    adapters = sorted([int(line) for line in read_as.lines("input/day10.txt")])
 
     jumps = Counter([adapters[i] - adapters[i-1] for i in range(1, len(adapters))])
     jumps[adapters[0]] += 1

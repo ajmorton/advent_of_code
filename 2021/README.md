@@ -3,7 +3,10 @@
 Zig 0.9.0, no toolchain
 
 ## How to run
-`zig build [-Drelease-fast] run`
+```bash
+zig build [-Drelease-fast] run         # Benchmark all days`
+zig test [-Drelease-fast] src/main.zig # Test correctness of days
+```
 
 ## Execution times
 

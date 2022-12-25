@@ -154,7 +154,7 @@ const fn neighbours(pos: Pos) -> [Pos; 4] {
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let input = include_str!("../input/20.txt").trim_end_matches('\n');
+    let input = include_str!("../input/day20.txt").trim_end_matches('\n');
     let map = build_map(input);
     // map.print();
 

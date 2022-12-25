@@ -19,12 +19,12 @@ description:         Solutions for Advent of Code 2016 in Haskell
 dependencies:
 - base >= 4.7 && < 5
 - text
-- split
+- split == 0.2.3.5
 - containers
-- sort
-- MissingH
-- parallel
-- cryptonite
+- sort == 1.0.0.0
+- MissingH == 1.5.0.1
+- parallel == 3.2.2.0
+- cryptonite == 0.30
 - bytestring
 
 library:

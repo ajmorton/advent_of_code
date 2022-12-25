@@ -1,7 +1,7 @@
 import read_as
 
 def run() -> (int, int):
-    pub_1, pub_2 = [int(line) for line in read_as.lines("input/25.txt")]
+    pub_1, pub_2 = [int(line) for line in read_as.lines("input/day25.txt")]
     m = 20201227
 
     loop, n = 1, 1

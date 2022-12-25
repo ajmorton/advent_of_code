@@ -13,7 +13,7 @@ impl Point {
 #[must_use]
 pub fn run() -> (isize, isize) {
     let coord_pattern = Regex::new(r"(-?\d+),(-?\d+),(-?\d+),(-?\d+)").unwrap();
-    let coords: Vec<Point> = include_str!("../input/25.txt")
+    let coords: Vec<Point> = include_str!("../input/day25.txt")
         .trim_end_matches('\n')
         .split('\n')
         .map(|line| {

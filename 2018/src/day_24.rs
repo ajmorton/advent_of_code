@@ -163,7 +163,7 @@ fn fight(immune_system: &[Units], infections: &[Units]) -> Option<(UnitType, isi
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let input: Vec<&str> = include_str!("../input/24.txt").trim_end_matches('\n').split("\n\n").collect();
+    let input: Vec<&str> = include_str!("../input/day24.txt").trim_end_matches('\n').split("\n\n").collect();
 
     let immune_system: Vec<&str> = input[0].split('\n').collect();
     let infections: Vec<&str> = input[1].split('\n').collect();

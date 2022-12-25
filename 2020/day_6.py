@@ -1,7 +1,7 @@
 import read_as
 
 def run() -> (int, int):
-    answer_sets = [list(map(set, group)) for group in read_as.groups("input/6.txt")]
+    answer_sets = [list(map(set, group)) for group in read_as.groups("input/day06.txt")]
 
     sum_any, sum_all = 0, 0
     for answer_set in answer_sets:

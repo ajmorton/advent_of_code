@@ -157,7 +157,7 @@ fn parse_carts(map: &Map) -> HashMap<CartID, Cart> {
 
 #[must_use]
 pub fn run() -> (Pos, Pos) {
-    let input = include_str!("../input/13.txt").trim_end_matches('\n');
+    let input = include_str!("../input/day13.txt").trim_end_matches('\n');
     let rows: Vec<&str> = input.split('\n').collect();
     let map: Vec<Vec<char>> = rows.iter().map(|&r| r.chars().collect()).collect();
 
