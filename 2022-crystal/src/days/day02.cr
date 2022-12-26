@@ -19,8 +19,6 @@ module Day02
 
   def run(input_file : String)
     rounds = File.read(input_file).lines
-    score1 = rounds.map { |r| score(r).first }.sum
-    score2 = rounds.map { |r| score(r).last }.sum
-    return score1, score2
+    return rounds.map { |r| score(r) }.reduce { |l, r| {l[0] + r[0], l[1] + r[1]} }
   end
 end

@@ -2,11 +2,8 @@ module Day13
   extend self
 
   def left_smaller?(left : String, right : String) : Bool
-    # Strip common chars
-    i = 0
-    while left[i] == right[i]
-      i += 1
-    end
+    # Skip common chars
+    i = (0..).index { |i| left[i] != right[i] }
     left, right = left[i..], right[i..]
 
     # Not pictured: What happens when strings are identical
