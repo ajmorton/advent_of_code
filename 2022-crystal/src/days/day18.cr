@@ -18,7 +18,7 @@ module Day18
   end
 
   def make_grid(drops : Array(Pos)) : Hash(Pos, Cell)
-    grid = Hash(Pos, Cell).new
+    grid = Hash(Pos, Cell).new(default_value: Cell::Air)
     # Set Lava cells
     drops.each { |d| grid[d] = Cell::Lava }
 
@@ -41,38 +41,23 @@ module Day18
     return grid
   end
 
-  def run(drops_file : String)
-    drops = File.read(drops_file).lines.map { |line|
-      Pos.from(line.split(",").map(&.to_i))
-    }
-
+  def run(input_file : String)
+    drops = File.read(input_file).lines.map { |line| Pos.from(line.split(",").map(&.to_i)) }
     grid = make_grid(drops)
 
-    p1 = drops.map { |drop|
-      6 - neighbours(drop).count { |n| grid[n] == Cell::Lava }
-    }.sum
+    to_expand = Deque{ {-1, 0, 0} }
 
-    # Propagate steam from edges until no more propagation
-    changes = true
-    while changes
-      changes = false
-      grid.each { |pos, cell|
-        if cell == Cell::Steam
-          neighbours(pos).each { |neigbhour|
-            if grid[neigbhour]? == Cell::Air
-              changes = true
-              grid[neigbhour] = Cell::Steam
-            end
-          }
+    while next_pos = to_expand.shift?
+      neighbours(next_pos).each { |neighbour|
+        if grid[neighbour]? == Cell::Air
+          grid[neighbour] = Cell::Steam
+          to_expand.push(neighbour)
         end
       }
     end
 
-    p2 = p1
-    p2 -= grid.map { |pos, cell|
-      cell == Cell::Air ? neighbours(pos).count { |n| grid[n] == Cell::Lava } : 0
-    }.sum
-
+    p1 = drops.map { |drop| neighbours(drop).count { |n| grid[n] != Cell::Lava } }.sum
+    p2 = drops.map { |drop| neighbours(drop).count { |n| grid[n] == Cell::Steam } }.sum
     return p1, p2
   end
 end

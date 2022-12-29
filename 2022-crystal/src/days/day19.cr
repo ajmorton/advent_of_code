@@ -37,11 +37,13 @@ module Day19
     explored = Set(State).new
 
     while !to_explore.empty?
-      state = to_explore.shift
+      state = to_explore.pop
       time, minerals, robots = state
 
-      # Assume we could buy a geode_bot every turn from now on
-      best_possible_from_state = minerals[0] + robots[0]*(end_time - time) + (0..(end_time - time)).sum
+      # Assume if there are no obsidian robots it'll take at least 1 turn to buy a geode, if there are
+      # no clay at least 2 turns etc. From then on assume a geode can be bought every turn.
+      delay = robots[1] != 0 ? 1 : robots[2] != 0 ? 2 : 3
+      best_possible_from_state = minerals[0] + robots[0]*(end_time - time) + (0..(end_time - time - delay)).sum
 
       # Can't improve. Give up on this branch
       next if best_possible_from_state <= max_geodes
@@ -93,10 +95,5 @@ module Day19
     p1 = blueprints.map_with_index { |bp, i| best_geodes(bp, 24) * (i + 1) }.sum
     p2 = blueprints.first(3).map { |bp| best_geodes(bp, 32) }.product
     return p1, p2
-  end
-
-  # TODO - Speed up code in non-release mode. Currently ~4 seconds
-  def run(input_file : String)
-    return {1589, 29348}
   end
 end

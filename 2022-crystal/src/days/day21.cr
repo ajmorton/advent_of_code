@@ -1,40 +1,31 @@
 module Day21
   extend self
 
-  enum Op
-    Mul
-    Add
-    Sub
-    Div
-    Val
-    Var
-  end
-
   alias Input = Array(Eq) | Int64 | String
 
   class Eq
-    property op : Op
+    property op : String
     property input : Input
 
-    def initialize(@op : Op, @input : Input)
+    def initialize(@op : String, @input : Input)
     end
 
     def eval : Int64
       case @op
-      in Op::Val then return @input.as(Int64)
-      in Op::Mul then return input.as(Array(Eq)).map(&.eval).product
-      in Op::Add then return input.as(Array(Eq)).map(&.eval).sum
-      in Op::Sub then return input.as(Array(Eq)).map(&.eval).reduce { |x, y| x - y }
-      in Op::Div then return input.as(Array(Eq)).map(&.eval).reduce { |x, y| x // y }
-      in Op::Var then raise "Trying to eval Var!"
+      when "Val" then return @input.as(Int64)
+      when "*"   then return input.as(Array(Eq)).map(&.eval).product
+      when "+"   then return input.as(Array(Eq)).map(&.eval).sum
+      when "-"   then return input.as(Array(Eq)).map(&.eval).reduce { |x, y| x - y }
+      when "/"   then return input.as(Array(Eq)).map(&.eval).reduce { |x, y| x // y }
+      else            raise "Trying to eval Var!"
       end
     end
 
     def contains_var? : Bool
       case @op
-      when Op::Var then true
-      when Op::Val then false
-      else              input.as(Array(Eq)).any?(&.contains_var?)
+      when "Var" then true
+      when "Val" then false
+      else            input.as(Array(Eq)).any?(&.contains_var?)
       end
     end
   end
@@ -46,25 +37,25 @@ module Day21
       var_eq, other_eq = other_eq, var_eq
     end
 
-    while var_eq.op != Op::Var
+    while var_eq.op != "Var"
       l, r = var_eq.input.as(Array(Eq))
       if l.contains_var?
         case var_eq.op
-        when Op::Mul then other_eq = Eq.new(Op::Div, [other_eq, r])
-        when Op::Add then other_eq = Eq.new(Op::Sub, [other_eq, r])
-        when Op::Sub then other_eq = Eq.new(Op::Add, [other_eq, r])
-        when Op::Div then other_eq = Eq.new(Op::Mul, [other_eq, r])
-        else              raise "Unreachable"
+        when "*" then other_eq = Eq.new("/", [other_eq, r])
+        when "+" then other_eq = Eq.new("-", [other_eq, r])
+        when "-" then other_eq = Eq.new("+", [other_eq, r])
+        when "/" then other_eq = Eq.new("*", [other_eq, r])
+        else          raise "Unreachable"
         end
         var_eq = l
       else # r.contains_var
         case var_eq.op
-        when Op::Mul then other_eq = Eq.new(Op::Div, [other_eq, l])
-        when Op::Add then other_eq = Eq.new(Op::Sub, [other_eq, l])
+        when "*" then other_eq = Eq.new("/", [other_eq, l])
+        when "+" then other_eq = Eq.new("-", [other_eq, l])
           # Non-commutative!!
-        when Op::Sub then other_eq = Eq.new(Op::Sub, [l, other_eq])
-        when Op::Div then other_eq = Eq.new(Op::Div, [l, other_eq])
-        else              raise "Unreachable"
+        when "-" then other_eq = Eq.new("-", [l, other_eq])
+        when "/" then other_eq = Eq.new("/", [l, other_eq])
+        else          raise "Unreachable"
         end
         var_eq = r
       end
@@ -75,17 +66,12 @@ module Day21
 
   def build_eq(monkey : String, equations : Hash(String, String), p2 : Bool) : Eq
     equation = equations[monkey]
-
-    if p2 && monkey == "humn"
-      return Eq.new(Op::Var, "humn")
-    end
-
-    if num = equation.to_i64?
-      return Eq.new(Op::Val, num)
+    case
+    when p2 && monkey == "humn" then return Eq.new("Var", "humn")
+    when num = equation.to_i64? then return Eq.new("Val", num)
     else
-      l, op_string, r = equation.split(' ')
-      op = {"*" => Op::Mul, "+" => Op::Add, "-" => Op::Sub, "/" => Op::Div}[op_string]
-      return Eq.new(op, [l, r].map { |subeq| build_eq(subeq, equations, p2) })
+      l, op, r = equation.split(' ')
+      return Eq.new(op, [build_eq(l, equations, p2), build_eq(r, equations, p2)])
     end
   end
 

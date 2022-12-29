@@ -39,16 +39,13 @@ module Day17
 
       loop do # Falling
 
-        new_pos = if gas_bursts[i % gas_bursts.size] == '>'
-                    {rock_pos[0] + 1, rock_pos[1]}
-                  else
-                    {rock_pos[0] - 1, rock_pos[1]}
-                  end
+        dir = gas_bursts[i % gas_bursts.size] == '>' ? 1 : -1
+        new_pos = {rock_pos[0] + dir, rock_pos[1]}
+        i += 1
 
         unless conflict(new_pos, rock, map)
           rock_pos = new_pos
         end
-        i += 1
 
         new_pos = {rock_pos[0], rock_pos[1] - 1}
         if conflict(new_pos, rock, map)
