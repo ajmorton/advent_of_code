@@ -13,6 +13,7 @@ import Day06 ( runDay06 )
 import Day07 ( runDay07 )
 import Day08 ( runDay08 )
 import Day09 ( runDay09 )
+import Day10 ( runDay10 )
       
 run :: IO ()
 run = do  
@@ -21,12 +22,13 @@ run = do
     runDay day input
 
 runDay :: Int -> String -> IO ()    
-runDay 1 inp = print $ runDay01 inp
-runDay 2 inp = print $ runDay02 inp
-runDay 3 inp = print $ runDay03 inp
-runDay 4 inp = print $ runDay04 inp
-runDay 5 inp = print $ runDay05 inp
-runDay 6 inp = print $ runDay06 inp
-runDay 7 inp = print $ runDay07 inp
-runDay 8 inp = print $ runDay08 inp
-runDay 9 inp = print $ runDay09 inp
+runDay 01 inp = print $ runDay01 inp
+runDay 02 inp = print $ runDay02 inp
+runDay 03 inp = print $ runDay03 inp
+runDay 04 inp = print $ runDay04 inp
+runDay 05 inp = print $ runDay05 inp
+runDay 06 inp = print $ runDay06 inp
+runDay 07 inp = print $ runDay07 inp
+runDay 08 inp = print $ runDay08 inp
+runDay 09 inp = print $ runDay09 inp
+runDay 10 inp = print $ runDay10 inp
