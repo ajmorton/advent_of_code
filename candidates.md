@@ -5,11 +5,16 @@
 - `Elixir`
 - `OCaml`
 - `Clojure` Lisp-y
+- `Nim`     2.0 out now
+- `Odin`
 
 # Keep an eye on
 
+- `Gleam`
+- `Roc`
 - `Austral` Linear types
 - `Vale`    Memory regions, higher order RAII
+- `Val`     Mutable value semantics
 - `Tao`     Early days functional lang
 - `Koka`    Effect types 
 - `Pony`    Compile time type, memory, and thread safety. Reference Capabilites.
