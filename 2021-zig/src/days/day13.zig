@@ -9,14 +9,14 @@ const Fold = union(enum) { vertical: i32, horizontal: i32 };
 pub fn run(alloc: std.mem.Allocator) !RetDay13 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day13.txt", 1000000);
     defer alloc.free(allText);
-    var sections = std.mem.split(u8, allText, "\n\n");
+    var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
     var points = std.AutoHashMap(Point, void).init(alloc);
     defer points.deinit();
 
-    var point_strs = std.mem.split(u8, sections.next().?, "\n");
+    var point_strs = std.mem.splitScalar(u8, sections.next().?, '\n');
     while (point_strs.next()) |point_str| {
-        var coords = std.mem.split(u8, point_str, ",");
+        var coords = std.mem.splitScalar(u8, point_str, ',');
         try points.put(Point{
             .x = try std.fmt.parseInt(i32, coords.next().?, 10),
             .y = try std.fmt.parseInt(i32, coords.next().?, 10),
@@ -63,10 +63,10 @@ pub fn run(alloc: std.mem.Allocator) !RetDay13 {
 
     var points_iter = points.keyIterator();
     while (points_iter.next()) |point| {
-        min_x = std.math.min(min_x, point.x);
-        max_x = std.math.max(max_x, point.x);
-        min_y = std.math.min(min_y, point.y);
-        max_y = std.math.max(max_y, point.y);
+        min_x = @min(min_x, point.x);
+        max_x = @max(max_x, point.x);
+        min_y = @min(min_y, point.y);
+        max_y = @max(max_y, point.y);
     }
 
     var str_acc = std.ArrayList(u8).init(alloc);

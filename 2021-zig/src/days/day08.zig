@@ -11,14 +11,13 @@ pub fn run(alloc: std.mem.Allocator) !RetDay8 {
     var p2: u32 = 0;
     for (lines.items) |line| {
         // TODO - scanf function
-        var inOut = std.mem.split(u8, line, " | ");
+        var inOut = std.mem.splitSequence(u8, line, " | ");
         var in = inOut.next().?;
         var out = inOut.next().?;
 
-        var out_nums = std.mem.split(u8, out, " ");
+        var out_nums = std.mem.splitScalar(u8, out, ' ');
         while (out_nums.next()) |num| {
-            var num_len = std.mem.len(num);
-            switch (num_len) {
+            switch (num.len) {
                 2, 3, 4, 7 => num_knowns += 1,
                 else => {},
             }
@@ -28,7 +27,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay8 {
         defer segs_to_nums.deinit();
 
         var outNum: u32 = 0;
-        out_nums = std.mem.split(u8, out, " ");
+        out_nums = std.mem.splitScalar(u8, out, ' ');
         while (out_nums.next()) |num_str| {
             outNum *= 10;
             outNum += segs_to_nums.get(createSevenSeg(num_str)).?;
@@ -43,7 +42,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     var map = std.AutoHashMap(SevenSeg, u32).init(alloc);
 
     var knownNums = std.mem.zeroes([10]SevenSeg);
-    var seg_strs = std.mem.split(u8, str, " ");
+    var seg_strs = std.mem.splitScalar(u8, str, ' ');
 
     var len_fives = std.ArrayList(SevenSeg).init(alloc);
     defer len_fives.deinit();
@@ -54,7 +53,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     while (seg_strs.next()) |seg_str| {
         var seven_seg = createSevenSeg(seg_str);
 
-        switch (@popCount(SevenSeg, seven_seg)) {
+        switch (@popCount(seven_seg)) {
             2 => knownNums[1] = seven_seg,
             3 => knownNums[7] = seven_seg,
             4 => knownNums[4] = seven_seg,
@@ -66,7 +65,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     }
 
     // 6 is the only SevenSeg with 6 arms set not masked by 1
-    for (len_sixes.items) |num, i| {
+    for (len_sixes.items, 0..) |num, i| {
         if (!canMask(knownNums[1], num)) {
             knownNums[6] = len_sixes.swapRemove(i);
             break;
@@ -74,7 +73,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     }
 
     // 9 is the only SevenSeg with 6 arms and masked by 4
-    for (len_sixes.items) |num, i| {
+    for (len_sixes.items, 0..) |num, i| {
         if (canMask(knownNums[4], num)) {
             knownNums[9] = len_sixes.swapRemove(i);
             break;
@@ -85,7 +84,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     knownNums[0] = len_sixes.pop();
 
     // 2 is the only SevenSeg with 5 arms that 9 is not masked by
-    for (len_fives.items) |num, i| {
+    for (len_fives.items, 0..) |num, i| {
         if (!canMask(num, knownNums[9])) {
             knownNums[2] = len_fives.swapRemove(i);
             break;
@@ -93,7 +92,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     }
 
     // 3 is the only SevenSeg with 5 arms and masked by 1
-    for (len_fives.items) |num, i| {
+    for (len_fives.items, 0..) |num, i| {
         if (canMask(knownNums[1], num)) {
             knownNums[3] = len_fives.swapRemove(i);
             break;
@@ -113,7 +112,7 @@ const SevenSeg = u7;
 fn createSevenSeg(str: []const u8) SevenSeg {
     var seven_seg: SevenSeg = 0;
     for (str) |arm| {
-        seven_seg |= @as(SevenSeg, 1) << @intCast(u3, arm - 'a');
+        seven_seg |= @as(SevenSeg, 1) << @as(u3, @intCast(arm - 'a'));
     }
     return seven_seg;
 }

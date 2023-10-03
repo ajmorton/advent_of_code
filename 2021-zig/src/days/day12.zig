@@ -39,7 +39,7 @@ const Cave = struct {
     pub fn init(alloc: std.mem.Allocator, lines: std.ArrayList([]const u8)) !Self {
         var connections = std.StringHashMap(Rooms).init(alloc);
         for (lines.items) |line| {
-            var split = std.mem.split(u8, line, "-");
+            var split = std.mem.splitScalar(u8, line, '-');
             var from = split.next().?;
             var to = split.next().?;
 

@@ -4,7 +4,6 @@ const helpers = @import("../helpers.zig");
 pub const RetDay20 = struct { p1: u32, p2: u64 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay20 {
-    _ = alloc;
     return RetDay20{ .p1 = part1(), .p2 = try part2(alloc) };
 }
 
@@ -88,7 +87,7 @@ fn part2(alloc: std.mem.Allocator) !u64 {
         all_states = next_states;
     }
 
-    return std.math.max(wins[0], wins[1]);
+    return @max(wins[0], wins[1]);
 }
 
 fn part1() u32 {

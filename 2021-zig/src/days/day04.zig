@@ -6,9 +6,9 @@ pub const RetDay4 = struct { p1: u32, p2: u32 };
 pub fn run(alloc: std.mem.Allocator) !RetDay4 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day04.txt", 1000000);
     defer alloc.free(allText);
-    var sections = std.mem.split(u8, allText, "\n\n");
+    var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
-    var nums_iter = std.mem.split(u8, sections.next().?, ",");
+    var nums_iter = std.mem.splitScalar(u8, sections.next().?, ',');
     var boards = std.ArrayList(Board).init(alloc);
     defer {
         for (boards.items) |*board| board.deinit();
@@ -22,7 +22,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay4 {
     return play(&boards, &nums_iter);
 }
 
-fn play(boards: *std.ArrayList(Board), nums_iter: *std.mem.SplitIterator(u8)) !RetDay4 {
+fn play(boards: *std.ArrayList(Board), nums_iter: *std.mem.SplitIterator(u8, .scalar)) !RetDay4 {
     var p1: ?u32 = null;
     var p2: u32 = 0;
     var remaining_boards = boards.items.len;
@@ -57,7 +57,7 @@ const Board = struct {
         var nums = std.ArrayList(Cell).init(alloc);
         errdefer nums.deinit();
 
-        var rows = std.mem.split(u8, str, "\n");
+        var rows = std.mem.splitScalar(u8, str, '\n');
         while (rows.next()) |r| {
             var cells = std.mem.tokenize(u8, r, " ");
             while (cells.next()) |cell| {

@@ -24,7 +24,7 @@ const Grid = struct {
     const Self = @This();
 
     pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]const u8)) !Self {
-        var width: i32 = @intCast(i32, input.items[0].len);
+        var width: i32 = @intCast(input.items[0].len);
         var height: i32 = 0;
         var cells = std.ArrayList(Cell).init(alloc);
 
@@ -46,7 +46,7 @@ const Grid = struct {
         if (r < 0 or r >= self.height or c < 0 or c >= self.width) {
             return null;
         }
-        return &self.cells.items[@intCast(u32, r * self.width + c)];
+        return &self.cells.items[@intCast(r * self.width + c)];
     }
 
     fn isLowestPoint(self: Self, r: i32, c: i32) bool {
@@ -106,7 +106,7 @@ const Grid = struct {
             }
         }
 
-        std.sort.sort(i32, basin_sizes.items, {}, comptime std.sort.desc(i32));
+        std.sort.block(i32, basin_sizes.items, {}, comptime std.sort.desc(i32));
         var prod: i32 = 1;
         for (basin_sizes.items[0..3]) |size| prod *= size;
 

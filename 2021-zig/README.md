@@ -1,11 +1,11 @@
 # Advent of Code 2021 - Zig
 
-Zig 0.9.0, no toolchain
+Zig 0.11.0, no toolchain
 
 ## How to run
 ```bash
-zig build [-Drelease-fast] run         # Benchmark all days`
-zig test [-Drelease-fast] src/main.zig # Test correctness of days
+zig build [-Doptimize=ReleaseFast] run         # Benchmark all days`
+zig test [-Doptimize=ReleaseFast] src/main.zig # Test correctness of days
 ```
 
 ## Execution times

@@ -98,13 +98,13 @@ fn performComputation(packet: Packet) u64 {
                 .min => {
                     res = std.math.maxInt(u64);
                     for (op.subpackets.items) |subp| {
-                        res = std.math.min(res, performComputation(subp));
+                        res = @min(res, performComputation(subp));
                     }
                 },
                 .max => {
                     res = std.math.minInt(u64);
                     for (op.subpackets.items) |subp| {
-                        res = std.math.max(res, performComputation(subp));
+                        res = @max(res, performComputation(subp));
                     }
                 },
                 .literal => {},
@@ -126,7 +126,7 @@ fn scanInt(bytes: []const u8, p: *u64, len: u64) !u64 {
 
 fn parse(alloc: std.mem.Allocator, bytes: []const u8, p: *u64) anyerror!Packet {
     var version_num = try scanInt(bytes, p, 3);
-    var type_id = @intToEnum(ID, try scanInt(bytes, p, 3));
+    var type_id = @as(ID, @enumFromInt(try scanInt(bytes, p, 3)));
     if (type_id == .literal) {
         return Packet{ .literal = LiteralPacket{ .version = version_num, .type_id = type_id, .val = try scanLiteral(bytes, p) } };
     } else {

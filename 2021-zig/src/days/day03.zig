@@ -8,7 +8,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay3 {
     var lines = try helpers.asLines(alloc, "input/day03.txt");
     defer lines.deinit();
 
-    const num_bits = @intCast(u5, lines.items[0].len);
+    const num_bits: u5 = @intCast(lines.items[0].len);
     var nums = std.ArrayList(u32).init(alloc);
     for (lines.items) |line| try nums.append(try std.fmt.parseInt(u32, line, 2));
     defer nums.deinit();
@@ -33,7 +33,7 @@ fn getRatings(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, 
     return oxygenRating * c02Rating;
 }
 
-fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, bitCriterion: fn (u1) u1, runningFilter: bool) !u32 {
+fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, bitCriterion: *const fn (u1) u1, runningFilter: bool) !u32 {
     var nums_local = std.ArrayList(u32).init(alloc);
     defer nums_local.deinit();
     try nums_local.appendSlice(nums.items);
@@ -71,7 +71,7 @@ fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, b
 
 fn matchesMask(n: u32, mask: u32, start_bit: u5, mask_len: u5) bool {
     // Shift left to clear top bits
-    var nn = n & ((@intCast(u32, 1) << (start_bit + 1)) - 1);
+    var nn = n & ((@as(u32, 1) << (start_bit + 1)) - 1);
     // Shift right to clear low bits
     nn >>= (start_bit + 1 - mask_len);
     return nn == mask;
@@ -87,7 +87,7 @@ test "maskTest" {
 
 fn mostCommonBit(nums: std.ArrayList(u32), index: i32) u1 {
     var count_ones: i32 = 0;
-    var shift = @intCast(u5, index);
+    var shift: u5 = @intCast(index);
 
     for (nums.items) |n| {
         if (((n >> shift) & 1) == 1) count_ones += 1;

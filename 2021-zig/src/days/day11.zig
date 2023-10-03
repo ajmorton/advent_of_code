@@ -41,7 +41,7 @@ const Grid = struct {
     const Self = @This();
 
     pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]const u8)) !Self {
-        var width: i32 = @intCast(i32, input.items[0].len);
+        var width: i32 = @intCast(input.items[0].len);
         var height: i32 = 0;
         var cells = std.ArrayList(Octopus).init(alloc);
 
@@ -63,12 +63,12 @@ const Grid = struct {
         if (r < 0 or r >= self.height or c < 0 or c >= self.width) {
             return null;
         }
-        return &self.cells.items[@intCast(u32, r * self.width + c)];
+        return &self.cells.items[@intCast(r * self.width + c)];
     }
 
     fn print(self: Self) void {
-        for (self.cells.items) |octopus, i| {
-            if (i % @intCast(usize, self.width) == 0) {
+        for (self.cells.items, 0..) |octopus, i| {
+            if (i % @as(usize, @intCast(self.width)) == 0) {
                 std.debug.print("\n", .{});
             }
             std.debug.print("{d}", .{octopus.charge});

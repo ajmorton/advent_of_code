@@ -23,7 +23,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay23 {
 const Amphipod = enum { None, A, B, C, D };
 const Pos = struct { x: u32, y: u32 };
 
-fn Problem(room_size: u32) type {
+fn Problem(comptime room_size: u32) type {
     return struct {
         fn nodeLT(context: void, a: State, b: State) std.math.Order {
             _ = context;
@@ -48,11 +48,11 @@ fn Problem(room_size: u32) type {
                 try explored_states.put(cur_state.map, {});
                 if (cur_state.map.allAmphisInPlace()) return cur_state.path_cost;
 
-                for (cur_state.map.rooms) |room, x| {
-                    const max_y = if (room == .hall) 0 else cur_state.map.rooms[0].room.len - 1;
+                for (cur_state.map.rooms, 0..) |room, x| {
+                    const max_y = if (room == .hall) 0 else cur_state.map.room_size - 1;
                     var y: u32 = 0;
                     while (y <= max_y) : (y += 1) {
-                        const cur_pos = Pos{ .x = @intCast(u32, x), .y = @intCast(u32, y) };
+                        const cur_pos = Pos{ .x = @intCast(x), .y = @intCast(y) };
                         if (cur_state.map.get(cur_pos) != .None) {
                             try tryAllPositions(cur_state, cur_pos, &queue);
                         }
@@ -63,11 +63,11 @@ fn Problem(room_size: u32) type {
         }
 
         fn tryAllPositions(cur_state: State, cur_pos: Pos, queue: *NodeQueue) !void {
-            for (cur_state.map.rooms) |room, x| {
-                const max_y = if (room == .hall) 0 else cur_state.map.rooms[0].room.len - 1;
+            for (cur_state.map.rooms, 0..) |room, x| {
+                const max_y = if (room == .hall) 0 else cur_state.map.room_size - 1;
                 var y: u32 = 0;
                 while (y <= max_y) : (y += 1) {
-                    const next_pos = Pos{ .x = @intCast(u32, x), .y = @intCast(u32, y) };
+                    const next_pos = Pos{ .x = @intCast(x), .y = @intCast(y) };
                     if (std.meta.eql(cur_pos, next_pos)) {
                         continue;
                     }
@@ -94,9 +94,10 @@ fn Problem(room_size: u32) type {
     };
 }
 
-fn Map(room_size: u32) type {
+fn Map(comptime room_size: u32) type {
     return struct {
         rooms: [11]Cell,
+        room_size: u32 = room_size,
         const Self = @This();
         const Cell = union(enum) { room: [room_size]Amphipod, hall: Amphipod };
 
@@ -154,7 +155,7 @@ fn Map(room_size: u32) type {
 
             const dir: i32 = if (cur_pos.x > end_pos.x) -1 else 1;
             while (pos.x != end_pos.x) {
-                pos.x = @intCast(u32, @intCast(i32, pos.x) + dir);
+                pos.x = @intCast(@as(i32, @intCast(pos.x)) + dir);
                 if (!self.isEmpty(pos)) return false;
             }
 
@@ -196,9 +197,8 @@ fn Map(room_size: u32) type {
 }
 
 fn moveCost(amphipod: Amphipod, start_pos: Pos, end_pos: Pos) !u32 {
-    const dist = start_pos.y +
-        @intCast(u32, try std.math.absInt(@intCast(i32, end_pos.x) - @intCast(i32, start_pos.x))) +
-        end_pos.y;
+    const x_dist = if (end_pos.x > start_pos.x) end_pos.x - start_pos.x else start_pos.x - end_pos.x;
+    const dist = start_pos.y + x_dist + end_pos.y;
     const cost: u32 = switch (amphipod) {
         .A => 1,
         .B => 10,

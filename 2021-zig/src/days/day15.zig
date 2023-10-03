@@ -35,7 +35,7 @@ const Grid = struct {
     const Self = @This();
 
     pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]const u8)) !Self {
-        var width: i32 = @intCast(i32, input.items[0].len);
+        var width: i32 = @intCast(input.items[0].len);
         var height: i32 = 0;
         var cells = std.ArrayList(u32).init(alloc);
 
@@ -55,7 +55,7 @@ const Grid = struct {
         if (r < 0 or r >= self.height or c < 0 or c >= self.width) {
             return null;
         }
-        return self.cells.items[@intCast(u32, r * self.width + c)];
+        return self.cells.items[@intCast(r * self.width + c)];
     }
 
     fn getCell2(self: Self, r: i32, c: i32) ?u32 {
@@ -63,10 +63,14 @@ const Grid = struct {
             return null;
         }
 
-        var rr = @intCast(u32, r) % @intCast(u32, self.height);
-        var cc = @intCast(u32, c) % @intCast(u32, self.width);
-        var cell_orig_map = self.cells.items[rr * @intCast(u32, self.height) + cc];
-        var cell_additional_score = (@intCast(u32, r) / @intCast(u32, self.height)) + (@intCast(u32, c) / @intCast(u32, self.width));
+        var rr = @as(u32, @intCast(r)) % @as(u32, @intCast(self.height));
+        var cc = @as(u32, @intCast(c)) % @as(u32, @intCast(self.width));
+        var cell_orig_map = self.cells.items[rr * @as(u32, @intCast(self.height)) + cc];
+
+        var risk_h = std.math.divFloor(i32, r, self.height) catch unreachable;
+        var risk_w = std.math.divFloor(i32, c, self.width) catch unreachable;
+        var cell_additional_score: u32 = @intCast(risk_h + risk_w);
+
         var cell_score = cell_orig_map + cell_additional_score;
         while (cell_score > 9) cell_score -= 9;
 
@@ -74,8 +78,8 @@ const Grid = struct {
     }
 
     fn print(self: Self) void {
-        for (self.cells.items) |cell, i| {
-            if (i % @intCast(usize, self.width) == 0) {
+        for (self.cells.items, 0..) |cell, i| {
+            if (i % @as(usize, @intCast(self.width)) == 0) {
                 std.debug.print("\n", .{});
             }
             std.debug.print("{d}", .{cell});

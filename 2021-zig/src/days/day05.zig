@@ -30,7 +30,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay5 {
 }
 
 fn parsePoint(str: []const u8) !Point {
-    var coords = std.mem.split(u8, str, ",");
+    var coords = std.mem.splitScalar(u8, str, ',');
     return Point{
         .x = try std.fmt.parseInt(i32, coords.next().?, 10),
         .y = try std.fmt.parseInt(i32, coords.next().?, 10),
@@ -38,7 +38,7 @@ fn parsePoint(str: []const u8) !Point {
 }
 
 fn parsePipe(str: []const u8) !Pipe {
-    var points = std.mem.split(u8, str, " -> ");
+    var points = std.mem.splitSequence(u8, str, " -> ");
     var start = try parsePoint(points.next().?);
     var end = try parsePoint(points.next().?);
     var dir = Direction.Vertical; // TODO - How to write multibranch if expressions

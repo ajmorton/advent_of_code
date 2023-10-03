@@ -7,7 +7,7 @@ const Pair = [2]u8;
 pub fn run(alloc: std.mem.Allocator) !RetDay14 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day14.txt", 1000000);
     defer alloc.free(allText);
-    var sections = std.mem.split(u8, allText, "\n\n");
+    var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
     var initial_molecule = sections.next().?;
     var insertion_map = try parseInsertionMap(alloc, sections.next().?);
@@ -32,7 +32,7 @@ fn parseInsertionMap(alloc: std.mem.Allocator, lines: []const u8) !std.AutoHashM
     var insertion_map = std.AutoHashMap(Pair, u8).init(alloc);
     var insertions_iter = std.mem.tokenize(u8, lines, "\n");
     while (insertions_iter.next()) |insertion| {
-        var in_out = std.mem.split(u8, insertion, " -> ");
+        var in_out = std.mem.splitSequence(u8, insertion, " -> ");
         var in = in_out.next().?;
         var out = in_out.next().?[0];
         try insertion_map.put(in[0..2].*, out);
@@ -75,7 +75,7 @@ fn letterScore(letter_freqs: [26]u64) u64 {
     var min_occ: u64 = std.math.maxInt(u64);
     for (letter_freqs) |letter_freq| {
         if (letter_freq > 0) {
-            min_occ = std.math.min(min_occ, letter_freq);
+            min_occ = @min(min_occ, letter_freq);
         }
     }
     return max_occ - min_occ;

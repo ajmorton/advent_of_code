@@ -34,7 +34,9 @@ pub fn naiveBenchmarkAll(run_for: u64) !void {
 }
 
 pub fn naiveBenchmark(mod: anytype, run_for: u64) !void {
-    std.debug.print("{}: ", .{mod});
+    // Module names are prefixed with the parent module, e.g. days.day01
+    // Strip the "days." prefix
+    std.debug.print("{s}: ", .{@typeName(mod)[5..]});
 
     // run once to warm up and determine number of runs
     const baseline_start = std.time.nanoTimestamp();
@@ -45,10 +47,10 @@ pub fn naiveBenchmark(mod: anytype, run_for: u64) !void {
     if (baseline_runtime > std.time.ns_per_us and baseline_runtime < std.time.ns_per_s * (run_for / 2)) {
         var total: u64 = 0;
         var run: u32 = 1;
-        var num_runs = @intCast(u64, @divFloor(run_for * std.time.ns_per_s, baseline_runtime) + 1);
+        var num_runs: u64 = @intCast(@divFloor(run_for * std.time.ns_per_s, baseline_runtime) + 1);
         if (num_runs == 1) {
             // Test is too slow to run multiple times. Just take the baseline run time
-            total = @intCast(u64, baseline_runtime);
+            total = @intCast(baseline_runtime);
             run = std.math.maxInt(u32);
         }
 
@@ -56,13 +58,13 @@ pub fn naiveBenchmark(mod: anytype, run_for: u64) !void {
             std.debug.print("\x1B[8G{} of {}", .{ run, num_runs });
             const start_time = std.time.nanoTimestamp();
             _ = try mod.run(gpa);
-            const run_time = @intCast(u64, std.time.nanoTimestamp() - start_time);
+            const run_time: u64 = @intCast(std.time.nanoTimestamp() - start_time);
             total += run_time;
         }
 
         final_time = @divFloor(total, num_runs);
     } else {
-        final_time = @intCast(u64, baseline_runtime);
+        final_time = @intCast(baseline_runtime);
     }
 
     const green = "\x1B[;32m";

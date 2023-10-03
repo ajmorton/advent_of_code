@@ -6,7 +6,7 @@ pub const RetDay19 = struct { p1: i32, p2: i32 };
 pub fn run(alloc: std.mem.Allocator) !RetDay19 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day19.txt", 1000000);
     defer alloc.free(allText);
-    var sections = std.mem.split(u8, allText, "\n\n");
+    var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
     var scanners = std.ArrayList(Scanner).init(alloc);
     defer {
@@ -43,7 +43,7 @@ fn numBeacons(alloc: std.mem.Allocator, scanners: []Scanner) !i32 {
 
 fn farthestScanners(scanners: []Scanner) !i32 {
     var biggest_dist: i32 = 0;
-    for (scanners) |s1, i| {
+    for (scanners, 0..) |s1, i| {
         for (scanners[i + 1 ..]) |s2| {
             var manhattan = try s1.pos.manhattanDist(s2.pos);
             if (manhattan > biggest_dist) biggest_dist = manhattan;
@@ -113,15 +113,15 @@ const Scanner = struct {
     beacons: std.ArrayList(Pos),
     const Self = @This();
 
-    fn init(alloc: std.mem.Allocator, lines: *std.mem.TokenIterator(u8)) !Self {
+    fn init(alloc: std.mem.Allocator, lines: *std.mem.TokenIterator(u8, .any)) !Self {
         var beacons = std.ArrayList(Pos).init(alloc);
         var scanner_name = lines.next().?;
-        var split = std.mem.split(u8, scanner_name, " ");
+        var split = std.mem.splitScalar(u8, scanner_name, ' ');
         _ = split.next();
         _ = split.next();
         var scanner_id = try std.fmt.parseInt(i32, split.next().?, 10);
         while (lines.next()) |line| {
-            var vals = std.mem.split(u8, line, ",");
+            var vals = std.mem.splitScalar(u8, line, ',');
             try beacons.append(Pos{
                 .x = try std.fmt.parseInt(i32, vals.next().?, 10),
                 .y = try std.fmt.parseInt(i32, vals.next().?, 10),
@@ -158,7 +158,7 @@ fn positionScanners(alloc: std.mem.Allocator, scanners: *std.ArrayList(Scanner))
     while (scanners.items.len > 1) try unknown_scanners.append(scanners.orderedRemove(1));
 
     // Sort beacons in the known scanner. This is required for offsetOverlapScore.
-    std.sort.sort(Pos, scanners.items[0].beacons.items, {}, posLT);
+    std.sort.block(Pos, scanners.items[0].beacons.items, {}, posLT);
 
     while (unknown_scanners.items.len > 0) {
         var i: u32 = 0;
@@ -177,7 +177,7 @@ fn positionScanners(alloc: std.mem.Allocator, scanners: *std.ArrayList(Scanner))
                         beacon.* = beacon.*.rotate(found.rot);
                         beacon.* = beacon.*.add(found.offset);
                     }
-                    std.sort.sort(Pos, found_scanner.beacons.items, {}, posLT);
+                    std.sort.block(Pos, found_scanner.beacons.items, {}, posLT);
 
                     try scanners.append(found_scanner);
                     break;
@@ -207,7 +207,7 @@ fn findRotationAndOffset(alloc: std.mem.Allocator, known_scanner: Scanner, unkno
         for (unknown_scanner.beacons.items) |beacon| {
             try rotated.append(beacon.rotate(rot));
         }
-        std.sort.sort(Pos, rotated.items, {}, posLT);
+        std.sort.block(Pos, rotated.items, {}, posLT);
 
         for (rotated.items) |pot_point| {
             for (known_scanner.beacons.items) |known_pos| {

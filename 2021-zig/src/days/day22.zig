@@ -26,24 +26,24 @@ pub fn run(alloc: std.mem.Allocator) !RetDay22 {
 }
 
 fn parseBox(line: []const u8) !Box {
-    var split = std.mem.split(u8, line, " ");
+    var split = std.mem.splitScalar(u8, line, ' ');
     var on_off = std.mem.eql(u8, split.next().?, "on");
 
     var coords = split.next().?;
 
-    var coord_split = std.mem.split(u8, coords, ",");
+    var coord_split = std.mem.splitScalar(u8, coords, ',');
     var x_range = coord_split.next().?;
-    var x_min_max = std.mem.split(u8, x_range[2..], "..");
+    var x_min_max = std.mem.splitSequence(u8, x_range[2..], "..");
     var x_min = try std.fmt.parseInt(i32, x_min_max.next().?, 10);
     var x_max = try std.fmt.parseInt(i32, x_min_max.next().?, 10);
 
     var y_range = coord_split.next().?;
-    var y_min_max = std.mem.split(u8, y_range[2..], "..");
+    var y_min_max = std.mem.splitSequence(u8, y_range[2..], "..");
     var y_min = try std.fmt.parseInt(i32, y_min_max.next().?, 10);
     var y_max = try std.fmt.parseInt(i32, y_min_max.next().?, 10);
 
     var z_range = coord_split.next().?;
-    var z_min_max = std.mem.split(u8, z_range[2..], "..");
+    var z_min_max = std.mem.splitSequence(u8, z_range[2..], "..");
     var z_min = try std.fmt.parseInt(i32, z_min_max.next().?, 10);
     var z_max = try std.fmt.parseInt(i32, z_min_max.next().?, 10);
 
@@ -145,23 +145,23 @@ const Box = struct {
             if (self.compare(init_area) == .independent) {
                 return 0;
             } else {
-                var min_x = std.math.max(init_area.min_x, self.min_x);
-                var max_x = std.math.min(init_area.max_x, self.max_x);
-                var min_y = std.math.max(init_area.min_y, self.min_y);
-                var max_y = std.math.min(init_area.max_y, self.max_y);
-                var min_z = std.math.max(init_area.min_z, self.min_z);
-                var max_z = std.math.min(init_area.max_z, self.max_z);
+                var min_x = @max(init_area.min_x, self.min_x);
+                var max_x = @min(init_area.max_x, self.max_x);
+                var min_y = @max(init_area.min_y, self.min_y);
+                var max_y = @min(init_area.max_y, self.max_y);
+                var min_z = @max(init_area.min_z, self.min_z);
+                var max_z = @min(init_area.max_z, self.max_z);
 
-                var len_x = @intCast(u64, max_x - min_x + 1);
-                var len_y = @intCast(u64, max_y - min_y + 1);
-                var len_z = @intCast(u64, max_z - min_z + 1);
+                var len_x: u64 = @intCast(max_x - min_x + 1);
+                var len_y: u64 = @intCast(max_y - min_y + 1);
+                var len_z: u64 = @intCast(max_z - min_z + 1);
                 return len_x * len_y * len_z;
             }
         }
 
-        var len_x = @intCast(u64, self.max_x - self.min_x + 1);
-        var len_y = @intCast(u64, self.max_y - self.min_y + 1);
-        var len_z = @intCast(u64, self.max_z - self.min_z + 1);
+        var len_x: u64 = @intCast(self.max_x - self.min_x + 1);
+        var len_y: u64 = @intCast(self.max_y - self.min_y + 1);
+        var len_z: u64 = @intCast(self.max_z - self.min_z + 1);
         return len_x * len_y * len_z;
     }
 };
@@ -172,7 +172,7 @@ fn axisOverlap(a_min: i32, a_max: i32, b_min: i32, b_max: i32) ?Overlap {
         return null;
     }
 
-    return Overlap{ .min = std.math.max(a_min, b_min), .max = std.math.min(a_max, b_max) };
+    return Overlap{ .min = @max(a_min, b_min), .max = @min(a_max, b_max) };
 }
 
 const BoxList = std.ArrayList(Box);

@@ -33,8 +33,8 @@ fn findBestPos(crabsAtPos: helpers.Counter(u32), part1: bool) u64 {
 
     var posIter = crabsAtPos.keyIterator();
     while (posIter.next()) |pos| {
-        min_pos = std.math.min(pos.*, min_pos);
-        max_pos = std.math.max(pos.*, max_pos);
+        min_pos = @min(pos.*, min_pos);
+        max_pos = @max(pos.*, max_pos);
     }
 
     var min_cost: u64 = std.math.maxInt(u64);
@@ -49,7 +49,7 @@ fn findBestPos(crabsAtPos: helpers.Counter(u32), part1: bool) u64 {
             var num_crabs: u64 = kv.value_ptr.*;
             move_cost += num_crabs * fuel_cost;
         }
-        min_cost = std.math.min(min_cost, move_cost);
+        min_cost = @min(min_cost, move_cost);
     }
     return min_cost;
 }

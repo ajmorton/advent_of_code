@@ -13,10 +13,14 @@ pub fn run(alloc: std.mem.Allocator) !RetDay18 {
     var p1 = try magnitudeOfSum(alloc, lines.items);
 
     var p2: u32 = std.math.minInt(u32);
-    for (lines.items) |line1, i| {
+    for (lines.items, 0..) |line1, i| {
         for (lines.items[i + 1 ..]) |line2| {
-            p2 = std.math.max(p2, try magnitudeOfSum(alloc, &[_][]const u8{ line1, line2 }));
-            p2 = std.math.max(p2, try magnitudeOfSum(alloc, &[_][]const u8{ line2, line1 }));
+            // TODO - How to pass these in as anonymous list literals?
+            // e.g. p2 = @max(p2, try magnitudeOfSum(alloc, .{line1, line2}));
+            var foo: [2][]const u8 = .{ line1, line2 };
+            var foo2: [2][]const u8 = .{ line2, line1 };
+            p2 = @max(p2, try magnitudeOfSum(alloc, &foo));
+            p2 = @max(p2, try magnitudeOfSum(alloc, &foo2));
         }
     }
 
@@ -47,7 +51,7 @@ fn addNums(alloc: std.mem.Allocator, a: Num, b: Num) !Num {
 }
 
 fn addRight(num: *Num, pos: u32, val: u32) void {
-    for (num.items) |*node, i| {
+    for (num.items, 0..) |*node, i| {
         if (i > pos and node.* == .val) {
             node.*.val += val;
             break;
@@ -56,9 +60,9 @@ fn addRight(num: *Num, pos: u32, val: u32) void {
 }
 
 fn addLeft(num: *Num, pos: u32, val: u32) void {
-    var i: i32 = @intCast(i32, pos - 1);
+    var i: i32 = @intCast(pos - 1);
     while (i >= 0) : (i -= 1) {
-        var node = &num.items[@intCast(u32, i)];
+        var node = &num.items[@intCast(i)];
         if (node.* == .val) {
             node.*.val += val;
             return;
@@ -68,16 +72,16 @@ fn addLeft(num: *Num, pos: u32, val: u32) void {
 
 fn explode(num: *Num) bool {
     var depth: u32 = 0;
-    for (num.items) |node, i| {
+    for (num.items, 0..) |node, i| {
         if (node == .down) depth += 1;
         if (node == .up) depth -= 1;
         if (depth >= 5) {
-            addLeft(num, @intCast(u32, i + 1), num.items[i + 1].val);
-            addRight(num, @intCast(u32, i + 2), num.items[i + 2].val);
+            addLeft(num, @intCast(i + 1), num.items[i + 1].val);
+            addRight(num, @intCast(i + 2), num.items[i + 2].val);
             num.items[i + 1] = .{ .val = 0 };
             _ = num.orderedRemove(i); // [
-            _ = num.orderedRemove(@intCast(u32, i + 1)); // second val
-            _ = num.orderedRemove(@intCast(u32, i + 1)); // ]
+            _ = num.orderedRemove(@intCast(i + 1)); // second val
+            _ = num.orderedRemove(@intCast(i + 1)); // ]
             return true;
         }
     }
@@ -106,7 +110,7 @@ fn magnitude(nodes: []Node, p: *u32) MagnitudeError!u32 {
 }
 
 fn split(num: *Num) !bool {
-    for (num.items) |node, i| {
+    for (num.items, 0..) |node, i| {
         if (node == .val and node.val >= 10) {
             var left = try std.math.divFloor(u32, node.val, 2);
             var right = try std.math.divCeil(u32, node.val, 2);

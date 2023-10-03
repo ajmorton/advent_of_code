@@ -15,7 +15,7 @@ pub fn asLines(alloc: std.mem.Allocator, file_name: []const u8) !std.ArrayList([
 pub fn readInAs(alloc: std.mem.Allocator, file_name: []const u8, comptime T: type) !std.ArrayList(T) {
     var file_contents = std.ArrayList(T).init(alloc);
 
-    const file = try std.fs.cwd().openFile(file_name, .{ .read = true });
+    const file = try std.fs.cwd().openFile(file_name, .{});
     defer file.close();
 
     while (try file.reader().readUntilDelimiterOrEofAlloc(alloc, '\n', 4096)) |line| {

@@ -38,7 +38,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay17 {
             while (!box.beyondBox(x, y)) {
                 if (box.inBox(x, y)) {
                     total_possibilities += 1;
-                    max_y_vel = std.math.max(max_y_vel, init_y_vel);
+                    max_y_vel = @max(max_y_vel, init_y_vel);
                     break;
                 }
 

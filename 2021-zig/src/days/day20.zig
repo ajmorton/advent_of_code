@@ -6,7 +6,7 @@ pub const RetDay20 = struct { p1: i32, p2: i32 };
 pub fn run(alloc: std.mem.Allocator) !RetDay20 {
     var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day20.txt", 1000000);
     defer alloc.free(allText);
-    var sections = std.mem.split(u8, allText, "\n\n");
+    var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
     var algorithm: []const u8 = sections.next().?;
     var image = try Image.init(alloc, sections.next().?);
@@ -41,7 +41,7 @@ const Image = struct {
         var lines = std.mem.tokenize(u8, input_str, "\n");
         var r: i32 = 0;
         while (lines.next()) |line| {
-            max_c = @intCast(i32, line.len) - 1;
+            max_c = @as(i32, @intCast(line.len)) - 1;
             var c: i32 = 0;
             for (line) |char| {
                 if (char == '#') try lit_pixels.put(Pos{ .r = r, .c = c }, {});
@@ -82,8 +82,8 @@ const Image = struct {
         }
     }
 
-    fn scorePixel(self: Self, r: i32, c: i32, odd_step: bool) i32 {
-        var score: i32 = 0;
+    fn scorePixel(self: Self, r: i32, c: i32, odd_step: bool) u32 {
+        var score: u32 = 0;
 
         var rr: i32 = r - 1;
         while (rr <= r + 1) : (rr += 1) {
@@ -104,7 +104,7 @@ const Image = struct {
         while (r <= self.max_r + 1) : (r += 1) {
             var c = self.min_r - 1;
             while (c <= self.max_r + 1) : (c += 1) {
-                var score = @intCast(u32, self.scorePixel(r, c, odd_step));
+                var score: u32 = self.scorePixel(r, c, odd_step);
                 if (algorithm[score] == '#') {
                     try next_pixels.put(Pos{ .r = r, .c = c }, {});
                 }
