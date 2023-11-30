@@ -1,14 +1,19 @@
 import days/day01
 import days/day02
 import days/day03
+import ./benchmark
+
 import strutils
+import times
 
 # Run a day
-proc runDay(day: int) =
+proc runDay(day: int, bench: bool) =
   # zero pad if needed
   let dayStr = align(intToStr(day), 2, '0')
   let inputFileStr = "./input/day" & dayStr & ".txt"
   
+  let startTime = epochTime()
+
   let (part1, part2) = case day 
   of 01: day01.run(inputFileStr)
   of 02: day02.run(inputFileStr)
@@ -18,17 +23,21 @@ proc runDay(day: int) =
     echo "\t\x1b[1;31mInvalid day ", dayStr, " received\x1b[1;0m"
     quit 1
 
+  let runtime = epochTime() - startTime
+
   echo "Running day", dayStr
-  echo "    Part1: ", part1
-  echo "    Part2: ", part2
+  echo "    Part1:   ", part1
+  echo "    Part2:   ", part2
+  if bench:
+    echo "    runtime: ", formatTimeStr(runtime)
   echo ""
 
-proc aoc_2023_nim(day: int = 0): int =
+proc aoc_2023_nim(day: int = 0, bench: bool = false): int =
   if day == 0:
     for i in 1..25:
-      runDay(i)
+      runDay(i, bench)
   else:
-    runDay(day)
+    runDay(day, bench)
 
 when isMainModule:
   # cligen handles all our argparsing for us! 

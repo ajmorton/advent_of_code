@@ -4,14 +4,10 @@ Nim 2.0.0
 
 ## How to run
 ```bash
-# Run all days
-nimble run
-
-# Run a specific day
-nimble run -- -day=2
-
-# Run tests
-nimble test
+nimble run                    # Run all days
+nimble run -- -d 2            # Run a specific day
+nimble run -d:release -- -d 2 # Benchmark a specific day
+nimble test                   # Run tests
 ```
 
 ## Execution times
