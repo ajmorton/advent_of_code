@@ -4,23 +4,25 @@
 
 - `Elixir`
 - `OCaml`
-- `Clojure` Lisp-y
+- `Clojure`
 - `Odin`
 
 # Keep an eye on
 
-- `Gleam`
-- `Roc`
+- `Gleam`   BEAM language, [labeled arguments](https://erikarow.land/notes/gleam-syntax) 
+- `Noulith` Custom made for AoC
 - `Austral` Linear types
 - `Vale`    Memory regions, higher order RAII
-- `Val`     Mutable value semantics
+- `Hylo`    Mutable value semantics
 - `Tao`     Early days functional lang
+- `Roc`     Another Haskell competitor
+- `Flix`    Effect system, regions to allow mutability inside pure functions
 - `Koka`    Effect types 
 - `Pony`    Compile time type, memory, and thread safety. Reference Capabilites.
 
 ## One-offs
 
-- `APL`      Extremely concise formulas
+- `APL`      Array programming
 - `Assembly` What's going on under the hood
 - `Prolog`   Logic programming
 - `Idris`    Dependent types
