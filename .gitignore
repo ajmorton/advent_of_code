@@ -1,2 +1,4 @@
 **.pyc
 **.DS_Store
+# Stores session for downloading inputs via script
+.aoc_session_cookie

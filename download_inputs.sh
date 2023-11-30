@@ -1,22 +1,48 @@
 #! /bin/bash
 
+# Always run from the script dir
+script_dirname=$(dirname "$0")
+pushd "$script_dirname" > /dev/null || exit 1
+trap 'popd > /dev/null' 0 1 
+
 if [ -z "${AOC_SESSION_COOKIE}" ] ; then
-    echo "No session cookie found. Please set with \`export AOC_SESSION_COOKIE=<your_cookie_here>\`"
-    echo "The cookie can be fetched by logging into to AoC and (on FireFox) right clicking any page" 
-    echo "and hitting 'Inspect'. Then in the 'Storage' tab take the value of the cookie names 'session'"
-    exit 1
+    if [ -f ".aoc_session_cookie" ] ; then
+        echo "Loading session cookie from file"
+        AOC_SESSION_COOKIE=$(cat .aoc_session_cookie)
+        export AOC_SESSION_COOKIE
+    else
+        echo "No session cookie found. Please set with \`export AOC_SESSION_COOKIE=<your_cookie_here>\`"
+        echo "The cookie can be fetched by logging into to AoC and (on FireFox) right clicking any page" 
+        echo "and hitting 'Inspect'. Then in the 'Storage' tab take the value of the cookie names 'session'"
+        exit 1
+    fi
 fi
 
 function download_for_year() {
     year=$1
     path_to_input_folder=$2
 
+    
     if [ ! -d "${path_to_input_folder}" ] ; then
         echo "Error. Folder ${path_to_input_folder} does not exist."
         exit 1
     fi
 
     for day_num in $(seq -w 1 25); do
+
+        # Check that the puzzle has been released.
+        # Use the EST timezone as puzzles release at midnight EST.
+        export TZ=EST
+        today=$(date +%Y-%m-%d)
+        puzzle_release_date="${year}-12-${day_num}"
+
+        if [[ "$today" < "$puzzle_release_date" ]]; then
+            echo "${year} Day ${day_num} not released yet! Currently it is $(date)"
+            return
+        fi
+        export TZ=
+
+
         input_file=${path_to_input_folder}/day${day_num}.txt
         if [ ! -f "${input_file}" ] ; then
             echo "Missing ${input_file}. Downloading.."
