@@ -2,6 +2,9 @@
 
 if [ -z "${AOC_SESSION_COOKIE}" ] ; then
     echo "No session cookie found. Please set with \`export AOC_SESSION_COOKIE=<your_cookie_here>\`"
+    echo "The cookie can be fetched by logging into to AoC and (on FireFox) right clicking any page" 
+    echo "and hitting 'Inspect'. Then in the 'Storage' tab take the value of the cookie names 'session'"
+    exit 1
 fi
 
 function download_for_year() {
@@ -26,6 +29,7 @@ function download_for_year() {
     done
 }
 
+download_for_year "2023" "2023-nim/input"
 download_for_year "2022" "2022-crystal/input"
 download_for_year "2021" "2021-zig/input"
 download_for_year "2020" "2020-python/input"

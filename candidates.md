@@ -5,7 +5,6 @@
 - `Elixir`
 - `OCaml`
 - `Clojure` Lisp-y
-- `Nim`     2.0 out now
 - `Odin`
 
 # Keep an eye on
