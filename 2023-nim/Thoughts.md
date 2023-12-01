@@ -29,3 +29,23 @@ return input.splitLines.map(parseInt)
 
 I've started with 2019 day01 since 2023 doesn't release until tomorrow. Adding imports is easy. Testing is just `check foo == bar`. The code is short and concise.  
 I'm taking a while to find stdlib functions like sum and fold, but that's on me and my lack of language familiarity. One annoying things is I've needed to include `math` to get the `sum` function to fold an array of ints, and once it's included nimble annoys the C linker which complains that the math lib is included twice `ld: warning: ignoring duplicate libraries: '-lm'`. 
+
+
+## Day 01 - Trebuchet?!
+
+Mostly smooth sailing. A couple of issues finding stdlib functions but I'm just spoiled by IDEs with better autocomplete and linting.  Using anonymous functions requires importing the sugar library which implies it's not part of the language grammar? Must be some macro magic going on. The callstack and error messages feel a bit barebones compared to previous AoC languages. I'm also having issues reasoning about perf. I had the (simplified) code 
+```nim
+    while str.len() > 0:
+        if str.startsWith(foo)
+            # Do something
+    str = str[1..^1]
+```
+which modifies and re-assigns the string on each iteration and thought I could get rid of the string assignments with
+```nim
+    var i = 0
+    while i < str.len():
+        if str[i..^1].startsWith(foo)
+            # Do something
+    i += 1
+```
+but this comes out slower(?). I suspect string slicing creates a brand new string instead of doing some pointer arith like I wanted. Perf results are a bit bouncy bouncy, roughly halving after the first run and then ~10% deviance on each subsequent run. Will need to clean that up at some point. Runtime is sitting around 1.9 ms. Would like to get that under 1 at some point.

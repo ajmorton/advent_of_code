@@ -1,61 +1,28 @@
-import strutils, sequtils, math
+import math, sequtils, strutils, sugar
 
-proc numFromStr(str: string): int = 
-    let nums = filter(str.toSeq(), isDigit)
-    return parseInt(nums[0] & nums[^1])
-
-proc toNumbers(str: string): seq[int] = 
-    var nums: seq[int]
+# Find the first and last number in a string and return them as a concatenated int. The numbers can be digits (0, 1)
+# or words ("eight", "two"). Important! Number strings can overlap. "eightwo" returns 82
+proc firstAndLastDigitOrNumber(str: string, includeStrs: bool): int = 
+    # Local copy of str we can mutate. 
     var localStr = str
+    var (firstNum, lastNum) = (-1, -1)
 
     while localStr.len() > 0:
-        if localStr.startsWith("one"):
-            nums.add(1)
-        elif localStr.startsWith("two"):
-            nums.add(2)
-        elif localStr.startsWith("three"):
-            nums.add(3)
-        elif localStr.startsWith("four"):
-            nums.add(4)
-        elif localStr.startsWith("five"):
-            nums.add(5)
-        elif localStr.startsWith("six"):
-            nums.add(6)
-        elif localStr.startsWith("seven"):
-            nums.add(7)
-        elif localStr.startsWith("eight"):
-            nums.add(8)
-        elif localStr.startsWith("nine"):
-            nums.add(9)
-        elif localStr[0] == '1':
-            nums.add(1)
-        elif localStr[0] == '2':
-            nums.add(2)
-        elif localStr[0] == '3':
-            nums.add(3)
-        elif localStr[0] == '4':
-            nums.add(4)
-        elif localStr[0] == '5':
-            nums.add(5)
-        elif localStr[0] == '6':
-            nums.add(6)
-        elif localStr[0] == '7':
-            nums.add(7)
-        elif localStr[0] == '8':
-            nums.add(8)
-        elif localStr[0] == '9':
-            nums.add(9)
-
+        for i, numStr in ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]:
+            if (includeStrs and localStr.startsWith(numStr)) or (localStr[0].ord == ('0'.ord + i + 1)): 
+                if firstNum == -1:
+                    firstNum = i + 1
+                lastNum = i + 1
         localStr = localStr[1..^1]
 
-    return nums
+    return 10 * firstNum + lastNum
 
-proc numOrNumStrFromStr(str: string): int = 
-    let nums = toNumbers(str)
-    return 10 * nums[0] + nums[^1]
+proc firstAndLastDigit(line: string): int =
+    let digits = line.filterIt(it in Digits)
+    return parseInt(digits[0] & digits[^1])
 
 proc run*(inputFile: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines()
-    let nums = lines.map(numFromStr)
-
-    return (sum(nums), lines.map(numOrNumStrFromStr).sum)
+    let p1 = lines.map(firstAndLastDigit).sum
+    let p2 = lines.map(l => firstAndLastDigitOrNumber(l, true)).sum
+    return (p1, p2)
