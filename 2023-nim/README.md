@@ -15,7 +15,7 @@ nimble test                   # Run tests
 | Day    | Runtime      |     |
 | :----: | :----------: | :-: |
 | day01  |   1.917 ms   |     |
-| day02  |              |     |
+| day02  | 388.861 µs   |  ✅  |
 | day03  |              |     |
 | day04  |              |     |
 | day05  |              |     |

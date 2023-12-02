@@ -12,3 +12,4 @@ bin           = @["aoc_2023_nim"]
 
 requires "nim >= 2.0.0"
 requires "cligen >= 1.6.16"
+requires "fusion >= 1.2"

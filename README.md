@@ -6,7 +6,7 @@ Solutions for Advent of Code, written in different languages when I feel like pl
 
 | Year                    | Language       | Toolchain        |
 | :---------------------: | :------------- | :--------------: |
-| [2022](./2023-nim)      | Nim 2.0.0      | nimble           |
+| [2023](./2023-nim)      | Nim 2.0.0      | nimble           |
 | [2022](./2022-crystal)  | Crystal 1.6.1  | N/A              |
 | [2021](./2021-zig)      | Zig 0.9.0      | N/A              |
 | [2020](./2020-python)   | Python 3.8.5   | N/A              |

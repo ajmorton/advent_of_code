@@ -1,51 +1,21 @@
-import strutils, sequtils, sugar
-
-proc colourAndCount(str: string): (int, string) =
-    let split = str.strip().split(' ')
-    let count = split[0].parseInt
-    let colour = split[1]
-    return (count, colour)
+import strutils, tables
+import fusion/matching
 
 proc run*(input_file: string): (int, int) =
-    let input = readFile(input_file).strip(leading = false)
-    var lines = input.splitLines()
-    var legalGames = 0
-    var p2Sum = 0
+    let lines = readFile(input_file).strip(leading = false).splitLines()
+    var (p1, p2) = (0, 0)
 
-    for l in lines:
-        let split = l.split(':')
-        let (gameId, phases) = (split[0], split[1])
-        let ps = phases.split(";")
+    for line in lines:
+        [@gameId, all @allPulls] := line.split({':', ';', ','})
         let gameNum = gameId["Game ".len..^1].parseInt
-        var isLegal = true
 
-        var (nred, ngreen, nblue) = (0, 0, 0)
-        for p in ps:
+        var counts = {"red": 0, "green": 0, "blue": 0}.toTable
+        for pull in allPulls:
+            [@count, @colour] := pull.strip.split(' ')
+            counts[colour] = max(counts[colour], count.parseInt)
 
-            # Part 1
-            let colourCounts = p.strip().split(',').map(colourAndCount)
-            for (count, colour) in colourCounts:
-                if colour == "red" and count > 12:
-                    isLegal = false
-                    break
-                elif colour == "green" and count > 13:
-                    isLegal = false
-                    break
-                elif colour == "blue" and count > 14:
-                    isLegal = false
-                    break
-
-            # Part 2
-            for (count, colour) in colourCounts:
-                if colour == "red":
-                    nred = max(nred, count)
-                elif colour == "green":
-                    ngreen = max(ngreen, count)
-                elif colour == "blue":
-                    nblue = max(nblue, count)
-        p2Sum += (nred * ngreen * nblue)
+        if (counts["red"] <= 12 and counts["green"] <= 13 and counts["blue"] <= 14):
+            p1 += gameNum
+        p2 += (counts["red"] * counts["green"] * counts["blue"])
             
-        if isLegal:
-            legalGames += gameNum
-
-    return (legalGames, p2Sum)
+    return (p1, p2)

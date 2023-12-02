@@ -49,3 +49,22 @@ which modifies and re-assigns the string on each iteration and thought I could g
     i += 1
 ```
 but this comes out slower(?). I suspect string slicing creates a brand new string instead of doing some pointer arith like I wanted. Perf results are a bit bouncy bouncy, roughly halving after the first run and then ~10% deviance on each subsequent run. Will need to clean that up at some point. Runtime is sitting around 1.9 ms. Would like to get that under 1 at some point.
+
+## Day 02 - Cube Conundrum
+~~Time to sort out regex parsing.~~  
+edit: Turns out using repeated capture groups are a minor-grade nightmare in Nim. First up we have the `std/re` package. Does regex matching, cool, but requires the capture group structure be passed in to the `match` function as a pre-allocated array. Hard to know the size of the array if we're trying to capture an arbitrary number of capture groups, no?  
+
+`Nim: 1 Repeated Captures: 0`  
+
+Up next is the `std/nre` package. (Insert diversion here about only having one official package in the stdlib). It's better since captures can be converted into a seq, but the library uses the PCRE implementation of regex and PCRE decided the best way to handle repeated capture groups is to throw away all matches other than the last one. I see `"abcd".match(re"(\w)+")` and expect `["a", "b", "c", "d"]`, PCRE gives me `["d"]`. Jesus.  
+
+`Nim: 2 Repeated Captures: 0`  
+
+The `std/nre` docs recommend two other user regex libraries, so we're now up to four options, and I checked the first to see it's also PCRE. Didn't bother checking the last one.  
+
+`Nim: 3 Repeated Captures: 0`  
+
+Three strikes, you're out. Lessons learned for today are to stay far, far away from PCRE and to be happy with manual string manip I guess.  
+Gonna use `nre` for future regex tasks, excepting the above issues. Even a simple useage doubles to runtime of Day 02 so not using it here. Also need to keep in mind that imports must use `import std/nre except toSeq` since `nre` breaks the normal `sequtils.toSeq` implementation. Sigh.
+
+On the bright side, pattern matching! Currently not in the stdlib, but apparently scheduled for it. It's just for array destructuring and syntax isn't quite as clean as Haskell, but still very nice to have. Supporting int sizes larger than 64bit also seemed like an issue for a moment, but that was me defaulting counters to `low(int) == -9223372036854775808` instead of zero.
