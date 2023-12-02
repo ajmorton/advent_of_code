@@ -1,52 +1,51 @@
-# FIXME - This is 2019 Day 02
+import strutils, sequtils, sugar
 
-import strutils, sequtils
-
-proc runProg(prog: seq[int], noun: int, verb: int): int =
-
-    const ADD = 1
-    const MUL = 2
-    const END = 99
-
-    var mem = prog
-
-    mem[1] = noun
-    mem[2] = verb
-
-    var i = 0
-    while i < mem.len:
-        let op = mem[i]
-        if op == END:
-            break
-
-        let r1 = mem[i+1]
-        let r2 = mem[i+2]
-        let out_reg = mem[i+3]
-
-        case op
-        of ADD:
-            mem[out_reg] = mem[r1] + mem[r2]
-        of MUL:
-            mem[out_reg] = mem[r1] * mem[r2]
-        else:
-            quit "Unexpected"
-
-        i += 4
-
-    return mem[0]
-
-proc part1*(mem: seq[int]): int =
-    return runProg(mem, 12, 02);
-
-proc part2*(mem: seq[int]): int =
-    for noun in 0..99:
-        for verb in 0..99:
-            if runProg(mem, noun, verb) == 19690720:
-                return (noun * 100) + verb
-    
-    return -1
+proc colourAndCount(str: string): (int, string) =
+    let split = str.strip().split(' ')
+    let count = split[0].parseInt
+    let colour = split[1]
+    return (count, colour)
 
 proc run*(input_file: string): (int, int) =
     let input = readFile(input_file).strip(leading = false)
-    var mem = input.split(',').map(parseInt)
-    return (part1(mem), part2(mem))
+    var lines = input.splitLines()
+    var legalGames = 0
+    var p2Sum = 0
+
+    for l in lines:
+        let split = l.split(':')
+        let (gameId, phases) = (split[0], split[1])
+        let ps = phases.split(";")
+        let gameNum = gameId["Game ".len..^1].parseInt
+        var isLegal = true
+
+        var (nred, ngreen, nblue) = (0, 0, 0)
+        for p in ps:
+
+            # Part 1
+            let colourCounts = p.strip().split(',').map(colourAndCount)
+            for (count, colour) in colourCounts:
+                if colour == "red" and count > 12:
+                    isLegal = false
+                    break
+                elif colour == "green" and count > 13:
+                    isLegal = false
+                    break
+                elif colour == "blue" and count > 14:
+                    isLegal = false
+                    break
+
+            # Part 2
+            for (count, colour) in colourCounts:
+                if colour == "red":
+                    nred = max(nred, count)
+                elif colour == "green":
+                    ngreen = max(ngreen, count)
+                elif colour == "blue":
+                    nblue = max(nblue, count)
+        p2Sum += (nred * ngreen * nblue)
+            
+        if isLegal:
+            legalGames += gameNum
+
+    return (legalGames, p2Sum)
