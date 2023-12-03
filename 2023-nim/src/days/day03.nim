@@ -1,64 +1,27 @@
-import strutils, std/tables, system
+import strutils, std/tables, system, sequtils, math, sugar
+import std/nre except toSeq
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines
-    var numPositions = Table[int, seq[(int, int, int)]]()
-    var symbolPositions = Table[char, seq[(int, int)]]()
-    var (startX, len) = (0, 0)
 
+    var symbolPositions = Table[(int, int), char]()
     for y, line in lines:
-        var isNum = false
-        var num = 0
         for x, c in line:
-            if c in '0'..'9':
-                if isNum == false:
-                    num = 0
-                    startX = x
-                    isNum = true
-                    len = 0
-                num = num * 10 + c.ord - '0'.ord
-                len += 1
-            else:
-                if c != '.':
-                    if not symbolPositions.contains(c):
-                        symbolPositions[c] = newSeq[(int, int)]()
-                    symbolPositions[c].insert((y, x))
-                if isNum == true:
-                    if not numPositions.contains(num):
-                        numPositions[num] = newSeq[(int, int, int)]()
-                    numPositions[num].insert((y, startX, len))
-                    num = 0
-                    startX = 0
-                    len = 0
-                    isNum = false
+            if not (c in "0123456789."):
+                symbolPositions[(y, x)] = c
 
-        if isNum == true:
-            if not numPositions.contains(num):
-                numPositions[num] = newSeq[(int, int, int)]()
-            numPositions[num].insert((y, startX, len))
-            num = 0
-            startX = 0
-            len = 0
-            isNum = false
+    var symbolParts = Table[(int, int), seq[int]]()
+    for y, line in lines:
+        for num in line.findIter(re"[0-9]+"):
+            let startX = num.matchBounds.a - 1
+            let endX = num.matchBounds.b + 1
+            for x in startX .. endX:
+                for yy in [y - 1, y, y + 1]:
+                    if symbolPositions.contains((yy, x)):
+                        symbolParts.mgetOrPut((yy, x), newSeq[int]()).insert(num.match.parseInt)
 
-
-    var count = 0
-    var posGears = Table[(int, int), seq[int]]()
-    for num, positions in numPositions:
-        for (y, startX, len) in positions:
-            for xx in startX - 1 .. startX + len:
-                for symbol, pp in symbolPositions:
-                    for (y3,x3) in pp:
-                        if (y3, x3) in [(y - 1, xx), (y, xx), (y+1, xx)]:
-                            count += num
-                            if symbol == '*':
-                                if not posGears.contains((y3, x3)):
-                                    posGears[(y3, x3)] = newSeq[(int)]()
-                                posGears[(y3, x3)].insert(num)
-
-    var gearSum = 0
-    for k, v in posGears:
-        if v.len == 2:
-            gearSum += v[0] * v[1]
-
-    return (count, gearSum)
+    let sumOfParts = symbolParts.values.toSeq.map(x => x.sum).sum
+    let gears = symbolParts.pairs.toSeq.filter(pair => symbolPositions[pair[0]] == '*' and pair[1].len == 2)
+    let prodSumOfGears = gears.map(pair => pair[1].prod).sum
+    
+    return (sumOfParts, prodSumOfGears)
