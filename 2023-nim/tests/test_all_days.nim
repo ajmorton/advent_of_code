@@ -16,5 +16,5 @@ test "day02":
 
 test "day03":
   let (part1, part2) = day03.run("./input/day03.txt")
-  check part1 == 1264
-  check part2 == 37390
+  check part1 == 522726
+  check part2 == 81721933

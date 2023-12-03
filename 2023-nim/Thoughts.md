@@ -68,3 +68,6 @@ Three strikes, you're out. Lessons learned for today are to stay far, far away f
 Gonna use `nre` for future regex tasks, excepting the above issues. Even a simple useage doubles to runtime of Day 02 so not using it here. Also need to keep in mind that imports must use `import std/nre except toSeq` since `nre` breaks the normal `sequtils.toSeq` implementation. Sigh.
 
 On the bright side, pattern matching! Currently not in the stdlib, but apparently scheduled for it. It's just for array destructuring and syntax isn't quite as clean as Haskell, but still very nice to have. Supporting int sizes larger than 64bit also seemed like an issue for a moment, but that was me defaulting counters to `low(int) == -9223372036854775808` instead of zero.
+
+## Day 03 - Gear Ratios
+**Unbelievably** annoyed by this one. If a number is adjacent to two symbols it gets counted twice. Absolutely nothing in the spec that indicates this should be the case. Docs said sum all parts. Why would a single number next to two symbols be considered two parts??

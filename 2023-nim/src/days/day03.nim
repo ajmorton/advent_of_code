@@ -1,83 +1,64 @@
-# FIXME - This is 2019 Day 03
-
-import strutils, sequtils, std/tables, std/sets, sugar
-
-type Direction = enum Up, Down, Left, Right
-
-type Command = ref object
-    dir: Direction
-    dist: int
-
-type Pos = (int, int)
-
-proc `+`(p1: Pos, p2: Pos): Pos = 
-    return (p1[0] + p2[0], p1[1] + p2[1])
-
-proc `+=`(p1: var Pos, p2: Pos) = 
-    p1 = (p1[0] + p2[0], p1[1] + p2[1])
-
-proc parseCommand(str: string): Command =
-    let dirStr = str[0]
-    let distStr = str[1..^1]
-
-    let dir = case dirStr
-    of 'U': Up
-    of 'D': Down
-    of 'L': Left
-    of 'R': Right
-    else: quit "Invalid dirStr"
-
-    let dist = parseInt(distStr)
-
-    return Command(dir: dir, dist: dist)
-
-proc parseWire(str: string): seq[Command] =
-    let commandStrs = str.split(',')
-    return commandStrs.map(parseCommand)
-
-proc wireCells(wire: seq[Command]): Table[Pos, int] = 
-    var explored = Table[Pos, int]()
-    var pos = (0, 0)
-    var distTraveled = 0
-    for command in wire:
-        case command.dir
-        of Up: 
-            for i in 0 ..< command.dist:
-                pos += (1, 0)
-                distTraveled += 1
-                explored[pos] = distTraveled
-        of Down: 
-            for i in 0 ..< command.dist:
-                pos += (-1, 0)
-                distTraveled += 1
-                explored[pos] = distTraveled
-        of Left: 
-            for i in 0 ..< command.dist:
-                pos += (0, -1)
-                distTraveled += 1
-                explored[pos] = distTraveled
-        of Right: 
-            for i in 0 ..< command.dist:
-                pos += (0, 1)
-                distTraveled += 1
-                explored[pos] = distTraveled
-    return explored
+import strutils, std/tables, system
 
 proc run*(input_file: string): (int, int) =
-    let input = readFile(input_file).strip(leading = false).splitLines
-    let wires = input.map(parseWire)
+    let lines = readFile(input_file).strip(leading = false).splitLines
+    var numPositions = Table[int, seq[(int, int, int)]]()
+    var symbolPositions = Table[char, seq[(int, int)]]()
+    var (startX, len) = (0, 0)
 
-    let explored1 = wireCells(wires[0])
-    let explored2 = wireCells(wires[1])
+    for y, line in lines:
+        var isNum = false
+        var num = 0
+        for x, c in line:
+            if c in '0'..'9':
+                if isNum == false:
+                    num = 0
+                    startX = x
+                    isNum = true
+                    len = 0
+                num = num * 10 + c.ord - '0'.ord
+                len += 1
+            else:
+                if c != '.':
+                    if not symbolPositions.contains(c):
+                        symbolPositions[c] = newSeq[(int, int)]()
+                    symbolPositions[c].insert((y, x))
+                if isNum == true:
+                    if not numPositions.contains(num):
+                        numPositions[num] = newSeq[(int, int, int)]()
+                    numPositions[num].insert((y, startX, len))
+                    num = 0
+                    startX = 0
+                    len = 0
+                    isNum = false
 
-    let e1 = toHashSet(explored1.keys.toSeq())
-    let e2 = toHashSet(explored2.keys.toSeq())
+        if isNum == true:
+            if not numPositions.contains(num):
+                numPositions[num] = newSeq[(int, int, int)]()
+            numPositions[num].insert((y, startX, len))
+            num = 0
+            startX = 0
+            len = 0
+            isNum = false
 
-    let intersections = e1.intersection(e2)
-    let dists = intersections.map((inter) => abs(inter[0]) + abs(inter[1]))
-    let minDist = dists.toSeq.min
 
-    let dists2 = intersections.map((inter) => explored1[inter] + explored2[inter])
-    let minDist2 = dists2.toSeq.min
+    var count = 0
+    var posGears = Table[(int, int), seq[int]]()
+    for num, positions in numPositions:
+        for (y, startX, len) in positions:
+            for xx in startX - 1 .. startX + len:
+                for symbol, pp in symbolPositions:
+                    for (y3,x3) in pp:
+                        if (y3, x3) in [(y - 1, xx), (y, xx), (y+1, xx)]:
+                            count += num
+                            if symbol == '*':
+                                if not posGears.contains((y3, x3)):
+                                    posGears[(y3, x3)] = newSeq[(int)]()
+                                posGears[(y3, x3)].insert(num)
 
-    return (minDist, minDist2)
+    var gearSum = 0
+    for k, v in posGears:
+        if v.len == 2:
+            gearSum += v[0] * v[1]
+
+    return (count, gearSum)
