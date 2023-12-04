@@ -1,6 +1,4 @@
-import days/day01
-import days/day02
-import days/day03
+import days/[day01, day02, day03, day04]
 import ./benchmark
 
 import strutils
@@ -18,7 +16,8 @@ proc runDay(day: int, bench: bool) =
   of 01: day01.run(inputFileStr)
   of 02: day02.run(inputFileStr)
   of 03: day03.run(inputFileStr)
-  of 04..25: return # Day not implemented
+  of 04: day04.run(inputFileStr)
+  of 05..25: return # Day not implemented
   else:
     echo "\t\x1b[1;31mInvalid day ", dayStr, " received\x1b[1;0m"
     quit 1
