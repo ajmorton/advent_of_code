@@ -71,3 +71,7 @@ On the bright side, pattern matching! Currently not in the stdlib, but apparentl
 
 ## Day 03 - Gear Ratios
 **Unbelievably** annoyed by this one. If a number is adjacent to two symbols it gets counted twice. Absolutely nothing in the spec that indicates this should be the case. Docs said sum all parts. Why would a single number next to two symbols be considered two parts??
+
+## Day 04 - Scratchcards
+Not much to report. Set, set, intersect.  
+The parseInt calls may seem extraneous, but int comparison is much faster than string comp, so this results in a 33% speedup.

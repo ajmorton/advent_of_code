@@ -1,4 +1,5 @@
-import strutils, sets, sugar, sequtils, math, tables
+import math, sequtils, sets, strutils, tables
+import fusion/matching
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines
@@ -6,24 +7,19 @@ proc run*(input_file: string): (int, int) =
     var numCards = Table[int, int]()
 
     for line in lines:
-        let split = line.split(':')
-        let cardNum = split[0]["Card ".len .. ^1].strip.parseInt
-        numCards.mgetOrPut(cardNum, 0) += 1
-        let numbers = split[1]
-        let nn = numbers.split('|')
-        let winningNums = nn[0]
-        let yourNums = nn[1]
-        let winningNumsSet = winningNums.strip().split(' ').toSeq.filter(x => x != "").map(x => x.parseInt).toHashSet
-        let yourNumsSet = yourNums.strip().split(' ').toSeq.filter(x => x != "").map(x => x.parseInt).toHashSet
+        [@cardId, @numbers] := line.split(':')
+        let cardNum = cardId["Card ".len .. ^1].strip.parseInt
+
+        [@winningNums, @yourNums] := numbers.split('|')
+        let winningNumsSet = winningNums.splitWhitespace.map(parseInt).toHashSet
+        let yourNumsSet = yourNums.splitWhitespace.map(parseInt).toHashSet
         
         let numMatches = intersection(winningNumsSet, yourNumsSet).len
 
         for i in cardNum + 1 .. cardNum + numMatches:
-            numCards.mgetOrPut(i, 0) += numCards[cardNum]
+            numCards.mgetOrPut(i, 1) += numCards.mgetOrPut(cardNum, 1)
 
-        let rowScore = pow(2.float32, numMatches.float32 - 1).int
-        score += rowScore
+        if numMatches > 0: 
+            score += 2^(numMatches-1)
 
-    let p2 = numCards.values.toSeq.sum
-
-    return (score, p2)
+    return (score, numCards.values.toSeq.sum)
