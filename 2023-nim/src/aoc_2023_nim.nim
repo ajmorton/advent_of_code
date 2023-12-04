@@ -1,13 +1,13 @@
 import days/[day01, day02, day03, day04]
 import ./benchmark
 
-import strutils
+import strformat, strutils
 
 # Run a day
 proc runDay(day: int, bench: bool) =
   # zero pad if needed
   let dayStr = align(intToStr(day), 2, '0')
-  let inputFileStr = "./input/day" & dayStr & ".txt"
+  let inputFileStr = fmt"./input/day{dayStr}.txt"
   
   let dayFun = case day 
   of 01: day01.run
@@ -16,14 +16,14 @@ proc runDay(day: int, bench: bool) =
   of 04: day04.run
   of 05..25: return # Day not implemented
   else:
-    echo "\t\x1b[1;31mInvalid day ", dayStr, " received\x1b[1;0m"
+    echo fmt"{RED}Invalid day {dayStr} received{END}"
     quit 1
 
   let (part1, part2) = dayFun(inputFileStr)
 
-  echo "Running day", dayStr
-  echo "    Part1:   ", part1
-  echo "    Part2:   ", part2
+  echo fmt"Running day{dayStr}"
+  echo fmt"    Part1:   {part1}"
+  echo fmt"    Part2:   {part2}"
   if bench:
     benchmark(dayFun, inputFileStr)
   echo ""

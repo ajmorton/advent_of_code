@@ -5,11 +5,11 @@ const MILLISECOND = 1e-3
 const MICROSECOND = 1e-6
 
 # ANSI Escape codes
-const GREEN = "\e[32m"
-const RED = "\e[91m"
-const WHITE = ""
-const END = "\e[0m"
-const CLEAR_LINE = "\e[2K\r"
+const GREEN* = "\e[32m"
+const RED* = "\e[91m"
+const WHITE* = ""
+const END* = "\e[0m"
+const CLEAR_LINE* = "\e[2K\r"
 
 # Pretty print a time. Colour code for slow and fast times
 proc prettyPrintTime*(seconds: float): string = 
@@ -27,7 +27,7 @@ proc prettyPrintTime*(seconds: float): string =
     else:
       (seconds, "s", RED)
 
-  let timeString = timeConverted.formatFloat(format = ffDecimal, precision = 3) & " " & unitString
+  let timeString = fmt"{timeConverted.formatFloat(format = ffDecimal, precision = 3)} {unitString}"
 
   return colour & timeString & END
 
@@ -41,8 +41,7 @@ proc benchmark*(fun: proc (inputFile: string): (int, int), inputFileStr: string)
   let runTimeSingle = epochTime() - startTimeSingle
 
   let numRuns = (5.0 / runTimeSingle).int
-  let benchMessage = fmt"    Single run took {prettyPrintTime(runTimeSingle)}. Running {numRuns} iterations (~5 seconds)"
-  stdout.write CLEAR_LINE, benchMessage
+  stdout.write fmt"{CLEAR_LINE}    Single run took {prettyPrintTime(runTimeSingle)}. Running {numRuns} iterations (~5 seconds)"
   stdout.flushFile()
 
   let startTimeMulti = epochTime()
@@ -51,4 +50,4 @@ proc benchmark*(fun: proc (inputFile: string): (int, int), inputFileStr: string)
   let runTimeMulti = epochTime() - startTimeMulti
   let avgRunTime = runTimeMulti / numRuns.float
 
-  echo CLEAR_LINE, "    runtime: ", prettyPrintTime(avgRuntime)
+  echo fmt"{CLEAR_LINE}    runtime: {prettyPrintTime(avgRuntime)}"
