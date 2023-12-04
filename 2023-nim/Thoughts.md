@@ -50,6 +50,27 @@ which modifies and re-assigns the string on each iteration and thought I could g
 ```
 but this comes out slower(?). I suspect string slicing creates a brand new string instead of doing some pointer arith like I wanted. Perf results are a bit bouncy bouncy, roughly halving after the first run and then ~10% deviance on each subsequent run. Will need to clean that up at some point. Runtime is sitting around 1.9 ms. Would like to get that under 1 at some point.
 
+### Day 01 speed up
+No need to mutate the string in the end. `continuesWith`` does the string comparison at an offset.
+Weirdly declaring a variable for readability causes a 30% slowdown from 550µs to 700µs. All it takes is the following change in simplified code:
+```nim
+for n, numStr in ["one", "two", "three"]:
+    if str[i].ord == ('0'.ord + n + 1): 
+        if firstNum == -1:
+            firstNum = n + 1
+        lastNum = n + 1
+```
+to
+```nim
+for n, numStr in ["one", "two", "three"]:
+    let m = n + 1 # Temp var to capture n + 1
+    if str[i].ord == ('0'.ord + m): 
+        if firstNum == -1:
+            firstNum = m
+        lastNum = m
+```
+This should be a simple case of variable elimination? Curious as to what's happening here.
+
 ## Day 02 - Cube Conundrum
 ~~Time to sort out regex parsing.~~  
 edit: Turns out using repeated capture groups are a minor-grade nightmare in Nim. First up we have the `std/re` package. Does regex matching, cool, but requires the capture group structure be passed in to the `match` function as a pre-allocated array. Hard to know the size of the array if we're trying to capture an arbitrary number of capture groups, no?  
