@@ -96,3 +96,7 @@ On the bright side, pattern matching! Currently not in the stdlib, but apparentl
 ## Day 04 - Scratchcards
 Not much to report. Set, set, intersect.  
 The parseInt calls may seem extraneous, but int comparison is much faster than string comp, so this results in a 33% speedup.
+
+## Day 05 - If You Give A Seed A Fertilizer
+I swear this year was custom built to kick my ass. Range intersections and splits on day 05? Pain.
+Also of note I've been using `.insert` for appending to `seq`s when I should have been using `add`. To fix later.
