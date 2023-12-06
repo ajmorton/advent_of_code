@@ -100,3 +100,7 @@ The parseInt calls may seem extraneous, but int comparison is much faster than s
 ## Day 05 - If You Give A Seed A Fertilizer
 I swear this year was custom built to kick my ass. Range intersections and splits on day 05? Pain.
 Also of note I've been using `.insert` for appending to `seq`s when I should have been using `add`. To fix later.
+
+## Day 06 - Wait For It
+Brute force ftw. Shame I couldn't start this one time since it was one of my faster times to get the gold star.
+There's gonna be a simple mathematical formula for this one after cleaning up.
