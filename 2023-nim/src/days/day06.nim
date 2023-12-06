@@ -1,6 +1,23 @@
-import math, sequtils, sets, strformat, strutils, sugar, system, tables, options
+import math, sequtils, strutils, sugar, system
 import fusion/matching
-import std/nre except toSeq
+
+# Determine the number of whole numbers of n for which `n * (t - n) > d`
+# Use quadratic equation to find the solutions for n * (t - n) == d, convert to ints, and return the range
+proc getNumWinning(t: int, d: int): int =
+        # n * (t - n)   == d
+        # -n^2 + tn - d == 0
+        let (a, b, c) = (-1.float64, t.float64, -d.float64)
+
+        # x = (-b (+/-) sqrt(b^2 - 4ac)) / 2a
+        let sqrt_discriminant = sqrt(b.pow(2) - (4*a*c))
+        let root1 = (-b + sqrt_discriminant) / (2*a)
+        let root2 = (-b - sqrt_discriminant) / (2*a)
+
+        # We want whole numbers for which `n * (t - n) > d` is true. Round up the smaller root and round down the larger
+        let start = (min(root1, root2) + 1).floor.int
+        let endd  = (max(root1, root2) - 1).ceil.int
+
+        return endd - start + 1
 
 proc run*(input_file: string): (int, int) =
     [@timesStr, @distancesStr] := readFile(input_file).strip(leading = false).splitLines
@@ -10,27 +27,7 @@ proc run*(input_file: string): (int, int) =
     let p2Time = timesStr["Time:".len..^1].replace(" ", "").parseInt
     let p2Distance = distancesStr["Distance:".len..^1].replace(" ", "").parseInt
 
-    var p1 = 1
-    for i in 0..<times.len:
-        var numWinningCombos = 0
-        let (t, d) = (times[i], distances[i])
-        for holdTime in 0..t:
-            let finalDist = (holdTime) * (t - holdTime)
-            # echo fmt"holdTime: {holdTime}, speed: {}"
-            if finalDist > d:
-                numWinningCombos += 1
-
-        echo "numWinning ", numWinningCombos
-        p1 *= numWinningCombos
-
-    var p2 = 1
-    var numWinningCombos = 0
-    let (t, d) = (p2Time, p2Distance)
-    for holdTime in 0..t:
-        let finalDist = (holdTime) * (t - holdTime)
-        if finalDist > d:
-            numWinningCombos += 1
-
-    p2 = numWinningCombos
-
+    let tdPairs = times.zip(distances)
+    let p1 = tdPairs.map(pair => getNumWinning(pair[0], pair[1])).prod
+    var p2 = getNumWinning(p2Time, p2Distance)
     return (p1, p2)
