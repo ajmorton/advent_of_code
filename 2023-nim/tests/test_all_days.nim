@@ -1,6 +1,6 @@
 import unittest
 
-import days/[day01, day02, day03, day04, day05, day06]
+import days/[day01, day02, day03, day04, day05, day06, day07]
 
 test "day01":
   let (part1, part2) = day01.run("./input/day01.txt")
@@ -31,3 +31,8 @@ test "day06":
   let (part1, part2) = day06.run("./input/day06.txt")
   check part1 == 2756160
   check part2 == 34788142
+
+test "day07":
+  let (part1, part2) = day07.run("./input/day07.txt")
+  check part1 == 250370104
+  check part2 == 251735672

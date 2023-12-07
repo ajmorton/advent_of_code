@@ -104,3 +104,11 @@ Also of note I've been using `.insert` for appending to `seq`s when I should hav
 ## Day 06 - Wait For It
 Brute force ftw. Shame I couldn't start this one time since it was one of my faster times to get the gold star.
 ~~There's gonna be a simple mathematical formula for this one after cleaning up.~~ Quadratic equation. If we remove the input parsing logic then execution time is sub 1 nanosecond and my benchmarking code breaks. Is Nim doing comptime evaluation for me?
+
+## Day 07 - Camel Cards
+When in doubt, lexicographically tuple sort it out.
+A lot of fighting with Nim due to lack of familiarity:
+- getting confused by the error when I used `sort` which doesn't return instead of `sorted` which does
+- Trying to figure out which types get comparison for free
+- How to create a custom comparator for sort
+But a 3:20 turnaround from silver to gold star might be my fastest result yet, placing in the top 1000 and second(?) highest placing from any year.
