@@ -1,57 +1,32 @@
-import algorithm, sequtils, strutils, sugar, system
+import algorithm, math, sequtils, strutils, sugar, system
 import fusion/matching
 
-let scores  = "23456789TJQKA"
-let scores2 = "J23456789TQKA"
+# Most frequent card count, second most frequent card count, score of each of the five cards in the hand
+type HandScore = (int, int, (int, int, int, int, int))
 
-proc handScore(hand: string): (int, int, int, int, int, int, int) =
+proc score(hand: string): HandScore =
+    let cardValues = "23456789TJQKA"
+    let mostFreq = cardValues.map(card => hand.count(card)).sorted
 
-    [@a, @b, @c, @d, @e] := hand.map(card => scores.find(card))
+    [@a, @b, @c, @d, @e] := hand.map(card => cardValues.find(card))
+    return (mostFreq[^1], mostFreq[^2], (a,b,c,d,e))
 
-    let occurrences = scores.map(card => hand.count(card)).sorted
-
-    [@mostFreq, @secondMostFreq] := occurrences[^2..^1].reversed
-    return (mostFreq, secondMostFreq, a,b,c,d,e)
-
-proc handScore2(hand: string): (int, int, int, int, int, int, int) =
-
-    [@a, @b, @c, @d, @e] := hand.map(card => scores2.find(card))
-
-    let occurrences = scores2[1..^1].map(card => hand.count(card)).sorted
+proc score2(hand: string): HandScore =
+    let cardValues2 = "J23456789TQKA"
+    let mostFreq = cardValues2[1..^1].map(card => hand.count(card)).sorted
     let jokers = hand.count('J')
 
-    [@mostFreq, @secondMostFreq] := occurrences[^2..^1].reversed
-    return (mostFreq + jokers, secondMostFreq, a,b,c,d,e)
-
-proc compareHands(handA, handB: (string, string)): int =
-
-    let (scoreA, scoreB) = (handA[0].handScore, handB[0].handScore)
-    if scoreA > scoreB:
-        return 1
-    else:
-        return -1
-
-proc compareHands2(handA, handB: (string, string)): int =
-
-    let (scoreA, scoreB) = (handA[0].handScore2, handB[0].handScore2)
-    if scoreA > scoreB:
-        return 1
-    else:
-        return -1
+    [@a, @b, @c, @d, @e] := hand.map(card => cardValues2.find(card))
+    return (mostFreq[^1] + jokers, mostFreq[^2], (a,b,c,d,e))
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines
-    let cardsAndBet = lines.map(line => line.splitWhitespace).map(arr => (arr[0], arr[1]))
+    let handsAndBets = lines.map(line => line.splitWhitespace).map(x => (hand: x[0], bet: x[1].parseInt))
 
-    let sortedCardsAndBets = cardsAndBet.sorted(compareHands)
-    let sortedCardsAndBets2 = cardsAndBet.sorted(compareHands2)
+    let scoresAndBets = handsAndBets.map(x => (score: score(x.hand), bet: x.bet))
+    let scoresAndBets2 = handsAndBets.map(x => (score: score2(x.hand), bet: x.bet))
 
-    var scoreSum = 0
-    for i, (hand, bidStr) in sortedCardsAndBets:
-        scoreSum += bidStr.parseInt * (i + 1)
+    var sortedBets = scoresAndBets.sorted(SortOrder.Descending).map(x => x.bet)
+    var sortedBets2 = scoresAndBets2.sorted(SortOrder.Descending).map(x => x.bet)
 
-    var scoreSum2 = 0
-    for i, (hand, bidStr) in sortedCardsAndBets2:
-        scoreSum2 += bidStr.parseInt * (i + 1)
-
-    return (scoreSum, scoreSum2)
+    return (sortedBets.cumsummed.sum, sortedBets2.cumsummed.sum)
