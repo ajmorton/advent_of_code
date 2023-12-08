@@ -115,3 +115,6 @@ But a 3:20 turnaround from silver to gold star might be my fastest result yet, p
 
 Clean up: Applying scores inside the comparison function << applying scores then comparing. Fewer stack pus and pops probably.  
 Still need to get it under 1 ms which will probably come from the frequency computation that is `O(numCardsVals * lenHand)` instead of `O(lenHand)`. I'm not sure why but `sorted(SortOrder.Descending)` seems to be consistently slower than `sorted(SortOrder.Ascending)` by a small amount
+
+## Day 08 - Haunted Wasteland
+Nothing to report. Some unclear compiler warnings due to using `input.lines` instead of `input.splitLines`
