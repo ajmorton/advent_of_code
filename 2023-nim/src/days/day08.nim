@@ -1,20 +1,23 @@
-import math, sequtils, strutils, sugar, system, tables, options
+import math, sequtils, std/setutils, strutils, sugar, system
 import fusion/matching
-import std/nre except toSeq
 
-type LinkTable = Table[string, tuple[l: string, r: string]]
+const NUM_POSSIBLE_LINKS = 17576
+type LinkTable = array[0..NUM_POSSIBLE_LINKS, tuple[l: int16, r: int16]]
 
-proc getDistTo(start: string, endCond: proc(pos: string): bool, path: string, links: LinkTable): int =
-    var curPos = start
-    var pathDist = 0
-    while not endCond(curPos):
+# Convert each string into a unique int for faster equality checks.
+# Strings are always length 3 so 26^3 == 17,576 fits inside an int16, allowing use Nim's native set type
+proc strToInt(str: string): int16 =
+    assert str.len == 3
+    return (((str[0].ord - 'A'.ord) * 26^2) + ((str[1].ord - 'A'.ord) * 26) + (str[2].ord - 'A'.ord)).int16 
+
+proc getDistance(start: int16, endPosses: set[int16], path: string, links: LinkTable): int =
+    var (curPos, pathDist) = (start, 0)
+    while curPos notin endPosses:
         let turn = path[pathDist.mod(path.len)]
-        if turn == 'L':
-            curPos = links[curPos].l
-        elif turn == 'R':
-            curPos = links[curPos].r
-        else:
-            quit "aaah"
+        case turn
+        of 'L': curPos = links[curPos].l 
+        of 'R': curPos = links[curPos].r
+        else: quit "invalid turn"
 
         pathDist += 1
     return pathDist
@@ -22,19 +25,21 @@ proc getDistTo(start: string, endCond: proc(pos: string): bool, path: string, li
 proc run*(input_file: string): (int, int) =
     [@path, @linksList] := readFile(input_file).strip(leading = false).split("\n\n")
 
-    var links = LinkTable()
+    var aPosses = newSeq[int16]()
+    var zPosses = newSeq[int16]()
+    var links: LinkTable
+
     for link in linksList.splitLines:
-        let match = link.match(re"(\w+) = \((\w+), (\w+)\)").get.captures.toSeq.map(x => x.get)
-        [@entry, @left, @right] := match
-        links[entry] = (l: left, r: right)
+        # string format: `EEE = (LLL, RRR)`
+        let (entry, left, right) = (link[0..2], link[7..9], link[12..14])
+        let (entryNum, leftNum, rightNum) = (strToInt(entry), strToInt(left), strToInt(right))
 
-    # Part 1
-    let isZZZ = proc (p: string): bool = p == "ZZZ"
-    var pathDist = getDistTo("AAA", isZZZ, path, links)
+        if entry.endsWith('A'): aPosses.add(entryNum)
+        if entry.endsWith('Z'): zPosses.add(entryNum)
 
-    # Part 2
-    var aPosses = links.keys.toSeq.filter(e => e.endsWith("A"))
-    let endsInZ = proc (p: string): bool = p[^1] == 'Z'
-    let distances = aPosses.map(aPos => getDistTo(aPos, endsInZ, path, links))
+        links[entryNum] = (l: leftNum, r: rightNum)
 
-    return (pathDist, distances.lcm)
+    let p1 = getDistance(strToInt("AAA"), {strToInt("ZZZ")}, path, links)
+    let p2 = aPosses.map(aPos => getDistance(aPos, zPosses.toSet, path, links)).lcm
+
+    return (p1, p2)

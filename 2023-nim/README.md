@@ -21,7 +21,7 @@ nimble test                   # Run tests
 | day05  | 226.392 µs   |  ✅  |
 | day06  |   9.862 µs   |  ✅  |
 | day07  |   1.379 ms   |     |
-| day08  |  10.700 ms   |     |
+| day08  | 451.747 µs   |  ✅  |
 | day09  |              |     |
 | day10  |              |     |
 | day11  |              |     |
