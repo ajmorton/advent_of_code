@@ -120,3 +120,6 @@ Still need to get it under 1 ms which will probably come from the frequency comp
 Nothing to report. Some unclear compiler warnings due to using `input.lines` instead of `input.splitLines`
 
 Clean up: Use ints instead of strings for equality checks. Use native set type. ~~Still over 1 ms though.~~ Why use a hashtable at all? nodes are limited to strings of len 3, so there's a max of 17,576 possible inputs. Just stick it in a static array
+
+## Day 09 - Mirage Maintenance
+Slow start but quick turnaround for the gold star. This feels like it's just derivatives? Wonder if there's a non-stack based solution here.

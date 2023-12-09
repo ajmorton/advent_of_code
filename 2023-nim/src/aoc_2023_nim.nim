@@ -1,4 +1,4 @@
-import days/[day01, day02, day03, day04, day05, day06, day07, day08]
+import days/[day01, day02, day03, day04, day05, day06, day07, day08, day09]
 import ./benchmark
 
 import strformat, strutils
@@ -18,7 +18,8 @@ proc runDay(day: int, bench: bool) =
   of 06: day06.run
   of 07: day07.run
   of 08: day08.run
-  of 09..25: return # Day not implemented
+  of 09: day09.run
+  of 10..25: return # Day not implemented
   else:
     echo fmt"{RED}Invalid day {dayStr} received{END}"
     quit 1
