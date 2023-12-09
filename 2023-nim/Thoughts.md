@@ -123,3 +123,5 @@ Clean up: Use ints instead of strings for equality checks. Use native set type. 
 
 ## Day 09 - Mirage Maintenance
 Slow start but quick turnaround for the gold star. This feels like it's just derivatives? Wonder if there's a non-stack based solution here.
+
+Clean up: Turns out Nim `func`s aren't pure functions and allow for mutation of arguments passed in. I was confused why the compiler wasn't doing common subexpression elimination for recursive calls to `nextDeltas` [here](./src/days/day09.nim#L14) and needed to save the result into a variable first. 
