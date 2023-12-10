@@ -1,5 +1,4 @@
-import math, sequtils, std/setutils, strutils, sugar, system
-import fusion/matching
+import aoc_prelude
 
 const NUM_POSSIBLE_LINKS = 17576
 type LinkTable = array[0..NUM_POSSIBLE_LINKS, tuple[l: int16, r: int16]]

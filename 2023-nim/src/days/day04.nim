@@ -1,5 +1,4 @@
-import math, sequtils, sets, strutils, tables
-import fusion/matching
+import aoc_prelude
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines

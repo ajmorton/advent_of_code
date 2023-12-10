@@ -1,5 +1,4 @@
-import algorithm, math, sequtils, strutils, sugar, system
-import fusion/matching
+import aoc_prelude
 
 # Most frequent card count, second most frequent card count, score of each of the five cards in the hand
 type HandScore = (int, int, (int, int, int, int, int))

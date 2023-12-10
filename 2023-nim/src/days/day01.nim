@@ -1,4 +1,4 @@
-import math, sequtils, strutils, sugar
+import aoc_prelude
 
 # Find the first and last number in a string and return them as a concatenated int. The numbers can be digits (0, 1)
 # or optionally words ("eight", "two"). Important! Number strings can overlap: "eightwo" returns 82

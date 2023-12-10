@@ -1,4 +1,4 @@
-import sequtils, strutils, sugar, system
+import aoc_prelude
 
 func buildDeltas(s: seq[int]): seq[int] =
     var newSeq = newSeq[int]()

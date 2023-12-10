@@ -1,5 +1,4 @@
-import math, sequtils, strutils, sugar, system
-import fusion/matching
+import aoc_prelude
 
 # Determine the number of whole numbers of n for which `n * (t - n) > d`
 # Use quadratic equation to find the solutions for n * (t - n) == d, convert to ints, and return the range

@@ -1,5 +1,4 @@
-import sequtils, strutils, sugar, system, tables
-import fusion/matching
+import aoc_prelude
 
 type ConvTable = Table[(string), (string, seq[(int, int, int)])]
 type Range = tuple[min: int, max: int]

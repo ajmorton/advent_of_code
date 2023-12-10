@@ -1,5 +1,4 @@
-import strutils, std/tables, system, sequtils, math, sugar
-import std/nre except toSeq
+import aoc_prelude
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines
