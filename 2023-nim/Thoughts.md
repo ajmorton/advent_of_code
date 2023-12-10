@@ -125,3 +125,14 @@ Clean up: Use ints instead of strings for equality checks. Use native set type. 
 Slow start but quick turnaround for the gold star. This feels like it's just derivatives? Wonder if there's a non-stack based solution here.
 
 Clean up: Turns out Nim `func`s aren't pure functions and allow for mutation of arguments passed in. I was confused why the compiler wasn't doing common subexpression elimination for recursive calls to `nextDeltas` [here](./src/days/day09.nim#L14) and needed to save the result into a variable first. 
+
+The following line
+`return (bar.mapIt(it[0]).sum, bar.mapIt(it[1])..sum)`
+reports only the error
+`SIGSEGV: Illegal storage access. (Attempt to read from nil?)`
+`mapIt` is a macro, and while Nim promises less awful macros than C this looks like a case where they still aren't great.  
+Accidental `..` when accessing a field? SEGV is a *weird8 message to be returned.
+
+## Day 10 - Pipe Maze
+Map parsing, pathfinding, floodfill which can bypass neighbours?  
+bruh
