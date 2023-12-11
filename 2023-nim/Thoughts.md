@@ -138,4 +138,9 @@ Map parsing, pathfinding, floodfill which can bypass neighbours?
 bruh
 
 ## Day 11 - Cosmic Expansion
-Always helps to read the damn prompt correctly. I saw "sum of shortests paths" and somehow read Travelling Salesman problem.
+Always helps to read the damn prompt correctly. I saw "sum of shortests paths" and somehow read Travelling Salesman problem.  
+Here's a fun perf note. Changing
+`let manhattan = (starA.r.abs - starB.r.abs).abs + (starA.c.abs - starB.c.abs).abs`
+to 
+`let manhattan = (starA.r - starB.r).abs + (starA.c - starB.c).abs`
+results in a 42% **slow down**. Are the extra `abs` calls giving useful type hints?
