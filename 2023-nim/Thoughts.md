@@ -136,3 +136,6 @@ Accidental `..` when accessing a field? SEGV is a *weird8 message to be returned
 ## Day 10 - Pipe Maze
 Map parsing, pathfinding, floodfill which can bypass neighbours?  
 bruh
+
+## Day 11 - Cosmic Expansion
+Always helps to read the damn prompt correctly. I saw "sum of shortests paths" and somehow read Travelling Salesman problem.
