@@ -144,3 +144,6 @@ Here's a fun perf note. Changing
 to 
 `let manhattan = (starA.r - starB.r).abs + (starA.c - starB.c).abs`
 results in a 42% **slow down**. Are the extra `abs` calls giving useful type hints?
+
+## Day 12 - Hot Springs
+N/A
