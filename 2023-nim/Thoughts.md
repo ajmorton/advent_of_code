@@ -146,4 +146,18 @@ to
 results in a 42% **slow down**. Are the extra `abs` calls giving useful type hints?
 
 ## Day 12 - Hot Springs
-N/A
+I'm phoning it in on the clean up and optimisation atm. First day that ends up over 1 millisecond. Will come back to this later when there's more time and energy.  
+It's always surprisingly expensive to use slicing in Nim. Using
+```nim
+let hasSpace = line[lineIndex ..< lineIndex + springLen].all(x => x != '.')
+```
+instead of 
+```nim
+var hasSpace = true
+for i in lineIndex ..< lineIndex + springLen:
+    if line[i] == '.':
+        hasSpace = false
+        break
+```
+results in a 25% slowdown. I assume that slicing creates a copy of the data under the assumption the slice can/will be mutated?
+The docs mentions slices are an object so perhaps we're spending a lot of time creating them.

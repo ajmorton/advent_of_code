@@ -13,20 +13,13 @@ proc countRec(lineIndex: int, lengthsIndex: int, lineAndLengths: LineAndLengths,
     let lengths = lineAndLengths.lengths
 
     if lineIndex >= line.len:
-        if lengthsIndex >= lengths.len:
-            # All springs inserted
-            return 1
-        else:
-            # Can't insert springs
-            return 0
+        return if lengthsIndex >= lengths.len: 1 else: 0
 
     # Try skipping a lineIndex
     if line[lineIndex] != '#':
         combos += countRec(lineIndex + 1, lengthsIndex, lineAndLengths, memo)
 
     if lengthsIndex < lengths.len:
-
-        # Try insert spring
         var springLen = lengths[lengthsIndex]
 
         let canFit = lineIndex + springLen - 1 < line.len
@@ -52,15 +45,8 @@ proc countCombos(lineAndLengths: LineAndLengths): (int, int) =
     var p1 = countRec(0, 0, lineAndLengths, memo)
 
     var memo2 = Table[(int, int), int]()
-    var lineUnfolded = ""
-    for _ in 0..<5:
-        lineUnfolded &= lineAndLengths.line
-        lineUnfolded &= "?"
-    lineUnfolded = lineUnfolded[0..^2]
-
-    var lengthsUnfolded = newSeq[int]()
-    for i in 0..<5:
-        lengthsUnfolded.add(lineAndLengths.lengths)
+    var lineUnfolded = (lineAndLengths.line & "?").repeat(5)[0..^2]
+    var lengthsUnfolded = lineAndLengths.lengths.cycle(5)
 
     var lineAndLengthsUnfolded = (line: lineUnfolded, lengths: lengthsUnfolded)
     var p2 = countRec(0, 0, lineAndLengthsUnfolded, memo2)
@@ -73,7 +59,4 @@ proc run*(input_file: string): (int, int) =
     let rowsAndLengths = rows.mapIt((line: it[0], lengths: it[1].split(',').map(parseInt)))
     
     let res = rowsAndLengths.map(countCombos)
-    let p1 = res.mapIt(it[0]).sum
-    let p2 = res.mapIt(it[1]).sum
-
-    return (p1, p2)
+    return res.foldl((a[0] + b[0], a[1] + b[1]))
