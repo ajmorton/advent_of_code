@@ -161,3 +161,7 @@ for i in lineIndex ..< lineIndex + springLen:
 ```
 results in a 25% slowdown. I assume that slicing creates a copy of the data under the assumption the slice can/will be mutated?
 The docs mentions slices are an object so perhaps we're spending a lot of time creating them.
+
+## Day 13 - Point of Incidence
+Made a mistake where if rows `i` and `i - 1` were mirrored I tried checking all remaining rows for mirroring, but checked `i` and `i - 1` again and result smudge correction was double counted. Lucky that the example input caught that.  
+Nim's flexible syntax (`foo.bar(baz)`, `foo(bar, baz)`, `foo.bar baz`) has been really nice so far. Not great for a industrialised code base, but great for scripting like AoC.
