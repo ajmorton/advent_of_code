@@ -165,3 +165,6 @@ The docs mentions slices are an object so perhaps we're spending a lot of time c
 ## Day 13 - Point of Incidence
 Made a mistake where if rows `i` and `i - 1` were mirrored I tried checking all remaining rows for mirroring, but checked `i` and `i - 1` again and result smudge correction was double counted. Lucky that the example input caught that.  
 Nim's flexible syntax (`foo.bar(baz)`, `foo(bar, baz)`, `foo.bar baz`) has been really nice so far. Not great for a industrialised code base, but great for scripting like AoC.
+
+## Day 14: Parabolic Reflector Dish
+Using hashes is coming in at a chunky half second. Need to clean up the maths to skip to the 1000000000th iter since the first attempts at modulo math were playing up. I ended up throwing in a random -1 to make things work so I need to think on where the off by one is coming from.
