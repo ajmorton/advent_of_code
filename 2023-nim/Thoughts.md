@@ -168,3 +168,4 @@ Nim's flexible syntax (`foo.bar(baz)`, `foo(bar, baz)`, `foo.bar baz`) has been 
 
 ## Day 14: Parabolic Reflector Dish
 Using hashes is coming in at a chunky half second. Need to clean up the maths to skip to the 1000000000th iter since the first attempts at modulo math were playing up. I ended up throwing in a random -1 to make things work so I need to think on where the off by one is coming from.
+edit post clean up: Completely wrong on the hash theory. Changing from moving rocks one space at a time to instead moving as far as they could go shaved off 80% of the runtime and using modulo maths instead of skip counting up to 1000000000 removed another 10%. Code is a bit messy but runtime is down to 15 ms. More to come.
