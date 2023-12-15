@@ -1,55 +1,26 @@
 import aoc_prelude
 
-proc hash(str: string): int =
-    var hash = 0
-    for c in str:
-        let asciiVal = c.ord
-        hash += asciiVal
-        hash *= 17
-        hash = hash.mod(256)
-    return hash
+proc hash(str: string): int = 
+    return str.foldl(((a + b.ord) * 17).mod(256), 0)
 
 proc run*(input_file: string): (int, int) =
-    let lines = readFile(input_file).strip(leading = false).splitLines
+    let line = readFile(input_file).strip(leading = false)
     
-    var p1 = 0
-    var boxes = [newSeq[(string, int)]()].cycle(256)
+    let instrs = line.split(",")
+    let p1 = instrs.map(hash).sum
 
-    for line in lines:
-        let instrs = line.split(",")
-        let scores = instrs.map(hash)
-        p1 += scores.sum
+    var boxes: array[0..255, OrderedTable[string, int]]
+    for instr in instrs:
+        if instr[^1] == '-':
+            let label = instr[0 ..< ^1]
+            boxes[label.hash].del(label)
+        else:
+            let (label, focalLength) = (instr[0 ..< ^2], instr[^1].ord - '0'.ord)
+            boxes[label.hash][label] = focalLength
 
-        # P2
-        for instr in instrs:
-            var label = ""
-            if instr[^1] == '-':
-                label = instr[0 ..< ^1]
-                let boxIndex = label.hash
-                for i, (lensLabel, size) in boxes[boxIndex]:
-                    if lensLabel == label:
-                        boxes[boxIndex].delete(i)
-            else:
-                label = instr[0 ..< ^2]
-                let lensSize = instr[^1].ord - '0'.ord
-                let boxIndex = label.hash
-                var replaced = false
-                for i, (lensLabel, size) in boxes[boxIndex]:
-                    if lensLabel == label:
-                        boxes[boxIndex][i] = (lensLabel, lensSize)
-                        replaced = true
-                        break
-
-                if not replaced:
-                    boxes[boxIndex].add((label, lensSize))
-
-    var focusingPower = 0
+    var p2 = 0
     for b, box in boxes:
-        let boxScore = b + 1
-        for l, (label, size) in box:
-            let indexScore = l + 1
-            let focalLength = size
-            let score = boxScore * indexScore * focalLength
-            focusingPower += score
-
-    return (p1, focusingPower)
+        for l, focalLength in box.values.toSeq:
+            p2 += (b + 1) * (l + 1) * focalLength
+            
+    return (p1, p2)

@@ -171,4 +171,4 @@ Using hashes is coming in at a chunky half second. Need to clean up the maths to
 edit post clean up: Completely wrong on the hash theory. Changing from moving rocks one space at a time to instead moving as far as they could go shaved off 80% of the runtime and using modulo maths instead of skip counting up to 1000000000 removed another 10%. Code is a bit messy but runtime is down to 15 ms. More to come.
 
 ## Day 15: Lens Library
-Spent more time trying to understand the part 2 prompt than I did writing up part 1. Could've been a good placement if I'd started on time.
+Spent more time trying to understand the part 2 prompt than I did writing up part 1. Could've been a good placement if I'd started on time. First time that the code clean up has resulted in slower code. Still under 1 ms though and a 20% slowdown for 50% less code seems fair enough.
