@@ -172,3 +172,7 @@ edit post clean up: Completely wrong on the hash theory. Changing from moving ro
 
 ## Day 15: Lens Library
 Spent more time trying to understand the part 2 prompt than I did writing up part 1. Could've been a good placement if I'd started on time. First time that the code clean up has resulted in slower code. Still under 1 ms though and a 20% slowdown for 50% less code seems fair enough.
+
+## Day 16: The Floor Will Be Lava
+Pathfinding. Par for the course.  
+300ms seems slow for the input though, to check. Caching `state => explored cells` seems like a good start
