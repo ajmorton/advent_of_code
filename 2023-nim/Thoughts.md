@@ -175,4 +175,8 @@ Spent more time trying to understand the part 2 prompt than I did writing up par
 
 ## Day 16: The Floor Will Be Lava
 Pathfinding. Par for the course.  
-300ms seems slow for the input though, to check. Caching `state => explored cells` seems like a good start
+300ms seems slow for the input though, to check. Caching `state => explored cells` seems like a good start.  
+Step 1: Remove the hashtable and use an allocated array instead. Half the runtime.  
+Step 2: Remove the queue for next to explore. Instead track current state in the loop and spin off a subfunc when hitting a splitter.  
+Step 3: Instead of 4 bools to determine entry directions for a cell use a bitmap.  
+Current runtime 20ms. 19 to go(?)
