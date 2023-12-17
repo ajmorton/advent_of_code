@@ -184,4 +184,8 @@ Current runtime 20ms. 19 to go(?)
 ## Day 17: Clumsy Crucible
 Had a chance to start on time for the first time in a week. Got everything prepped, had all the files and inputs ready to go, and 4 minutes in I get a phone call that lasts an hour `¯\_(ツ)_/¯`.  
 Wasted a whoole lot of time not including `curForwardCount` in the explored array and was truncating search paths that were valid. Paaaaaaaain. A* is meant to be easy to implement. Even with all that still in the top 3000?  
-Up next - or at some point in the future - making this run in under 8(!!!) seconds. Without release mode we're up over a minute(!!!!!!) My benchmarking code reports `inf s` because I didn't allow for >5 second runtimes.
+Up next - or at some point in the future - making this run in under 8(!!!) seconds. Without release mode we're up over a minute(!!!!!!) My benchmarking code reports `inf s` because I didn't allow for >5 second runtimes.  
+
+Step 1: Remove the debug code that tracked historical path through the grid. Duh. 95% time saving down to a 500ms runtime.  
+Step 2: Walk forward all possible distances in a single loop. Don't go one-by-one. No big wins here, but easier to reason about.  
+Step 3: 680,000 and 1,552,000 nodes explored for P1 and P2 respectively. Need to prune this somehow.
