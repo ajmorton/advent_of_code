@@ -3,8 +3,8 @@ import heapqueue
 
 type Dir = enum Up Down Left Right
 type Pos = tuple[y: int, x: int]
-# predHeatLoss, running heatLossScore, Pos, dir, consecutive forwards 
-type State = (int, int, Pos, Dir, int)
+type HeatLoss = int
+type State = (HeatLoss, Pos, Dir)
 
 proc move(pos: Pos, dir: Dir): Pos =
     return case dir
@@ -12,9 +12,6 @@ proc move(pos: Pos, dir: Dir): Pos =
     of Down:  ((y: pos.y + 1, x: pos.x))
     of Left:  ((y: pos.y, x: pos.x - 1))
     of Right: ((y: pos.y, x: pos.x + 1))
-
-proc manhattan(a: Pos, b: Pos): int = 
-    return (a.y.abs - b.y.abs).abs + (a.x.abs - b.x.abs).abs 
 
 proc `<`(a, b: State): bool = 
     return a[0] < b[0]
@@ -26,45 +23,40 @@ proc findPath(grid: seq[seq[int]], minDistForward: int, maxDistForward: int): in
     let targetPos = (maxY, maxX)
 
     var queue: HeapQueue[State]
-    let initPredHeatLoss = (0, 0).manhattan(targetPos)
-    queue.push((initPredHeatLoss, 0, (y:0, x:0), Right, 0))
-    queue.push((initPredHeatLoss, 0, (y:0, x:0), Down,  0))
+    queue.push((0, (y:0, x:0), Right))
+    queue.push((0, (y:0, x:0), Down))
 
-    var explored: Table[(Pos, Dir, int), int]
+    # explored[y][x][entryOrientation] == lowestHeatLossSeen. Defaults to MAXINT
+    var explored = newSeqWith(grid.len, newSeqWith(grid[0].len, [high(HeatLoss), high(HeatLoss)]))
 
     while queue.len > 0:
-        let (curPredHeatLoss, curHeatLoss, curPos, curDir, curForwardCount) = queue.pop
+        let (curHeatLoss, curPos, curDir) = queue.pop
 
-        if explored.getOrDefault((curPos, curDir, curForwardCount), high(int)) <= curHeatLoss:
-            continue
-
-        explored[(curPos, curDir, curForwardCount)] = curHeatLoss
-
-        if curPos == targetPos and curForwardCount >= minDistForward:
+        if curPos == targetPos:
             return curHeatLoss
 
-        if curForwardCount == 0:
-            # Move forward
-            var cumHeatLoss = 0
-            var nextPos = curPos
+        # Move forward and turn in both directions for all legal distances
+        var cumHeatLoss = 0
+        var nextPos = curPos
+        for i in 1 .. maxDistForward:
+            nextPos = nextPos.move(curDir)
+            if nextPos.outsideGrid:
+                break
+            cumHeatLoss += grid[nextPos.y][nextPos.x]
 
-            for i in 1 .. maxDistForward:
-                nextPos = nextPos.move(curDir)
-                if nextPos.outsideGrid:
-                    break
-                cumHeatLoss += grid[nextPos.y][nextPos.x]
+            if i >= minDistForward:
+                let nextHeatLoss = curHeatLoss + cumHeatLoss
+                let leftTurnDir = [Left, Right, Down, Up][curDir.ord]
+                let rightTurnDir = [Right, Left, Up, Down][curDir.ord]
 
-                if i >= minDistForward:
-                    let nextHeatLoss = curHeatLoss + cumHeatLoss
-                    let nextPredHeatLoss = nextHeatLoss + nextPos.manhattan(targetPos)
-                    queue.push( (nextPredHeatLoss, nextHeatLoss, nextPos, curDir, i) )
-
-        else: # curForwardCount != 0
-            # Try left and right
-            let leftTurnDir = [Left, Right, Down, Up][curDir.ord]
-            let rightTurnDir = [Right, Left, Up, Down][curDir.ord]
-            queue.push( (curPredHeatLoss, curHeatLoss, curPos, leftTurnDir, 0) )
-            queue.push( (curPredHeatLoss, curHeatLoss, curPos, rightTurnDir, 0) )
+                # Approaching a cell from opposite directions (Left and Right, Up and Down) results in 
+                # the same two search nodes after turning. As such we can filter on direction orientation 
+                # (horizontal, vertical) rather than actual direction.
+                let entryDirOrientation = curDir.ord div 2
+                if explored[nextPos.y][nextPos.x][entryDirOrientation] > nextHeatLoss:
+                    explored[nextPos.y][nextPos.x][entryDirOrientation] = nextHeatLoss
+                    queue.push( (nextHeatLoss, nextPos, leftTurnDir) )
+                    queue.push( (nextHeatLoss, nextPos, rightTurnDir) )
 
     quit "No path found!"
 

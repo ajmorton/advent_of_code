@@ -188,4 +188,18 @@ Up next - or at some point in the future - making this run in under 8(!!!) secon
 
 Step 1: Remove the debug code that tracked historical path through the grid. Duh. 95% time saving down to a 500ms runtime.  
 Step 2: Walk forward all possible distances in a single loop. Don't go one-by-one. No big wins here, but easier to reason about.  
-Step 3: 680,000 and 1,552,000 nodes explored for P1 and P2 respectively. Need to prune this somehow.
+Step 3: `680,000` and `1,552,000` nodes explored for P1 and P2 respectively. Instead of treating moving forward and turning as separate acts (we'd pop a state that had  previously moved only to push two turns with identical predicted cost back to the queue. These states have identical predicted cost and will be right back at the start of the queue to be popped immediately) do it all at once. This also removes the need to track `curForwardCount` at all. Total explored nodes drops by 33% down to `452,201` and `1,034,139`. Runtime halved to 200ms, but there was some transient variance up to 270ms that no longer replicates. Might need to `nice` the process in future?  
+Step 4: Prune search nodes *before* inserting into the queue. New explored nodes `130,000` and `171,000`. Runtime only down by 35% though: 130ms.  
+
+Interlude: Hit a compilation error out of nowhere:
+```
+error: error: error: error: unable to open output file '/Users/ajmorton/.cache/nim/aoc_2023_nim_r/@m..@s..@s..@s..@s..@s..@sopt@shomebrew@sCellar@snim@s2.0.0_1@snim@slib@spure@scollections@sheapqueue.nim.c.o': 'Operation not permitted'unable to open output file '/Users/ajmorton/.cache/nim/aoc_2023_nim_r/@mdays@sday17.nim.c.o': 'Operation not permitted'
+error: 
+11unable to open output file '/Users/ajmorton/.cache/nim/aoc_2023_nim_r/@m..@s..@s..@s..@s..@s..@sopt@shomebrew@sCellar@snim@s2.0.0_1@snim@slib@spure@shashes.nim.c.o': 'Operation not permitted' error error generated generated
+```
+and only in release mode. `nimble clean` didn't resolve it and had to blow away the `.cache/nim` folder to get things working again.  
+
+Step 5: A Bucket Queue can shave off another 20ms, but looks kinda hacky. Skipping this for cosmetic reasons.  
+Step 6: Entering a cell from opposite directions (`Left`, `Right`) results in the same search nodes after turning (`Up`, `Down`). As such the `explored` hashmap only need to track direction orientation (`Vert`, `Horizontal`) rather than all 4 directions. The number of explored nodes is unchanged but this halves the number of hashtable lookups and drops runtime to 80ms.  
+Step 7: Replace the `explored` hashmap with an array. No more hashing, runtime halves yet again. 40ms  
+Step 8: Turns out the A* heuristic isn't helping runtime(?!). Explored nodes using Dijkstra are only 10,000 more and the extra space/comparison maths must be cancelling that out. Explored nodes is 137,920 and 180,973 respectively.  
