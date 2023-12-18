@@ -203,3 +203,8 @@ Step 5: A Bucket Queue can shave off another 20ms, but looks kinda hacky. Skippi
 Step 6: Entering a cell from opposite directions (`Left`, `Right`) results in the same search nodes after turning (`Up`, `Down`). As such the `explored` hashmap only need to track direction orientation (`Vert`, `Horizontal`) rather than all 4 directions. The number of explored nodes is unchanged but this halves the number of hashtable lookups and drops runtime to 80ms.  
 Step 7: Replace the `explored` hashmap with an array. No more hashing, runtime halves yet again. 40ms  
 Step 8: Turns out the A* heuristic isn't helping runtime(?!). Explored nodes using Dijkstra are only 10,000 more and the extra space/comparison maths must be cancelling that out. Explored nodes is 137,920 and 180,973 respectively.  
+
+## Day 18: Lavaduct Lagoon
+TIL Shoelace and Pick's theorem.  
+Quick-ish part 1. Created the boundary, flood filled from outside, ~600th position.  
+Part 2? Nooooo. Spent the first hour trying to implement something from first principles which was interesting but unproductive. Find out about the above algos from the subreddit and get confused af trying to understand them. At least the final result will be fast.
