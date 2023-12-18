@@ -1,127 +1,72 @@
 import aoc_prelude
 
-type Dir = enum Up Down Left Right
 type Pos = tuple[y: int, x: int]
+type Instr = tuple[dir: char, dist: int, colour: string]
 
-proc p1(input_file: string): int = 
-    let lines = readFile(input_file).strip(leading = false).splitLines
+proc computeArea(points: seq[Pos], perimeterLength: int): int =
 
-    var dug: HashSet[Pos]
+    # Shoelace theorem to compute area of the polygon 
+    var area = 0
+    let pointsClosed = points & points[0]
+    for i in 0 ..< pointsClosed.len - 1:
+        let a = pointsClosed[i]
+        let b = pointsClosed[i+1]
+        area += a.y * b.x - a.x * b.y
+    area = area.abs div 2
+
+    # Pick's theorem to compute points fully contained by the polygon
+    let fullyContained = (area - (perimeterLength div 2)) + 1
+
+    # Fully contained points + points along the perimeter == area
+    return fullyContained + perimeterLength
+
+proc p1(instrs: seq[Instr]): int = 
     var curPos = (y: 0, x: 0)
+    var points = newSeq[Pos]()
 
-    dug.incl(curPos)
-    for line in lines:
-        [@dirStr, @distStr, @colourStr] := line.splitWhitespace
+    var perimeterLength = 0
+    for instr in instrs:
 
-        let dir = case dirStr[0]
-        of 'R': Right
-        of 'U': Up
-        of 'L': Left
-        of 'D': Down
-        else: quit "bad dir"
+        perimeterLength += instr.dist
 
-        let dist = distStr.parseInt
+        case instr.dir
+        of 'U': curPos.y -= instr.dist
+        of 'D': curPos.y += instr.dist
+        of 'L': curPos.x -= instr.dist
+        of 'R': curPos.x += instr.dist
+        else: quit fmt"Unrecognised direction '{instr.dir}'"
 
-        # Ignore colour for now
-        case dir
-        of Up: 
-            for _ in 0 ..< dist:
-                curPos.y -= 1
-                dug.incl(curPos)
-        of Down:
-            for _ in 0 ..< dist:
-                curPos.y += 1
-                dug.incl(curPos)
-        of Left:
-            for _ in 0 ..< dist:
-                 curPos.x -= 1
-                 dug.incl(curPos)
-        of Right:
-            for _ in 0 ..< dist:
-                 curPos.x += 1
-                 dug.incl(curPos)
+        points.add(curPos)
 
-    var minX, maxX, minY, maxY = 0
-    for pos in dug:
-        if pos.y < minY: minY = pos.y
-        if pos.y > maxY: maxY = pos.y
-        if pos.x < minX: minX = pos.x
-        if pos.x > maxX: maxX = pos.x
+    return computeArea(points, perimeterLength)
 
-    var unreached: HashSet[Pos]
-    for y in minY - 2 .. maxY + 2:
-        for x in minX - 2 .. maxX + 2:
-            unreached.incl((y:y, x:x))
+proc p2(instrs: seq[Instr]): int = 
 
-    var explored: HashSet[Pos]
-    var queue = newSeq[Pos]()
-    queue.add((y: minY - 2, x: minX - 2))
-    while queue.len != 0:
-        let nextPos = queue.pop
-        unreached.excl(nextPos)
-        for y in nextPos.y - 1 .. nextPos.y + 1:
-            for x in nextPos.x - 1 .. nextPos.x + 1:
-                let neighbour = (y: y, x: x)
-                if neighbour.y >= minY - 2 and neighbour.y <= maxY + 2 and
-                   neighbour.x >= minX - 2 and neighbour.x <= maxX + 2 and
-                   neighbour notin explored and neighbour notin dug:
-                    queue.add(neighbour)
-                    explored.incl(neighbour)
-
-    return unreached.len
-
-proc p2(input_file: string): int = 
-    let lines = readFile(input_file).strip(leading = false).splitLines
-
-    var dug: HashSet[Pos]
     var curPos = (y: 0, x: 0)
+    var points = newSeq[Pos]()
 
-    var corners = newSeq[Pos]()
-    dug.incl(curPos)
+    var perimeterLength = 0
+    for instr in instrs:
 
-    var numPointsAlongPerimeter = 0
-    for line in lines:
-        [@dirStr, @distStr, @colourStr] := line.splitWhitespace
+        let dist = instr.colour[0..^2].parseHexInt
 
-        let colourNumsStr = colourStr[2..^2]
-        let dist = colourNumsStr[0..^2].parseHexInt
+        perimeterLength += dist
+        case instr.colour[^1]
+        of '0': curPos.x += dist # Right
+        of '1': curPos.y += dist # Down
+        of '2': curPos.x -= dist # Left
+        of '3': curPos.y -= dist # Up
+        else: quit fmt"Unrecognised direction '{instr.colour[^1]}'"
 
-        let dir = case colourNumsStr[^1]
-        of '0': Right
-        of '1': Down
-        of '2': Left
-        of '3': Up
-        else: quit "inval dir!"
+        points.add(curPos)
 
-        numPointsAlongPerimeter += dist
-        case dir
-        of Up:   curPos.y -= dist
-        of Down: curPos.y += dist
-        of Left: curPos.x -= dist
-        of Right: curPos.x += dist
+    return computeArea(points, perimeterLength)
 
-        corners.add(curPos)
-
-
-    type Matrix = array[2, array[2, int]]
-    var matrices = newSeq[Matrix]()
-    for i in 0 ..< corners.len - 1:
-        let a = corners[i]
-        let b = corners[i+1]
-        matrices.add([[a.y, b.y], [a.x, b.x]])
-
-    # close the loop
-    let a = corners[^1]
-    let b = corners[0]
-    matrices.add([[a.x, b.x], [a.y, b.y]])
-
-    let determinant = proc(m: Matrix): int = m[0][0] * m[1][1] - m[0][1] * m[1][0]
-
-    let area = matrices.map(determinant).sum.abs div 2
-
-    let numPointFullyInsidePolygon = (area - (numPointsAlongPerimeter div 2)) + 1
-
-    return numPointFullyInsidePolygon + numPointsAlongPerimeter
+proc parseInstr(instr: string): Instr =
+    [@dir, @dist, @colourStr] := instr.splitWhitespace
+    return (dir: dir[0], dist: dist.parseInt, colour: colourStr[2..^2])
 
 proc run*(input_file: string): (int, int) =
-    return (p1(input_file), p2(input_file))
+    let lines = readFile(input_file).strip(leading = false).splitLines
+    let instrs = lines.map(parseInstr)
+    return (p1(instrs), p2(instrs))
