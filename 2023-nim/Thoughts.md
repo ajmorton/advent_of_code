@@ -208,3 +208,6 @@ Step 8: Turns out the A* heuristic isn't helping runtime(?!). Explored nodes usi
 TIL Shoelace and Pick's theorem.  
 Quick-ish part 1. Created the boundary, flood filled from outside, ~600th position.  
 Part 2? Nooooo. Spent the first hour trying to implement something from first principles which was interesting but unproductive. Find out about the above algos from the subreddit and get confused af trying to understand them. At least the final result will be fast.
+
+String slices continue to be annoying. Why allocate new memory for a read-only access into a string?  
+The experimental [Views](https://nim-lang.org/docs/manual_experimental.html#view-types) type promises to fix this but it's not clear how to implement for string slicing.
