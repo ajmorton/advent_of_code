@@ -231,3 +231,5 @@ case foo
   of 'B': return 2
 ```
 Surely this is a simple compiler optimisation?
+
+Still ~100 lines long. The lack of python's `eval` is really biting here. If the checks were > and <= then it my `eval` func could be halved in size with a bit of effort. Alas.
