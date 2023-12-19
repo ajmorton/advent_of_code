@@ -211,3 +211,8 @@ Part 2? Nooooo. Spent the first hour trying to implement something from first pr
 
 String slices continue to be annoying. Why allocate new memory for a read-only access into a string?  
 The experimental [Views](https://nim-lang.org/docs/manual_experimental.html#view-types) type promises to fix this but it's not clear how to implement for string slicing.
+
+## Day 19: Aplenty
+BuT iT wOrKs On ThE tEsT iNpUt. Surprised it took so long to run into this.  
+Got taken out by a single copy paste error in the massive eval function. Should've caught that faster.
+Compacting this down will be fun. Starting at 206 lines which is over double anything not named day10.
