@@ -216,3 +216,18 @@ The experimental [Views](https://nim-lang.org/docs/manual_experimental.html#view
 BuT iT wOrKs On ThE tEsT iNpUt. Surprised it took so long to run into this.  
 Got taken out by a single copy paste error in the massive eval function. Should've caught that faster.
 Compacting this down will be fun. Starting at 206 lines which is over double anything not named day10.
+
+Took a bit to slip under 1ms. In general: Avoid regex, if `split(sep)` produces only two results then prefer `find(sep)` and split on the separator index manually.
+Also apparently
+```nim
+return case foo
+  of 'A': 1
+  of 'B': 2
+```
+is slower than
+```nim
+case foo
+  of 'A': return 1
+  of 'B': return 2
+```
+Surely this is a simple compiler optimisation?
