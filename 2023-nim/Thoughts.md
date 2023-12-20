@@ -233,3 +233,6 @@ case foo
 Surely this is a simple compiler optimisation?
 
 Still ~100 lines long. The lack of python's `eval` is really biting here. If the checks were > and <= then it my `eval` func could be halved in size with a bit of effort. Alas.
+
+## Day 20: Pulse Propagation
+It's been a while since a good reverse engineering problem. Initially looked one level deeper than the 4 components in the code comment. Clearly some counters going on in there when watching the bits flip every cycle. Instead take the easy solution of checking the 4 Conjunction components and eay the 200ms time cost for now. Getting this fast will be a question of input analysis rather than code optimisation.
