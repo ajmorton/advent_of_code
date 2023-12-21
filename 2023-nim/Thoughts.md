@@ -236,3 +236,9 @@ Still ~100 lines long. The lack of python's `eval` is really biting here. If the
 
 ## Day 20: Pulse Propagation
 It's been a while since a good reverse engineering problem. Initially looked one level deeper than the 4 components in the code comment. Clearly some counters going on in there when watching the bits flip every cycle. Instead take the easy solution of checking the 4 Conjunction components and eay the 200ms time cost for now. Getting this fast will be a question of input analysis rather than code optimisation.
+
+## Day 21: Step Counter
+80 minutes for the first 100 finishes today. Gotta be a new record. 
+Part 1 was fast and easy, but part 2 is **rough**. I think it's important that all the edges of the map are empty space. Current theory: Build up a map of distances from all edges. Use that to determine the diameter of the bounding circle. All fully contained squares can be counted and multiplied, then do the edges manually. No idea if this works, but an interesting problem.
+
+Ended up going to the subreddit for solutions, but I would've needed to notice that there are empty cells in both the vertical and horizontal directions from the start, and also intuit that there's a computable sequence every 131 (grid height and width) steps. Not sure how this works. Doesn't this imply some sort of radial symmetry? Either way slowest solution to date and I don't see many paths to get this under 1ms.
