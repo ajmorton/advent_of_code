@@ -247,3 +247,6 @@ Clean up: I was **not** expecting to get this under 1ms, let alone a third of th
 Step 1: Let somebody smarter than me figure out the geometric solution: 6.5ms  
 Step 2: Replace the HashTable with a 2D array: 4ms  
 Step 3: Stop popping from the queue and inserting at the beginning. Instead insert at the end of the array and walk a pointer through the array from the beginning - intentionally not removing explored points - until it reaches the end. This removes O(n) operations for inerting an item at the beginning of the array which shuffles all points back one position. 330µs
+
+## Day 22: Sand Slabs
+Nothing to report. 3D tetris
