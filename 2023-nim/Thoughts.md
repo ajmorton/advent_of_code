@@ -250,3 +250,6 @@ Step 3: Stop popping from the queue and inserting at the beginning. Instead inse
 
 ## Day 22: Sand Slabs
 Nothing to report. 3D tetris
+Clean up: IntSet is faster than HashSet, however it produces a deprecated warning
+`/opt/homebrew/Cellar/nim/2.0.0_1/nim/lib/std/packedsets.nim(465, 10) Warning: assign is deprecated [Deprecated]`
+Annoying since this is in the standard library
