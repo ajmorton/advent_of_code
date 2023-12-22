@@ -242,3 +242,8 @@ It's been a while since a good reverse engineering problem. Initially looked one
 Part 1 was fast and easy, but part 2 is **rough**. I think it's important that all the edges of the map are empty space. Current theory: Build up a map of distances from all edges. Use that to determine the diameter of the bounding circle. All fully contained squares can be counted and multiplied, then do the edges manually. No idea if this works, but an interesting problem.
 
 Ended up going to the subreddit for solutions, but I would've needed to notice that there are empty cells in both the vertical and horizontal directions from the start, and also intuit that there's a computable sequence every 131 (grid height and width) steps. Not sure how this works. Doesn't this imply some sort of radial symmetry? Either way slowest solution to date and I don't see many paths to get this under 1ms.
+
+Clean up: I was **not** expecting to get this under 1ms, let alone a third of that.  
+Step 1: Let somebody smarter than me figure out the geometric solution: 6.5ms  
+Step 2: Replace the HashTable with a 2D array: 4ms  
+Step 3: Stop popping from the queue and inserting at the beginning. Instead insert at the end of the array and walk a pointer through the array from the beginning - intentionally not removing explored points - until it reaches the end. This removes O(n) operations for inerting an item at the beginning of the array which shuffles all points back one position. 330µs
