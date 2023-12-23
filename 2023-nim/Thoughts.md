@@ -263,3 +263,12 @@ F
 C  
 Didn't pop up until I walked through every single connection point one by one. Must've looked over the connection graph 5 times before finding it and the code was only ~120 lines. I introduced it after solving part 1 as well for bonus pain.
 Code is in an awful state atm and 16 seconds to run. Deal with that later. Since this is AoC there'll be a way to get runtime down. There's probably a node N which will partition the graph when removed. Then finding the longest paths `start -> N` and `n -> end` can be summed for the total path and drastically cut the search space.
+
+Speed up: A lot of effort to get this down to ~215 ms and the code is **ugly**. My 1 millisecond per day goal is in rough shape.  
+Steps to bring runtime down are as follows:  
+1: Avoid anything with a dynamic size. An `array[4, Foo]` which null fields is faster to iterate over than a `seq[Foo]` of length 1 or 2. Make sure to check for null vals properly.  
+2: No hashing where possible. HashSets also become `array`s with a bit of effort to convert keys into a simple integer so we can index into the array.  
+3: Continuing from 2) sets can be replaced with bitmaps, and bitmaps with integers if the set is small enough. Nim has native `set`s, and `intset`s but both are slower than sticking everything into an `int64`. This needed heavy effort to prune the conenction graphs to under 64 nodes (both have 36), particularly for part1 where the connections aren't symmetric.  
+4: One the nodes have been processed there's no need to track their original loction in the array and an `(int, int)` position can become a `int` posId. The connection building logic is much larger than the traversal. Blah blah sharpen axe three hours cut for one.  
+5: Reducing the size of types slowed things down? Tried changing `Conn` from two `int`s into two `int32`s so that it would fit in a single machine word. This causes a 10ms slowdown. Then tried `int16` and this slowed it down by 15ms. Perhaps the int conversions are expensive? Everything is single-threaded so there's no cache line contention and smaller types should mean fewer cache misses. The connections array is 2kB using `int64` and 512 bytes using `int16`, and `sysctl` tells me I have 64kB of L1d cache so everything fits in L1 regardless I guess.
+6: Even after all this there's still 30,580,294 nodes being explored. Any node pruning feels like it'll be speculative and not provably correct. I don't see any obvious wins on this front, and this'll obviously be the next step to improve runtime.
