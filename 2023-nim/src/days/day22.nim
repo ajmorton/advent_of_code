@@ -79,7 +79,10 @@ proc run*(input_file: string): (int, int) =
     var below = allBricks.mapIt( (it, bricks[it].hasBelow(chimney,  1)) ).toTable
     var above = allBricks.mapIt( (it, bricks[it].hasBelow(chimney, -1)) ).toTable
 
+    # The standard lib uses the deprecated `assign` in packedsets. Suppress it
+    {.warning[Deprecated]:off.}
     var solitarySupports = below.values.toSeq.filterIt(it.len == 1).foldl(a + b)
+    {.warning[Deprecated]:on.}
     solitarySupports.excl(-1) # Ignore the floor when counting bricks
     let p1 = allBricks.len - solitarySupports.len
 
