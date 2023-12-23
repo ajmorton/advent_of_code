@@ -33,7 +33,7 @@ nimble test                   # Run tests
 | day17  |  36.957 ms   |     |
 | day18  |  52.989 µs   |  ✅  |
 | day19  | 889.916 µs   |  ✅  | 
-| day20  | 177.072 ms   |     |
+| day20  |  60.734 µs   |  ✅  |
 | day21  | 324.536 µs   |  ✅  |
 | day22  |  11.344 ms   |     |
 | day23  |              |     |
