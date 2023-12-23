@@ -255,3 +255,11 @@ Nothing to report. 3D tetris
 Clean up: IntSet is faster than HashSet, however it produces a deprecated warning
 `/opt/homebrew/Cellar/nim/2.0.0_1/nim/lib/std/packedsets.nim(465, 10) Warning: assign is deprecated [Deprecated]`
 Annoying since this is in the standard library
+
+## Day 23: A Long Walk
+Made a stupid mistake when building connections by marking nodes explored slightly too early. Burnt a good hour and a half on debugging it because it only appeared in a very specific edge case.  
+J   
+F   
+C  
+Didn't pop up until I walked through every single connection point one by one. Must've looked over the connection graph 5 times before finding it and the code was only ~120 lines. I introduced it after solving part 1 as well for bonus pain.
+Code is in an awful state atm and 16 seconds to run. Deal with that later. Since this is AoC there'll be a way to get runtime down. There's probably a node N which will partition the graph when removed. Then finding the longest paths `start -> N` and `n -> end` can be summed for the total path and drastically cut the search space.
