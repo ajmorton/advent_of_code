@@ -45,7 +45,7 @@ proc benchmark*(fun: proc (inputFile: string): (int, int), inputFileStr: string)
   stdout.flushFile()
 
   let startTimeMulti = epochTime()
-  for _ in 0 .. numRuns:
+  for _ in 1 .. numRuns:
     discard fun(inputFileStr)
   let runTimeMulti = epochTime() - startTimeMulti
   let avgRunTime = runTimeMulti / numRuns.float
