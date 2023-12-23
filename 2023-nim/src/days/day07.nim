@@ -3,20 +3,31 @@ import aoc_prelude
 # Most frequent card count, second most frequent card count, score of each of the five cards in the hand
 type HandScore = (int, int, (int, int, int, int, int))
 
+proc highestTwoFreqs(freqs: seq[int]): (int, int) = 
+    var most, second = low(int)
+    for f in freqs:
+        if f > most:
+            (most, second) = (f, most)
+        elif f > second:
+            second = f
+    return (most, second)
+
 proc score(hand: string): HandScore =
     let cardValues = "23456789TJQKA"
-    let mostFreq = cardValues.map(card => hand.count(card)).sorted
+    let freqs = cardValues.map(card => hand.count(card))
+    let (most, second) = highestTwoFreqs(freqs)
 
     [@a, @b, @c, @d, @e] := hand.map(card => cardValues.find(card))
-    return (mostFreq[^1], mostFreq[^2], (a,b,c,d,e))
+    return (most, second, (a,b,c,d,e))
 
 proc score2(hand: string): HandScore =
     let cardValues2 = "J23456789TQKA"
-    let mostFreq = cardValues2[1..^1].map(card => hand.count(card)).sorted
+    let freqs = cardValues2[1..^1].map(card => hand.count(card))
+    let (most, second) = highestTwoFreqs(freqs)
     let jokers = hand.count('J')
 
     [@a, @b, @c, @d, @e] := hand.map(card => cardValues2.find(card))
-    return (mostFreq[^1] + jokers, mostFreq[^2], (a,b,c,d,e))
+    return (most + jokers, second, (a,b,c,d,e))
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines
