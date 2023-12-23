@@ -127,14 +127,8 @@ proc buildConnections(grid: seq[string], considerSlopes: bool): Connections =
 
     return connectionsReal
 
-proc findLongestPath(input_file: string, considerSlopes: bool): int =
-    let grid = readFile(input_file).strip(leading = false).splitLines
-    let connections = buildConnections(grid, considerSlopes)
-
-    var queue: seq[State]
-    var bmap: BitMap
-    queue.add((posId: StartPosId, explored: bmap, len: 0))
-
+proc findLongestPath(connections: Connections, initState: State): int =
+    var queue = [initState].toSeq
     var maxPath = low(int)
 
     while queue.len > 0:
@@ -153,7 +147,51 @@ proc findLongestPath(input_file: string, considerSlopes: bool): int =
 
     return maxPath
 
+# Find the first N paths while exploring the graph. 
+# Note this is BFS unlike findLongestPath so that each path will have roughly the same amount of work to do.
+proc getFirstNPaths(connections: Connections, initState: State, numPaths: int): seq[State] =
+    var queue = [initState].toSeq
+    var maxPath = low(int)
+
+    while queue.len > 0:
+        if queue.len >= numPaths:
+            return queue
+
+        let curState = queue.pop
+        if curState.posId == EndPosId:
+            maxPath = max(maxPath, curState.len)
+            continue
+
+        var nextExplored = curState.explored
+        nextExplored.setBit(curState.posId)
+
+        for (nextPosId, dist) in connections[curState.posId]:
+            if nextPosId != 0 and not nextExplored.testBit(nextPosId):
+                queue.insert((posId: nextPosId, explored: nextExplored, len: curState.len + dist), 0)
+
+    quit "Couldn't find numPaths"
+
+import std/threadpool
+{.experimental: "parallel".}
+proc findLongestPathParallel(connections: Connections, initState: State): int =
+    # std/cpuinfo::countProcessors tells me I have zero cores :| 
+    # Hardcoded to 64 as this is the fastest result experimentally 
+    # even though I have 8 cores on this machine and no evidence of hyperthreading
+    let initPaths = getFirstNPaths(connections, initState, 64)
+
+    var results = newSeq[int](initPaths.len)
+    parallel:
+        for i in 0 ..< initPaths.len:
+            results[i] = spawn findLongestPath(connections, initPaths[i])
+
+    return results.max
+
 proc run*(input_file: string): (int, int) =
-    let p1 = findLongestPath(input_file, true) 
-    let p2 = findLongestPath(input_file, false) 
+    let grid = readFile(input_file).strip(leading = false).splitLines
+    let connectionsP1 = buildConnections(grid, true)
+    let connectionsP2 = buildConnections(grid, false)
+
+    let initState: State = (posId: StartPosId, explored: 0, len: 0)
+    let p1 = findLongestPath(connectionsP1, initState) 
+    let p2 = findLongestPathParallel(connectionsP2, initState)
     return (p1, p2)
