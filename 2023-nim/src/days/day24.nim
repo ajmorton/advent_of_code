@@ -1,143 +1,159 @@
 import aoc_prelude
 
-type HailStone = tuple[x: float, y: float, z: float, vx: float, vy: float, vz: float]
+type Vec = tuple[x: float, y: float, z: float, vx: float, vy: float, vz: float]
+type Pos = tuple[x: float, y: float, z: float]
 
-proc parseHailstone(str: string): Hailstone = 
+proc parseVec(str: string): Vec = 
     [@pos, @vel] := str.split(" @ ")
     [@x, @y, @z] := pos.split(',').mapIt(it.strip).map(parseFloat)
     [@vx, @vy, @vz] := vel.split(',').mapIt(it.strip).map(parseFloat)
 
     return (x: x, y: y, z: z, vx: vx, vy: vy, vz: vz)
 
-proc pathsIntersect2D(hailA, hailB: Hailstone): (float, float) =
-    # a.x + a.vx * t == b.x + b.vx * u
-    # a.vx * t + (a.x - b.x) == b.vx * u
-    # (a.vx / b.vx) t + ((a.x - b.x)/b.vx) == u
-    let m = (hailA.vx / hailB.vx)
-    let n = ((hailA.x - hailB.x)/hailB.vx)
-    # m t + n == u
+proc addSpeed(vec: Vec, vel: Pos): Vec =
+    (x: vec.x, y: vec.y, z: vec.z, vx: vec.vx + vel.x, vy: vec.vy + vel.y, vz: vec.vz + vel.z)
 
-    # (a.vy / b.vy) t + ((a.y - b.y)/b.vy) == u
-    let o = (hailA.vy / hailB.vy)
-    let p = ((hailA.y - hailB.y)/hailB.vy)
-    # o t + p == u
-
-    # m t + n == o t + p
-    # (m - o) t == p - n
-    let t = (p - n) / (m - o)
-    let u = m * t + n
-
-    let xIntersect = hailA.x + (hailA.vx * t)
-    let yIntersect = hailA.y + (hailA.vy * t)
-
-    if xIntersect notin [Inf, -Inf] and yIntersect notin [Inf, -Inf]:
-        if t >= 0 and u >= 0:
-            return (xIntersect, yIntersect)
+proc intersection3D(a: Vec, b: Vec, forwardInTime: bool): Option[Pos] =
+    # To find the intersect solve for t1 and t2 in:
+    # a.x + a.vx * t1 == b.x + b.vx * t2
+    # a.y + a.vy * t1 == b.y + b.vy * t2
     
-    return (-Inf, -Inf)
+    # (a.vx / b.vx) t + ((a.x - b.x)/b.vx) == u == (a.vy / b.vy) t + ((a.y - b.y)/b.vy)
+    #             m t + n                  == u ==             o t + p
+    let m = a.vx / b.vx
+    let n = (a.x - b.x)/b.vx
+    let o = a.vy / b.vy
+    let p = (a.y - b.y)/b.vy
 
-# The world's loosest equality check because I have floating point inaccuracies 
-# that are compounding and I don't want to deal with it. The fact this function 
-# exists is an insult to mathematics. 
-# TODO - Clean this up and hide my shame.
-proc `~~=`(a: float, b: float): bool =
-    const epsilon = 10.0
-    return (a - b).abs <= epsilon
+    # This float math is fuzzy. Not sure that rounding to the nearest .1 is perfect, but it works for the input.
+    # Nim reports two cases where rounding to the nearest 0,1 causes a difference of 0.25(?) and when I print the 
+    # rounded and unrounded vals they're identical(??). You should never blame the compiler, but I don't think this 
+    # is an issue on my end
+    let t = ((p - n) / (m - o)).round(1)
+    let u = (m * t + n).round(1)
 
-proc pathsIntersect3D(hailA, hailB: Hailstone): (float, float, float) =
-    # a.x + a.vx * t == b.x + b.vx * u
-    # a.vx * t + (a.x - b.x) == b.vx * u
-    # (a.vx / b.vx) t + ((a.x - b.x)/b.vx) == u
-    let m = (hailA.vx / hailB.vx)
-    let n = ((hailA.x - hailB.x)/hailB.vx)
-    # m t + n == u
+    # # Reports the two rounding issues descibed above
+    # let tUnrounded = (p - n) / (m - o)
+    # if (tUnrounded.abs - t.abs).abs >= 0.1:
+    #     echo fmt"Rounding error!"
+    #     echo fmt"rounded = {t}, unRounded = {tUnrounded}, reported delta == {(tUnrounded.abs - t.abs).abs}"
 
-    # (a.vy / b.vy) t + ((a.y - b.y)/b.vy) == u
-    let o = (hailA.vy / hailB.vy)
-    let p = ((hailA.y - hailB.y)/hailB.vy)
-    # o t + p == u
+    # With t and u solved find the point of intersection
+    let xIntersect = a.x + (a.vx * t)
+    let yIntersect = a.y + (a.vy * t)
 
-    # m t + n == o t + p
-    # (m - o) t == p - n
-    let t = (p - n) / (m - o)
-    let u = m * t + n
+    # Make sure the intersection isn't behind either vector
+    if forwardInTime and (t < 0 or u < 0): 
+        return none(Pos)
 
-    let xIntersect = hailA.x + (hailA.vx * t)
-    let yIntersect = hailA.y + (hailA.vy * t)
+    if (a.z + a.vz * t) == (b.z + b.vz * u):
+        let zIntersect = a.z + (a.vz * t)
+        return some((xIntersect, yIntersect, zIntersect))
 
-    if xIntersect notin [Inf, -Inf] and yIntersect notin [Inf, -Inf]:
-        # if t >= 0 and u >= 0:
-        # FIXME - floating point error -> numbers are drifting
-        if (hailA.z + hailA.vz * t) ~~= (hailB.z + hailB.vz * u):
-            let zIntersect = hailA.z + (hailA.vz * t)
-            return (xIntersect, yIntersect, zIntersect)
-    return (-Inf, -Inf, -Inf)
+    return none(Pos)
 
+proc factors(n: int): HashSet[int] =
+    var facs: HashSet[int]
+    for x in 1 .. n.float.sqrt.int + 2:
+        if n.mod(x) == 0:
+            facs.incl(x)
+            facs.incl(n div x)
+
+    return facs
+
+proc findParallelVectors(vecs: seq[Vec], getP: proc(h: Vec): float, getV: proc(h: Vec): float): seq[(int, int)] =
+    var commonVecs = newSeq[(int, int)]()
+    var seenVec: Table[int, seq[int]]
+
+    for h in vecs:
+        seenVec.mgetOrPut(h.getV.int, newSeq[int]()).add(h.getP.int)
+
+    for vel in seenVec.keys:
+        for i in 0 ..< seenVec[vel].len:
+            for j in i + 1 ..< seenVec[vel].len:
+                let delta = (seenVec[vel][i].abs - seenVec[vel][j].abs).abs
+                commonVecs.add((vel, delta))
+
+    return commonVecs
+
+proc findSpeeds(parallelDeltas: seq[(int, int)]): seq[int] =
+    # Pick the smallest delta as computing factors is expensive
+    let smallestDelta = parallelDeltas.sorted[0]
+    let firstSpeed = smallestDelta[0]
+
+    var validSpeeds: seq[int]
+    for f in smallestDelta[1].factors:
+        validSpeeds.add(firstSpeed + f)
+        validSpeeds.add(firstSpeed - f)
+
+    for (vx, delta) in parallelDeltas:
+        validSpeeds = validSpeeds.filterIt((delta.mod(it - vx).abs) == 0)
+
+    # negative speeds will also work
+    validSpeeds = validSpeeds & validSpeeds.mapIt(it * -1)
+    return validSpeeds
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines
-    let hailstones = lines.map(parseHailstone)
+    let vecs = lines.map(parseVec)
 
+    # P1
+    let vecsIgnoreZ = vecs.mapIt((x: it.x, y: it.y, z: 0.0, vx: it.vx, vy: it.vy, vz: 0.0))
     var p1 = 0
-    for a in 0 ..< hailstones.len:
-        for b in a + 1 ..< hailstones.len:
-            let hailA = hailstones[a]
-            let hailB = hailstones[b]
-
-            let (xInt, yInt) = pathsIntersect2D(hailA, hailB)
-            if (xInt, yInt) != (-Inf, -Inf):
-                if 200000000000000.0 <= xInt and xInt <= 400000000000000.0:
-                    if 200000000000000.0 <= yInt and yInt <= 400000000000000.0:
+    for a in 0 ..< vecsIgnoreZ.len:
+        for b in a + 1 ..< vecsIgnoreZ.len:
+            let intersect = intersection3D(vecsIgnoreZ[a], vecsIgnoreZ[b], true)
+            if intersect.isSome:
+                let (xInt, yInt, _) = intersect.get
+                if xInt in 200000000000000.0 .. 400000000000000.0:
+                    if yInt in 200000000000000.0 .. 400000000000000.0:
                         p1 += 1
+
     # P2
     var p2 = 0
 
-    # Use the stone as the reference frame. Apply its velocity onto all other hail
-    for vx in -300 .. 300:
-        echo vx
-        if p2 != 0:
-            break
-        for vy in -300 .. 300:
-            if p2 != 0:
-                break
-            for vz in -300 .. 300:
-                let firstHail = hailstones[0]
-                var modifiedFirstHail = firstHail
-                modifiedFirstHail.vx += vx.float
-                modifiedFirstHail.vy += vy.float
-                modifiedFirstHail.vz += vz.float
+    let getX = proc(h: Vec): float = h.x
+    let getVx = proc(h: Vec): float = h.vx
+    let getY = proc(h: Vec): float = h.y
+    let getVy = proc(h: Vec): float = h.vy
+    let getZ = proc(h: Vec): float = h.z
+    let getVz = proc(h: Vec): float = h.vz
+    let parallelDeltasX = findParallelVectors(vecs, getX, getVx)
+    let parallelDeltasY = findParallelVectors(vecs, getY, getVy)
+    let parallelDeltasZ = findParallelVectors(vecs, getZ, getVz)
 
+    let commonXFacs = findSpeeds(parallelDeltasX)
+    let commonYFacs = findSpeeds(parallelDeltasY)
+    let commonZFacs = findSpeeds(parallelDeltasZ)
 
-                var intPoint = (-Inf, -Inf, -Inf)
+    # Use the stone as the reference frame. Apply its velocity onto all other hailstone vecs
+    for vx in commonXFacs:
+        for vy in commonYFacs.toSeq:
+            for vz in commonZFacs.toSeq:
+                let firstVec = vecs[0]
+                var normalisedFirstVec = firstVec.addSpeed((x: vx.float, y: vy.float, z: vz.float))
+
+                var intPoint: Option[Pos]
                 var found = true
-                var count = 0
-                for otherHail in hailstones[1..^1]:
-                    count += 1
-                    var modifiedOtherHail = otherHail
-                    modifiedOtherHail.vx += vx.float
-                    modifiedOtherHail.vy += vy.float
-                    modifiedOtherHail.vz += vz.float
-
-                    var newIntPoint: (float, float, float)
-                    newIntPoint = pathsIntersect3D(modifiedFirstHail, modifiedOtherHail)
+                for otherVec in vecs[1..^1]:
+                    var normalisedOtherVec = otherVec.addSpeed((x: vx.float, y: vy.float, z: vz.float))
+                    let newIntPoint = intersection3D(normalisedFirstVec, normalisedOtherVec, false)
     
-                    if newIntPoint == (-Inf, -Inf, -Inf):
+                    if newIntPoint.isNone:
                         found = false
                         break
 
-                    if intPoint == (-Inf, -Inf, -Inf):
+                    if intPoint.isNone:
                         intPoint = newIntPoint
                         continue
 
-                    if intPoint[0] ~~= newIntPoint[0] and intPoint[1] ~~= newIntPoint[1] and intPoint[2] ~~= newIntPoint[2]:
-                        # same
-                        continue
-                    else:
+                    if intPoint.get != newIntPoint.get:
                         found = false
                         break  
 
                 if found:
-                    p2 = intPoint[0].int + intPoint[1].int + intPoint[2].int
-                    break
+                    p2 = intPoint.get[0].int + intPoint.get[1].int + intPoint.get[2].int
+                    return (p1, p2)
 
-    return (p1, p2)
+    # No p2 found
+    quit "unreachable"
