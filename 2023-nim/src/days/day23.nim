@@ -98,6 +98,7 @@ proc buildConnections(grid: seq[string], considerSlopes: bool): Connections =
 
         let oneWayConnectors = connections.keys.toSeq.filterIt(connections[it].len == 2 and connections[it].countIt(it.canTraverse) == 1)
         for oneWay in oneWayConnectors:
+            progress = true
             let copyOneWay = oneWay
             let (posA, distA, _) = connections[copyOneWay].filterIt(not it.canTraverse)[0]
             let (posB, distB, _) = connections[copyOneWay].filterIt(it.canTraverse)[0]
@@ -108,6 +109,12 @@ proc buildConnections(grid: seq[string], considerSlopes: bool): Connections =
             connections[posB] = connections[posB].filter(a => a.pos != copyOneWay)
             connections[posB].add((posA, distA + distB, false))
             connections.del(copyOneWay)
+
+    # If the endPos has a single node that reaches it then that node must head directly to the end, otherwise 
+    # there's no way to return to the node and we can never reach the end pos.
+    if connections[endPos].len == 1:
+        let penultimate = connections[endPos][0].pos
+        connections[penultimate] = connections[penultimate].filterIt(it.pos == endPos)
 
     var idCounter = 3
     var posIds: Table[Pos, int]
@@ -132,18 +139,18 @@ proc findLongestPath(connections: Connections, initState: State): int =
     var maxPath = low(int)
 
     while queue.len > 0:
-        let curState = queue.pop
+        let (curPosId, curExplored, curLen) = queue.pop
 
-        if curState.posId == EndPosId:
-            maxPath = max(maxPath, curState.len)
-            continue
+        var nextExplored = curExplored
+        nextExplored.setBit(curPosId)
 
-        var nextExplored = curState.explored
-        nextExplored.setBit(curState.posId)
-
-        for (nextPosId, dist) in connections[curState.posId]:
+        for (nextPosId, dist) in connections[curPosId]:
             if nextPosId != 0 and not nextExplored.testBit(nextPosId):
-                queue.add((posId: nextPosId, explored: nextExplored, len: curState.len + dist))
+                if nextPosId == EndPosId:
+                    maxPath = max(maxPath, curLen + dist)
+                    continue
+
+                queue.add((posId: nextPosId, explored: nextExplored, len: curLen + dist))
 
     return maxPath
 
@@ -176,7 +183,8 @@ import std/threadpool
 proc findLongestPathParallel(connections: Connections, initState: State): int =
     # std/cpuinfo::countProcessors tells me I have zero cores :| 
     # Hardcoded to 64 as this is the fastest result experimentally 
-    # even though I have 8 cores on this machine and no evidence of hyperthreading
+    # even though I have 8 cores on this machine and no evidence of hyperthreading. 
+    # Probably due to uneven workloads leaving some threads with nothing to do.
     let initPaths = getFirstNPaths(connections, initState, 64)
 
     var results = newSeq[int](initPaths.len)
