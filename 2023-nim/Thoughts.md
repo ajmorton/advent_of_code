@@ -1,5 +1,15 @@
 # Thoughts on Nim as things progress
 
+## Final thoughts
+Solid language 👍. Flexible, good stdlib, easy to read and write. 
+Most of my issues came from the language server being a bit weak, for example in the line`let foo = connsCopy[egeA].find(edgeB)` reports an error on the entire line saying `expression '' has no type (or is ambiguous)`, although the correct `undeclared identifier: 'edgA'` error is there if you look for it.  
+
+Runtimes for this year are good with less than 200 ms at the time of writing and 15 out of 25 days running in under a millisecond. I'll try shave off some more runtime but NP-hard problems like day 23 are look pretty intractable. 
+It's been pretty easy to optimise memory usage to get results comparable to some of the C++/Rust solutions on the subreddit. Still annoying that string slices are expensive instead of reading into existing memory. Need to understand Views better to fix that.   
+
+Finally - and this is the important thing for AoC langauges - no new language feature that jumped out to me. Zig had native option and error types, Crystal had the Ruby-style syntax etc. I guess Nim had the friendly syntax, but it feels like it sits in a happy medium of multiple languages with no USP of note. It's not an issue - good and consistent design choices are important - I just didn't scratch that newFeature (TM) itch.
+
+
 ## Day 00 - Setting up the framework
 
 Bot of a rough start here. 
@@ -50,7 +60,7 @@ which modifies and re-assigns the string on each iteration and thought I could g
 ```
 but this comes out slower(?). I suspect string slicing creates a brand new string instead of doing some pointer arith like I wanted. Perf results are a bit bouncy bouncy, roughly halving after the first run and then ~10% deviance on each subsequent run. Will need to clean that up at some point. Runtime is sitting around 1.9 ms. Would like to get that under 1 at some point.
 
-### Day 01 speed up
+### Day 01 - Speed up
 No need to mutate the string in the end. `continuesWith`` does the string comparison at an offset.
 Weirdly declaring a variable for readability causes a 30% slowdown from 550µs to 700µs. All it takes is the following change in simplified code:
 ```nim
@@ -169,7 +179,7 @@ Made a mistake where if rows `i` and `i - 1` were mirrored I tried checking all 
 Nim's flexible syntax (`foo.bar(baz)`, `foo(bar, baz)`, `foo.bar baz`) has been really nice so far. Not great for a industrialised code base, but great for scripting like AoC.
 
 ## Day 14: Parabolic Reflector Dish
-Using hashes is coming in at a chunky half second. Need to clean up the maths to skip to the 1000000000th iter since the first attempts at modulo math were playing up. I ended up throwing in a random -1 to make things work so I need to think on where the off by one is coming from.
+Using hashes is coming in at a chunky half second. Need to clean up the maths to skip to the 1000000000th iter since the first attempts at modulo math were playing up. I ended up throwing in a random -1 to make things work so I need to think on where the off by one is coming from.  
 edit post clean up: Completely wrong on the hash theory. Changing from moving rocks one space at a time to instead moving as far as they could go shaved off 80% of the runtime and using modulo maths instead of skip counting up to 1000000000 removed another 10%. Code is a bit messy but runtime is down to 15 ms. More to come.
 
 ## Day 15: Lens Library
@@ -188,12 +198,20 @@ Had a chance to start on time for the first time in a week. Got everything prepp
 Wasted a whoole lot of time not including `curForwardCount` in the explored array and was truncating search paths that were valid. Paaaaaaaain. A* is meant to be easy to implement. Even with all that still in the top 3000?  
 Up next - or at some point in the future - making this run in under 8(!!!) seconds. Without release mode we're up over a minute(!!!!!!) My benchmarking code reports `inf s` because I didn't allow for >5 second runtimes.  
 
-Step 1: Remove the debug code that tracked historical path through the grid. Duh. 95% time saving down to a 500ms runtime.  
-Step 2: Walk forward all possible distances in a single loop. Don't go one-by-one. No big wins here, but easier to reason about.  
-Step 3: `680,000` and `1,552,000` nodes explored for P1 and P2 respectively. Instead of treating moving forward and turning as separate acts (we'd pop a state that had  previously moved only to push two turns with identical predicted cost back to the queue. These states have identical predicted cost and will be right back at the start of the queue to be popped immediately) do it all at once. This also removes the need to track `curForwardCount` at all. Total explored nodes drops by 33% down to `452,201` and `1,034,139`. Runtime halved to 200ms, but there was some transient variance up to 270ms that no longer replicates. Might need to `nice` the process in future?  
-Step 4: Prune search nodes *before* inserting into the queue. New explored nodes `130,000` and `171,000`. Runtime only down by 35% though: 130ms.  
+Step 1:  
+Remove the debug code that tracked historical path through the grid. Duh. 95% time saving down to a 500ms runtime.  
 
-Interlude: Hit a compilation error out of nowhere:
+Step 2:  
+Walk forward all possible distances in a single loop. Don't go one-by-one. No big wins here, but easier to reason about.  
+
+Step 3:  
+`680,000` and `1,552,000` nodes explored for P1 and P2 respectively. Instead of treating moving forward and turning as separate acts (we'd pop a state that had  previously moved only to push two turns with identical predicted cost back to the queue. These states have identical predicted cost and will be right back at the start of the queue to be popped immediately) do it all at once. This also removes the need to track `curForwardCount` at all. Total explored nodes drops by 33% down to `452,201` and `1,034,139`. Runtime halved to 200ms, but there was some transient variance up to 270ms that no longer replicates. Might need to `nice` the process in future?  
+
+Step 4:  
+Prune search nodes *before* inserting into the queue. New explored nodes `130,000` and `171,000`. Runtime only down by 35% though: 130ms.  
+
+Interlude:  
+Hit a compilation error out of nowhere:
 ```
 error: error: error: error: unable to open output file '/Users/ajmorton/.cache/nim/aoc_2023_nim_r/@m..@s..@s..@s..@s..@s..@sopt@shomebrew@sCellar@snim@s2.0.0_1@snim@slib@spure@scollections@sheapqueue.nim.c.o': 'Operation not permitted'unable to open output file '/Users/ajmorton/.cache/nim/aoc_2023_nim_r/@mdays@sday17.nim.c.o': 'Operation not permitted'
 error: 
@@ -201,8 +219,11 @@ error:
 ```
 and only in release mode. `nimble clean` didn't resolve it and had to blow away the `.cache/nim` folder to get things working again.  
 
-Step 5: A Bucket Queue can shave off another 20ms, but looks kinda hacky. Skipping this for cosmetic reasons.  
-Step 6: Entering a cell from opposite directions (`Left`, `Right`) results in the same search nodes after turning (`Up`, `Down`). As such the `explored` hashmap only need to track direction orientation (`Vert`, `Horizontal`) rather than all 4 directions. The number of explored nodes is unchanged but this halves the number of hashtable lookups and drops runtime to 80ms.  
+Step 5:  
+A Bucket Queue can shave off another 20ms, but looks kinda hacky. Skipping this for cosmetic reasons.  
+
+Step 6:  
+Entering a cell from opposite directions (`Left`, `Right`) results in the same search nodes after turning (`Up`, `Down`). As such the `explored` hashmap only need to track direction orientation (`Vert`, `Horizontal`) rather than all 4 directions. The number of explored nodes is unchanged but this halves the number of hashtable lookups and drops runtime to 80ms.  
 Step 7: Replace the `explored` hashmap with an array. No more hashing, runtime halves yet again. 40ms  
 Step 8: Turns out the A* heuristic isn't helping runtime(?!). Explored nodes using Dijkstra are only 10,000 more and the extra space/comparison maths must be cancelling that out. Explored nodes is 137,920 and 180,973 respectively.  
 
@@ -215,7 +236,9 @@ String slices continue to be annoying. Why allocate new memory for a read-only a
 The experimental [Views](https://nim-lang.org/docs/manual_experimental.html#view-types) type promises to fix this but it's not clear how to implement for string slicing.
 
 ## Day 19: Aplenty
-BuT iT wOrKs On ThE tEsT iNpUt. Surprised it took so long to run into this.  
+BuT iT wOrKs On ThE tEsT iNpUt.  
+Surprised it took so long to run into this.  
+
 Got taken out by a single copy paste error in the massive eval function. Should've caught that faster.
 Compacting this down will be fun. Starting at 206 lines which is over double anything not named day10.
 
@@ -240,18 +263,24 @@ Still ~100 lines long. The lack of python's `eval` is really biting here. If the
 It's been a while since a good reverse engineering problem. Initially looked one level deeper than the 4 components in the code comment. Clearly some counters going on in there when watching the bits flip every cycle. Instead take the easy solution of checking the 4 Conjunction components and eay the 200ms time cost for now. Getting this fast will be a question of input analysis rather than code optimisation.
 
 ## Day 21: Step Counter
-80 minutes for the first 100 finishes today. Gotta be a new record. 
+80 minutes for the first 100 finishes today. Gotta be a new record.  
 Part 1 was fast and easy, but part 2 is **rough**. I think it's important that all the edges of the map are empty space. Current theory: Build up a map of distances from all edges. Use that to determine the diameter of the bounding circle. All fully contained squares can be counted and multiplied, then do the edges manually. No idea if this works, but an interesting problem.
 
 Ended up going to the subreddit for solutions, but I would've needed to notice that there are empty cells in both the vertical and horizontal directions from the start, and also intuit that there's a computable sequence every 131 (grid height and width) steps. Not sure how this works. Doesn't this imply some sort of radial symmetry? Either way slowest solution to date and I don't see many paths to get this under 1ms.
 
 Clean up: I was **not** expecting to get this under 1ms, let alone a third of that.  
-Step 1: Let somebody smarter than me figure out the geometric solution: 6.5ms  
-Step 2: Replace the HashTable with a 2D array: 4ms  
-Step 3: Stop popping from the queue and inserting at the beginning. Instead insert at the end of the array and walk a pointer through the array from the beginning - intentionally not removing explored points - until it reaches the end. This removes O(n) operations for inerting an item at the beginning of the array which shuffles all points back one position. 330µs
+
+Step 1:  
+Let somebody smarter than me figure out the geometric solution: 6.5ms  
+
+Step 2:  
+Replace the HashTable with a 2D array: 4ms  
+
+Step 3:  
+Stop popping from the queue and inserting at the beginning. Instead insert at the end of the array and walk a pointer through the array from the beginning - intentionally not removing explored points - until it reaches the end. This removes O(n) operations for inerting an item at the beginning of the array which shuffles all points back one position. 330µs
 
 ## Day 22: Sand Slabs
-Nothing to report. 3D tetris
+Nothing to report. 3D tetris  
 Clean up: IntSet is faster than HashSet, however it produces a deprecated warning
 `/opt/homebrew/Cellar/nim/2.0.0_1/nim/lib/std/packedsets.nim(465, 10) Warning: assign is deprecated [Deprecated]`
 Annoying since this is in the standard library
@@ -262,25 +291,42 @@ J
 F   
 C  
 Didn't pop up until I walked through every single connection point one by one. Must've looked over the connection graph 5 times before finding it and the code was only ~120 lines. I introduced it after solving part 1 as well for bonus pain.
+
 Code is in an awful state atm and 16 seconds to run. Deal with that later. Since this is AoC there'll be a way to get runtime down. There's probably a node N which will partition the graph when removed. Then finding the longest paths `start -> N` and `n -> end` can be summed for the total path and drastically cut the search space.
 
-Speed up: A lot of effort to get this down to ~215 ms and the code is **ugly**. My 1 millisecond per day goal is in rough shape.  
+Speed up:  
+A lot of effort to get this down to ~215 ms and the code is **ugly**. My 1 millisecond per day goal is in rough shape.  
 Steps to bring runtime down are as follows:  
-1: Avoid anything with a dynamic size. An `array[4, Foo]` which null fields is faster to iterate over than a `seq[Foo]` of length 1 or 2. Make sure to check for null vals properly.  
-2: No hashing where possible. HashSets also become `array`s with a bit of effort to convert keys into a simple integer so we can index into the array.  
-3: Continuing from 2) sets can be replaced with bitmaps, and bitmaps with integers if the set is small enough. Nim has native `set`s, and `intset`s but both are slower than sticking everything into an `int64`. This needed heavy effort to prune the conenction graphs to under 64 nodes (both have 36), particularly for part1 where the connections aren't symmetric.  
-4: One the nodes have been processed there's no need to track their original loction in the array and an `(int, int)` position can become a `int` posId. The connection building logic is much larger than the traversal. Blah blah sharpen axe three hours cut for one.  
-5: Reducing the size of types slowed things down? Tried changing `Conn` from two `int`s into two `int32`s so that it would fit in a single machine word. This causes a 10ms slowdown. Then tried `int16` and this slowed it down by 15ms. Perhaps the int conversions are expensive? Everything is single-threaded so there's no cache line contention and smaller types should mean fewer cache misses. The connections array is 2kB using `int64` and 512 bytes using `int16`, and `sysctl` tells me I have 64kB of L1d cache so everything fits in L1 regardless I guess.
-6: Even after all this there's still 30,580,294 nodes being explored. Any node pruning feels like it'll be speculative and not provably correct. I don't see any obvious wins on this front, and this'll obviously be the next step to improve runtime. edit: Exploit the fact that the endPoint is only connected to a single node, and therefore any path that enters this node must travel directly to the end pos, otherwise the end pos is unreachable. Drops the state space by 40% and runtime along with it. 125 ms.
-7: Finally needed to bring in `{.experimental: "parallel".}`. 64 threads -> 4x speedup. Not sure why 64 is the magic number here since this laptop has 4 cores and no hyperthreading.
+
+Step 1:  
+Avoid anything with a dynamic size. An `array[4, Foo]` which null fields is faster to iterate over than a `seq[Foo]` of length 1 or 2. Make sure to check for null vals properly.  
+
+Step 2:  
+No hashing where possible. HashSets also become `array`s with a bit of effort to convert keys into a simple integer so we can index into the array.  
+
+Step 3:  
+Continuing from 2) sets can be replaced with bitmaps, and bitmaps with integers if the set is small enough. Nim has native `set`s, and `intset`s but both are slower than sticking everything into an `int64`. This needed heavy effort to prune the conenction graphs to under 64 nodes (both have 36), particularly for part1 where the connections aren't symmetric.  
+
+Step 4:  
+One the nodes have been processed there's no need to track their original loction in the array and an `(int, int)` position can become a `int` posId. The connection building logic is much larger than the traversal. Blah blah sharpen axe three hours cut for one.  
+
+Step 5:  
+Reducing the size of types slowed things down? Tried changing `Conn` from two `int`s into two `int32`s so that it would fit in a single machine word. This causes a 10ms slowdown. Then tried `int16` and this slowed it down by 15ms. Perhaps the int conversions are expensive? Everything is single-threaded so there's no cache line contention and smaller types should mean fewer cache misses. The connections array is 2kB using `int64` and 512 bytes using `int16`, and `sysctl` tells me I have 64kB of L1d cache so everything fits in L1 regardless I guess.
+
+Step 6:  
+Even after all this there's still 30,580,294 nodes being explored. Any node pruning feels like it'll be speculative and not provably correct. I don't see any obvious wins on this front, and this'll obviously be the next step to improve runtime. edit: Exploit the fact that the endPoint is only connected to a single node, and therefore any path that enters this node must travel directly to the end pos, otherwise the end pos is unreachable. Drops the state space by 40% and runtime along with it. 125 ms.
+
+Step 7:  
+Finally needed to bring in `{.experimental: "parallel".}`. 64 threads -> 4x speedup. Not sure why 64 is the magic number here since this laptop has 4 cores and no hyperthreading.
 
 ## Day 24: Never Tell Me The Odds
-Simple algebra for part 1. Part 2 was a slog. Seeing a lot of solutions using Z3, but that defeats the point of AoC imo.
-floating point caused some real hairy issues today and I've written the world's worst equality check with the `~~=` function. Part 2 is now done and cleanup to come soon-ish(?).
+Simple algebra for part 1. Part 2 was a slog. Seeing a lot of solutions using Z3, but that defeats the point of AoC imo.  
+Floating point caused some real hairy issues today and I've written the world's worst equality check with the `~~=` function. Part 2 is now done and cleanup to come soon-ish(?).
 
 ## Day 25: Snowverload
-Not too enthused by the past two days since they both just required plugging the problem into an external library.
+Not too enthused by the past two days since they both just required plugging the problem into an external library.  
 Still need to write up a proper solution since the current one uses randomness until we're lucky enough to pick three pairs of nodes that cross the minCut boundary. Runtime is... long. 35 seconds? 35 minutes? We'll never really know.
 
-Speed up: Much simpler solution making use of the fact that we know the minCur lengths is 3. Way faster, way neater. 
+Speed up:  
+Much simpler solution making use of the fact that we know the minCur lengths is 3. Way faster, way neater. 
 Sub 1 ms looks within reach.
