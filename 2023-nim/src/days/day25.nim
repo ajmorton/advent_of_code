@@ -1,111 +1,100 @@
 import aoc_prelude
-
 import heapqueue
-import random
 
-type State = tuple[dist: int, pos: string, path: HashSet[(string, string)]]
+type CompId = int16
 
-proc flood(start: string, conns: Table[string, HashSet[string]]): int =
-    var queue = newSeq[string]()
+proc flood(start: CompId, conns: Table[CompId, seq[CompId]]): int =
+    var queue = newSeq[CompId]()
     queue.insert(start, 0)
-    var explored: HashSet[string]        
-    explored.incl(start)
+    var explored = newSeqWith(conns.len, false)
+    explored[start] = true
 
     while queue.len > 0:
         let curNode = queue.pop
         for outp in conns[curNode]:
-            if outp notin explored:
-                explored.incl(outp)
+            if not explored[outp]:
+                explored[outp] = true
                 queue.insert(outp, 0)
 
-    return explored.len
+    return explored.count(true)
 
+type State = tuple[dist: int, pos: CompId, path: seq[(CompId, CompId)]]
 
-proc dijkstra(start, dest: string, conns: Table[string, HashSet[string]]): Option[HashSet[(string, string)]] =
+proc `<`(a, b: State): bool = 
+    a.dist < b.dist
 
-    var queue: HeapQueue[(int, string, HashSet[(string, string)])]
-    queue.push((dist: 0, pos: start, path: HashSet[(string, string)]()))
+proc dijkstra(start, dest: CompId, conns: Table[CompId, seq[CompId]]): Option[seq[(CompId, CompId)]] =
+    var queue: HeapQueue[State]
+    queue.push((dist: 0, pos: start, path: newSeq[(CompId, CompId)]()))
 
-    var seen: Table[string, int]
+    var seen = newSeqWith(conns.len, high(int))
 
     while queue.len > 0:
         var (dist, pos, path) = queue.pop
-
-        if pos == dest:
-            return some(path)
-
-        if seen.getOrDefault(pos, high(int)) <= dist:
-            continue
-        else:
-            seen[pos] = dist
-
         for next in conns[pos]:
-            let newEdge = ((min(pos, next), max(pos, next)))
-            queue.push((dist: dist + 1, pos: next, path: path + [newEdge].toHashSet))
+            if next == dest:
+                return some(path)
 
-    return none(HashSet[(string, string)])
+            if seen[next] <= dist:
+                continue
+            else:
+                seen[next] = dist
+
+            let newEdge = ((min(pos, next), max(pos, next)))
+            queue.push((dist: dist + 1, pos: next, path: path & [newEdge].toSeq))
+
+    return none(seq[(CompId, CompId)])
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines
 
-    var conns: Table[string, HashSet[string]]
+    var conns: Table[CompId, seq[CompId]]
+
+    var componentIds : Table[string, CompId]
+    var compId: CompId = 0
 
     for line in lines:
-        [@inputStr, @outputsStr] := line.split(':')
+        let splitIndex = line.find(':')
+        let (inputStr, outputsStr) = (line[0 ..< splitIndex], line[splitIndex + 1 .. ^1])
         let input = inputStr.strip
-        let outputs = outputsStr.splitWhitespace.mapIt(it.strip)
+        let outputs = outputsStr.splitWhitespace
 
-        for outp in outputs:
-            conns.mgetOrPut(input, HashSet[string]()).incl(outp)
-            conns.mgetOrPut(outp, HashSet[string]()).incl(input)
+        if input notin componentIds:
+            componentIds[input] = compId
+            compId += 1
 
-    var allPrunedOrig: HashSet[(string, string)]
-    for conn in conns.keys:
-        for conn2 in conns.keys:
-            allPrunedOrig.incl((conn, conn2))
+        for output in outputs:
+            if output notin componentIds:
+                componentIds[output] = compId
+                compId += 1
 
-    # Init random
-    randomize()
+            let inputId = componentIds[input]
+            let outputId = componentIds[output]
 
-    var allPrunedCorrect: HashSet[(string, string)]
-    while true:
-        var dijkstrad: HashSet[(string, string)]
-        var allPruned = allPrunedOrig
-        while allPruned.len > 3:
-            echo fmt"loop, allPruned len == {allPruned.len}"
-            let options = allPruned - dijkstrad
-            if options.len == 0:
-                break
-            var (posA, posB) = options.toSeq[rand(0 ..< options.len)]
-            dijkstrad.incl((posA, posB))
-            block:
-                var connsLocal = conns
-                var allPrunedLocal: HashSet[(string, string)]
+            if inputId notin conns.mgetOrPut(outputId, newSeq[CompId]()):
+                conns[outputId].add(inputId)
 
-                for _ in 1 .. 3:
-                    # Find and remove 3 paths. If it crosses the minCut this must include all 3 of the minCut edges
-                    let path = dijkstra(posA, posB, connsLocal)
-                    if path.isNone:
-                        break
-                    allPrunedLocal.incl(path.get)
-                    for (edgeA, edgeB) in path.get:
-                        connsLocal[edgeA].excl(edgeB)
-                        connsLocal[edgeB].excl(edgeA)
+            if outputId notin conns.mgetOrPut(inputId, newSeq[CompId]()):
+                conns[inputId].add(outputId)
 
-                allPruned = allPruned.intersection(allPrunedLocal)
+    for a in 0 ..< conns.len:
+        # This could be `for b in a + 1 ..< conns.len`, but because of the way we generate componentIDs 
+        # it's highly likely that adjacent ID belong to neighbouring nodes. This in turn makes them less 
+        # likely to cross the minCut. Since this logic keeps trying until it finds two points that cross 
+        # the minCut iterating b in reverse makes it more likely to fimd a cross-minCut pair quickly.
+        for b in countdown(conns.len - 1, a + 1):
+            var connsCopy = conns
+            let posA = connsCopy.keys.toSeq[a]
+            let posB = connsCopy.keys.toSeq[b]
 
-        if allPruned.len == 3:
-            echo "found!!"
-            allPrunedCorrect = allPruned
+            # Find and remove 3 paths. If it crosses the minCut this will remove all 3 edges 
+            # connecting the two groups and a fourth search will fail.
+            for _ in 1 .. 3:
+                let path = dijkstra(posA, posB, connsCopy)
+                for (edgeA, edgeB) in path.get:
+                    connsCopy[edgeA].del(connsCopy[edgeA].find(edgeB))
+                    connsCopy[edgeB].del(connsCopy[edgeB].find(edgeA))
 
-            for (edgeA, edgeB) in allPrunedCorrect:
-                conns[edgeA].excl(edgeB)
-                conns[edgeB].excl(edgeA)
-
-            let group1Size = flood(conns.keys.toSeq[0], conns)
-
-            var p1 = group1Size * (conns.len - group1Size)
-            if p1 > 0:
-                return (p1, 0)
-    return (0, 0)
-
+            if dijkstra(posA, posB, connsCopy).isNone:
+                let size = flood(posA, connsCopy)
+                return (size * (conns.len - size), 0)

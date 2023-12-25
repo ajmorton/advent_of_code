@@ -281,3 +281,6 @@ floating point caused some real hairy issues today and I've written the world's 
 ## Day 25: Snowverload
 Not too enthused by the past two days since they both just required plugging the problem into an external library.
 Still need to write up a proper solution since the current one uses randomness until we're lucky enough to pick three pairs of nodes that cross the minCut boundary. Runtime is... long. 35 seconds? 35 minutes? We'll never really know.
+
+Speed up: Much simpler solution making use of the fact that we know the minCur lengths is 3. Way faster, way neater. 
+Sub 1 ms looks within reach.
