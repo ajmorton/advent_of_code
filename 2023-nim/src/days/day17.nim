@@ -1,10 +1,12 @@
 import aoc_prelude
-import heapqueue
 
 type Dir = enum Up Down Left Right
 type Pos = tuple[y: int, x: int]
 type HeatLoss = int
 type State = (HeatLoss, Pos, Dir)
+
+proc manhattan(a, b: Pos): int =
+    (a.y.abs - a.x.abs).abs + (a.x.abs - a.x.abs).abs
 
 proc move(pos: Pos, dir: Dir): Pos =
     return case dir
@@ -13,24 +15,38 @@ proc move(pos: Pos, dir: Dir): Pos =
     of Left:  ((y: pos.y, x: pos.x - 1))
     of Right: ((y: pos.y, x: pos.x + 1))
 
-proc `<`(a, b: State): bool = 
-    return a[0] < b[0]
-
 proc findPath(grid: seq[seq[int]], minDistForward: int, maxDistForward: int): int =
     let (minX, maxX, minY, maxY) = (0, grid[0].len - 1, 0, grid.len - 1)
     let outsideGrid = proc(p: Pos): bool = p.y < minY or p.y > maxY or p.x < minX or p.x > maxX
 
+    let startPos = (0, 0)
     let targetPos = (maxY, maxX)
 
-    var queue: HeapQueue[State]
-    queue.push((0, (y:0, x:0), Right))
-    queue.push((0, (y:0, x:0), Down))
 
     # explored[y][x][entryOrientation] == lowestHeatLossSeen. Defaults to MAXINT
     var explored = newSeqWith(grid.len, newSeqWith(grid[0].len, [high(HeatLoss), high(HeatLoss)]))
 
-    while queue.len > 0:
-        let (curHeatLoss, curPos, curDir) = queue.pop
+    var bucketQueue = newSeqWith(grid.len * 2 * 9, newSeq[State]())
+    let startEstimatedCost = manhattan(startPos, targetPos) 
+
+    bucketQueue[startEstimatedCost].add((0, (y:0, x:0), Right))
+    bucketQueue[startEstimatedCost].add((0, (y:0, x:0), Down))
+
+    var minScore = 0
+    while true:
+        var found = false
+        var nextState: State
+        for score in minScore ..< bucketQueue.len:
+            if bucketQueue[score].len > 0:
+                nextState = bucketQueue[score].pop
+                minScore = score
+                found = true
+                break
+
+        if not found:
+            break
+
+        let (curHeatLoss, curPos, curDir) = nextState
 
         if curPos == targetPos:
             return curHeatLoss
@@ -55,8 +71,9 @@ proc findPath(grid: seq[seq[int]], minDistForward: int, maxDistForward: int): in
                 let entryDirOrientation = curDir.ord div 2
                 if explored[nextPos.y][nextPos.x][entryDirOrientation] > nextHeatLoss:
                     explored[nextPos.y][nextPos.x][entryDirOrientation] = nextHeatLoss
-                    queue.push( (nextHeatLoss, nextPos, leftTurnDir) )
-                    queue.push( (nextHeatLoss, nextPos, rightTurnDir) )
+                    let nextEstimatedCost = nextHeatLoss + manhattan(nextPos, targetPos) 
+                    bucketQueue[nextEstimatedCost].add((nextHeatLoss, nextPos, leftTurnDir))
+                    bucketQueue[nextEstimatedCost].add((nextHeatLoss, nextPos, rightTurnDir))
 
     quit "No path found!"
 

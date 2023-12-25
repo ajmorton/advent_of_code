@@ -220,7 +220,7 @@ error:
 and only in release mode. `nimble clean` didn't resolve it and had to blow away the `.cache/nim` folder to get things working again.  
 
 Step 5:  
-A Bucket Queue can shave off another 20ms, but looks kinda hacky. Skipping this for cosmetic reasons.  
+A Bucket Queue shaves off another 20ms.  
 
 Step 6:  
 Entering a cell from opposite directions (`Left`, `Right`) results in the same search nodes after turning (`Up`, `Down`). As such the `explored` hashmap only need to track direction orientation (`Vert`, `Horizontal`) rather than all 4 directions. The number of explored nodes is unchanged but this halves the number of hashtable lookups and drops runtime to 80ms.  
