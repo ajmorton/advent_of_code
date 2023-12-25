@@ -329,4 +329,4 @@ Still need to write up a proper solution since the current one uses randomness u
 
 Speed up:  
 Much simpler solution making use of the fact that we know the minCur lengths is 3. Way faster, way neater. 
-Sub 1 ms looks within reach.
+Sub 1 ms looks within reach. edit: Turns out the flood fill portion is both slow and unnecessary. Just track explored nodes in the dijkstra searches.

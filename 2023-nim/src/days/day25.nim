@@ -1,29 +1,13 @@
 import aoc_prelude
 import heapqueue
 
-type CompId = int16
-
-proc flood(start: CompId, conns: Table[CompId, seq[CompId]]): int =
-    var queue = newSeq[CompId]()
-    queue.insert(start, 0)
-    var explored = newSeqWith(conns.len, false)
-    explored[start] = true
-
-    while queue.len > 0:
-        let curNode = queue.pop
-        for outp in conns[curNode]:
-            if not explored[outp]:
-                explored[outp] = true
-                queue.insert(outp, 0)
-
-    return explored.count(true)
-
+type CompId = int32
 type State = tuple[dist: int, pos: CompId, path: seq[(CompId, CompId)]]
 
 proc `<`(a, b: State): bool = 
     a.dist < b.dist
 
-proc dijkstra(start, dest: CompId, conns: Table[CompId, seq[CompId]]): Option[seq[(CompId, CompId)]] =
+proc dijkstra(start, dest: CompId, conns: Table[CompId, seq[CompId]]): (Option[seq[(CompId, CompId)]], int) =
     var queue: HeapQueue[State]
     queue.push((dist: 0, pos: start, path: newSeq[(CompId, CompId)]()))
 
@@ -33,7 +17,7 @@ proc dijkstra(start, dest: CompId, conns: Table[CompId, seq[CompId]]): Option[se
         var (dist, pos, path) = queue.pop
         for next in conns[pos]:
             if next == dest:
-                return some(path)
+                return (some(path), conns.len)
 
             if seen[next] <= dist:
                 continue
@@ -43,7 +27,8 @@ proc dijkstra(start, dest: CompId, conns: Table[CompId, seq[CompId]]): Option[se
             let newEdge = ((min(pos, next), max(pos, next)))
             queue.push((dist: dist + 1, pos: next, path: path & [newEdge].toSeq))
 
-    return none(seq[(CompId, CompId)])
+    let exploredNodes = conns.len - seen.count(high(int))
+    return (none(seq[(CompId, CompId)]), exploredNodes)
 
 proc run*(input_file: string): (int, int) =
     let lines = readFile(input_file).strip(leading = false).splitLines
@@ -90,11 +75,11 @@ proc run*(input_file: string): (int, int) =
             # Find and remove 3 paths. If it crosses the minCut this will remove all 3 edges 
             # connecting the two groups and a fourth search will fail.
             for _ in 1 .. 3:
-                let path = dijkstra(posA, posB, connsCopy)
+                let (path, _) = dijkstra(posA, posB, connsCopy)
                 for (edgeA, edgeB) in path.get:
                     connsCopy[edgeA].del(connsCopy[edgeA].find(edgeB))
                     connsCopy[edgeB].del(connsCopy[edgeB].find(edgeA))
 
-            if dijkstra(posA, posB, connsCopy).isNone:
-                let size = flood(posA, connsCopy)
-                return (size * (conns.len - size), 0)
+            let (path, exploredCount) = dijkstra(posA, posB, connsCopy)
+            if path.isNone:
+                return (exploredCount * (conns.len - exploredCount), 0)

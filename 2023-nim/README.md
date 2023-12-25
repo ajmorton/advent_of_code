@@ -38,6 +38,6 @@ nimble test                   # Run tests
 | day22   |  11.344 ms   |     |
 | day23   |  29.024 ms   |     |
 | day24   |  18.719 ms   |     |
-| day25   |   3.023 ms   |     |
-| Total   | 143.502 ms   |     |
-| Average |   5.740 ms   |     |
+| day25   |   2.766 ms   |     |
+| Total   | 143.245 ms   |     |
+| Average |   5.723 ms   |     |
