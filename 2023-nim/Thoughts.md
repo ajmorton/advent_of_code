@@ -277,3 +277,7 @@ Steps to bring runtime down are as follows:
 ## Day 24: Never Tell Me The Odds
 Simple algebra for part 1. Part 2 was a slog. Seeing a lot of solutions using Z3, but that defeats the point of AoC imo.
 floating point caused some real hairy issues today and I've written the world's worst equality check with the `~~=` function. Part 2 is now done and cleanup to come soon-ish(?).
+
+## Day 25: Snowverload
+Not too enthused by the past two days since they both just required plugging the problem into an external library.
+Still need to write up a proper solution since the current one uses randomness until we're lucky enough to pick three pairs of nodes that cross the minCut boundary. Runtime is... long. 35 seconds? 35 minutes? We'll never really know.
