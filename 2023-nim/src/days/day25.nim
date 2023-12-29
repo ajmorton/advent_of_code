@@ -1,33 +1,28 @@
 import aoc_prelude
-import heapqueue
+import deques
 
 type CompId = int32
-type State = tuple[dist: int, pos: CompId, path: seq[(CompId, CompId)]]
-
-proc `<`(a, b: State): bool = 
-    a.dist < b.dist
+type State = tuple[pos: CompId, path: seq[(CompId, CompId)]]
 
 proc dijkstra(start, dest: CompId, conns: Table[CompId, seq[CompId]]): (Option[seq[(CompId, CompId)]], int) =
-    var queue: HeapQueue[State]
-    queue.push((dist: 0, pos: start, path: newSeq[(CompId, CompId)]()))
-
-    var seen = newSeqWith(conns.len, high(int))
+    var queue: Deque[State] = [(pos: start, path: newSeq[(CompId, CompId)]())].toDeque
+    var seen = newSeqWith(conns.len, 0)
 
     while queue.len > 0:
-        var (dist, pos, path) = queue.pop
+        var (pos, path) = queue.popFirst
         for next in conns[pos]:
             if next == dest:
                 return (some(path), conns.len)
 
-            if seen[next] <= dist:
+            if seen[next] == 1:
                 continue
             else:
-                seen[next] = dist
+                seen[next] = 1
 
             let newEdge = ((min(pos, next), max(pos, next)))
-            queue.push((dist: dist + 1, pos: next, path: path & [newEdge].toSeq))
+            queue.addLast((pos: next, path: path & [newEdge].toSeq))
 
-    let exploredNodes = conns.len - seen.count(high(int))
+    let exploredNodes = conns.len - seen.sum
     return (none(seq[(CompId, CompId)]), exploredNodes)
 
 proc run*(input_file: string): (int, int) =

@@ -25,7 +25,7 @@ nimble test                   # Run tests
 | day09   | 530.829 µs   |  ✅  |
 | day10   | 613.349 µs   |  ✅  |
 | day11   | 397.448 µs   |  ✅  |
-| day12   |  21.518 ms   |     |
+| day12   |   5.773 ms   |     |
 | day13   | 415.442 µs   |  ✅  |
 | day14   |  15.607 ms   |     |
 | day15   | 885.565 µs   |  ✅  |
@@ -34,10 +34,10 @@ nimble test                   # Run tests
 | day18   |  52.989 µs   |  ✅  |
 | day19   | 889.916 µs   |  ✅  | 
 | day20   |  60.734 µs   |  ✅  |
-| day21   | 324.536 µs   |  ✅  |
+| day21   | 369.791 µs   |  ✅  |
 | day22   |  11.344 ms   |     |
 | day23   |  29.024 ms   |     |
 | day24   |  18.719 ms   |     |
-| day25   |   2.766 ms   |     |
-| Total   | 143.245 ms   |     |
-| Average |   5.723 ms   |     |
+| day25   |   1.821 ms   |     |
+| Total   | 127.500 ms   |     |
+| Average |   5.100 ms   |     |

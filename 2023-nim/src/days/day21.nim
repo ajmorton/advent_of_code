@@ -1,4 +1,5 @@
 import aoc_prelude
+import deques
 
 type Pos = tuple[y: int, x: int]
 
@@ -13,21 +14,19 @@ proc run*(input_file: string): (int, int) =
     var startPos = startPoint(grid)
     let (minY, maxY, minX, maxX) = ( 0, grid.len - 1, 0, grid[0].len - 1)
 
-    var queue = [(pos: startPos, dist: 0)].toSeq
+    var queue = [(pos: startPos, dist: 0)].toDeque
     var reachedIn: array[131, array[131, int]]
 
-    var i = 0
-    while i < queue.len:
+    while queue.len > 0:
         # Never pop items from the queue. Saves us an O(n) operation on each iteration at the expense of a small mem leak.
-        let ((y, x), dist) = queue[i]
-        i += 1
+        let ((y, x), dist) = queue.popFirst
         
         for neighbour in [(y: y - 1, x: x), (y: y + 1, x: x), (y: y, x: x - 1), (y: y, x: x + 1)]:
             if neighbour.y >= minY and neighbour.y <= maxY and neighbour.x >= minX and neighbour.x <= maxX: 
                 if grid[neighbour.y][neighbour.x] != '#':
                     if reachedIn[neighbour.y][neighbour.x] == 0:
                         reachedIn[neighbour.y][neighbour.x] = dist + 1
-                        queue.add((pos: neighbour, dist: dist + 1))
+                        queue.addLast((pos: neighbour, dist: dist + 1))
 
     let reachedOnStep = proc(dist: int, step: int): bool = (dist != 0 and dist.mod(2) == step.mod(2) and dist <= step)
     let p1 = reachedIn.mapIt(it.countIt(reachedOnStep(it, 64))).sum
