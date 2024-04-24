@@ -1,10 +1,10 @@
 const std = @import("std");
 const helpers = @import("../helpers.zig");
 
-pub const RetDay19 = struct { p1: i32, p2: i32 };
+pub const RetDay19 = struct { p1: i32, p2: u32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay19 {
-    var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day19.txt", 1000000);
+    const allText = try std.fs.cwd().readFileAlloc(alloc, "input/day19.txt", 1000000);
     defer alloc.free(allText);
     var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
@@ -22,7 +22,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay19 {
     try positionScanners(alloc, &scanners);
     return RetDay19{
         .p1 = try numBeacons(alloc, scanners.items),
-        .p2 = try farthestScanners(scanners.items),
+        .p2 = farthestScanners(scanners.items),
     };
 }
 
@@ -41,11 +41,11 @@ fn numBeacons(alloc: std.mem.Allocator, scanners: []Scanner) !i32 {
     return beacon_count;
 }
 
-fn farthestScanners(scanners: []Scanner) !i32 {
-    var biggest_dist: i32 = 0;
+fn farthestScanners(scanners: []Scanner) u32 {
+    var biggest_dist: u32 = 0;
     for (scanners, 0..) |s1, i| {
         for (scanners[i + 1 ..]) |s2| {
-            var manhattan = try s1.pos.manhattanDist(s2.pos);
+            const manhattan = s1.pos.manhattanDist(s2.pos);
             if (manhattan > biggest_dist) biggest_dist = manhattan;
         }
     }
@@ -75,28 +75,28 @@ const Pos = struct {
         return .{ .x = self.x - other.x, .y = self.y - other.y, .z = self.z - other.z };
     }
 
-    pub fn manhattanDist(self: Self, other: Self) !i32 {
-        return (try std.math.absInt(self.x - other.x)) +
-            (try std.math.absInt(self.y - other.y)) +
-            (try std.math.absInt(self.z - other.z));
+    pub fn manhattanDist(self: Self, other: Self) u32 {
+        return (@abs(self.x - other.x)) +
+            (@abs(self.y - other.y)) +
+            (@abs(self.z - other.z));
     }
 
     fn rotate(self: Pos, rot: Rot) Pos {
-        var p1 = switch (rot.x) {
+        const p1 = switch (rot.x) {
             1 => Pos{ .x = self.x, .y = self.z, .z = -self.y },
             2 => Pos{ .x = self.x, .y = -self.y, .z = -self.z },
             3 => Pos{ .x = self.x, .y = -self.z, .z = self.y },
             else => self,
         };
 
-        var p2 = switch (rot.y) {
+        const p2 = switch (rot.y) {
             1 => Pos{ .x = p1.z, .y = p1.y, .z = -p1.x },
             2 => Pos{ .x = -p1.x, .y = p1.y, .z = -p1.z },
             3 => Pos{ .x = -p1.z, .y = p1.y, .z = p1.x },
             else => p1,
         };
 
-        var p3 = switch (rot.z) {
+        const p3 = switch (rot.z) {
             1 => Pos{ .x = p2.y, .y = -p2.x, .z = p2.z },
             2 => Pos{ .x = -p2.x, .y = -p2.y, .z = p2.z },
             3 => Pos{ .x = -p2.y, .y = p2.x, .z = p2.z },
@@ -115,11 +115,11 @@ const Scanner = struct {
 
     fn init(alloc: std.mem.Allocator, lines: *std.mem.TokenIterator(u8, .any)) !Self {
         var beacons = std.ArrayList(Pos).init(alloc);
-        var scanner_name = lines.next().?;
+        const scanner_name = lines.next().?;
         var split = std.mem.splitScalar(u8, scanner_name, ' ');
         _ = split.next();
         _ = split.next();
-        var scanner_id = try std.fmt.parseInt(i32, split.next().?, 10);
+        const scanner_id = try std.fmt.parseInt(i32, split.next().?, 10);
         while (lines.next()) |line| {
             var vals = std.mem.splitScalar(u8, line, ',');
             try beacons.append(Pos{
@@ -163,7 +163,7 @@ fn positionScanners(alloc: std.mem.Allocator, scanners: *std.ArrayList(Scanner))
     while (unknown_scanners.items.len > 0) {
         var i: u32 = 0;
         while (i < unknown_scanners.items.len) : (i += 1) {
-            var unknown_scanner = unknown_scanners.items[i];
+            const unknown_scanner = unknown_scanners.items[i];
 
             for (scanners.items) |known_scanner| {
                 const scanner_pair = [2]i32{ known_scanner.id, unknown_scanner.id };
@@ -211,8 +211,8 @@ fn findRotationAndOffset(alloc: std.mem.Allocator, known_scanner: Scanner, unkno
 
         for (rotated.items) |pot_point| {
             for (known_scanner.beacons.items) |known_pos| {
-                var offset = known_pos.sub(pot_point);
-                var score = offsetOverlapScore(offset, rotated.items, known_scanner.beacons.items);
+                const offset = known_pos.sub(pot_point);
+                const score = offsetOverlapScore(offset, rotated.items, known_scanner.beacons.items);
                 if (score >= 12) {
                     return RotAndOffset{ .rot = rot, .offset = offset };
                 }

@@ -50,7 +50,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay17 {
         }
     }
 
-    var max_height = @divFloor((max_y_vel) * (max_y_vel + 1), 2);
+    const max_height = @divFloor((max_y_vel) * (max_y_vel + 1), 2);
 
     return RetDay17{ .p1 = max_height, .p2 = total_possibilities };
 }

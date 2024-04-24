@@ -5,11 +5,11 @@ pub const RetDay14 = struct { p1: u64, p2: u64 };
 const Pair = [2]u8;
 
 pub fn run(alloc: std.mem.Allocator) !RetDay14 {
-    var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day14.txt", 1000000);
+    const allText = try std.fs.cwd().readFileAlloc(alloc, "input/day14.txt", 1000000);
     defer alloc.free(allText);
     var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
-    var initial_molecule = sections.next().?;
+    const initial_molecule = sections.next().?;
     var insertion_map = try parseInsertionMap(alloc, sections.next().?);
     defer insertion_map.deinit();
 
@@ -34,7 +34,7 @@ fn parseInsertionMap(alloc: std.mem.Allocator, lines: []const u8) !std.AutoHashM
     while (insertions_iter.next()) |insertion| {
         var in_out = std.mem.splitSequence(u8, insertion, " -> ");
         var in = in_out.next().?;
-        var out = in_out.next().?[0];
+        const out = in_out.next().?[0];
         try insertion_map.put(in[0..2].*, out);
     }
     return insertion_map;
@@ -43,7 +43,7 @@ fn parseInsertionMap(alloc: std.mem.Allocator, lines: []const u8) !std.AutoHashM
 fn countFrequencies(initial_molecule: []const u8, letter_freqs: *[26]u64, pair_freqs: *helpers.Counter(Pair)) !void {
     var j: u64 = 0;
     while (j < initial_molecule.len - 1) : (j += 1) {
-        var pair = Pair{ initial_molecule[j], initial_molecule[j + 1] };
+        const pair = Pair{ initial_molecule[j], initial_molecule[j + 1] };
         try pair_freqs.incr(pair);
     }
 
@@ -56,12 +56,12 @@ fn performExpansion(alloc: std.mem.Allocator, insertion_map: *std.AutoHashMap(Pa
     var new_pair_freqs = helpers.Counter(Pair).init(alloc);
     var pairs = pair_freqs.iterator();
     while (pairs.next()) |kv| {
-        var pair = kv.key_ptr.*;
-        var new_insert = insertion_map.get(pair).?;
+        const pair = kv.key_ptr.*;
+        const new_insert = insertion_map.get(pair).?;
         letter_freqs['Z' - new_insert] += kv.value_ptr.*;
 
-        var pre = Pair{ pair[0], new_insert };
-        var post = Pair{ new_insert, pair[1] };
+        const pre = Pair{ pair[0], new_insert };
+        const post = Pair{ new_insert, pair[1] };
 
         try new_pair_freqs.incrN(pre, kv.value_ptr.*);
         try new_pair_freqs.incrN(post, kv.value_ptr.*);
@@ -71,7 +71,7 @@ fn performExpansion(alloc: std.mem.Allocator, insertion_map: *std.AutoHashMap(Pa
 }
 
 fn letterScore(letter_freqs: [26]u64) u64 {
-    var max_occ = std.mem.max(u64, &letter_freqs);
+    const max_occ = std.mem.max(u64, &letter_freqs);
     var min_occ: u64 = std.math.maxInt(u64);
     for (letter_freqs) |letter_freq| {
         if (letter_freq > 0) {

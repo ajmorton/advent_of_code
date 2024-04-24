@@ -19,7 +19,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay10 {
     }
 
     std.sort.block(u64, incomplete_scores.items, {}, comptime std.sort.desc(u64));
-    var mid = (incomplete_scores.items.len / 2);
+    const mid = (incomplete_scores.items.len / 2);
 
     return RetDay10{ .p1 = sum, .p2 = incomplete_scores.items[mid] };
 }

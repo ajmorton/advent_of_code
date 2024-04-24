@@ -4,7 +4,7 @@ const std = @import("std");
 pub fn asLines(alloc: std.mem.Allocator, file_name: []const u8) !std.ArrayList([]const u8) {
     var lines = std.ArrayList([]const u8).init(alloc);
     var buf: [100000]u8 = undefined;
-    var allText = try std.fs.cwd().readFile(file_name, &buf);
+    const allText = try std.fs.cwd().readFile(file_name, &buf);
     var iter = std.mem.tokenize(u8, allText, "\n");
     while (iter.next()) |line| try lines.append(line);
 
@@ -65,7 +65,7 @@ pub fn Counter(comptime T: type) type {
         }
 
         pub fn incrN(self: *Self, val: T, n: u64) !void {
-            var entry = try self.internal.getOrPut(val);
+            const entry = try self.internal.getOrPut(val);
             if (!entry.found_existing) {
                 entry.value_ptr.* = 0;
             }

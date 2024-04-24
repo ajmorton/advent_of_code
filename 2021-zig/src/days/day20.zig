@@ -4,18 +4,18 @@ const helpers = @import("../helpers.zig");
 pub const RetDay20 = struct { p1: i32, p2: i32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay20 {
-    var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day20.txt", 1000000);
+    const allText = try std.fs.cwd().readFileAlloc(alloc, "input/day20.txt", 1000000);
     defer alloc.free(allText);
     var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
-    var algorithm: []const u8 = sections.next().?;
+    const algorithm: []const u8 = sections.next().?;
     var image = try Image.init(alloc, sections.next().?);
     defer image.deinit();
 
     var p1: i32 = 0;
     var step: i32 = 0;
     while (step < 50) : (step += 1) {
-        var new_image = try image.step(alloc, algorithm, @mod(step, 2) == 1);
+        const new_image = try image.step(alloc, algorithm, @mod(step, 2) == 1);
         image.deinit();
         image = new_image;
         if (step == 1) p1 = image.countPixels();
@@ -104,7 +104,7 @@ const Image = struct {
         while (r <= self.max_r + 1) : (r += 1) {
             var c = self.min_r - 1;
             while (c <= self.max_r + 1) : (c += 1) {
-                var score: u32 = self.scorePixel(r, c, odd_step);
+                const score: u32 = self.scorePixel(r, c, odd_step);
                 if (algorithm[score] == '#') {
                     try next_pixels.put(Pos{ .r = r, .c = c }, {});
                 }

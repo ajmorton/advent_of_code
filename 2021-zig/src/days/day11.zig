@@ -17,7 +17,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay11 {
 
     var step: i32 = 1;
     while (step <= 100 or !all_flashed) : (step += 1) {
-        var new_flashes = grid.step();
+        const new_flashes = grid.step();
         total_flashes += new_flashes;
 
         if (step == 100) res.p1 = total_flashes;
@@ -41,7 +41,7 @@ const Grid = struct {
     const Self = @This();
 
     pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]const u8)) !Self {
-        var width: i32 = @intCast(input.items[0].len);
+        const width: i32 = @intCast(input.items[0].len);
         var height: i32 = 0;
         var cells = std.ArrayList(Octopus).init(alloc);
 

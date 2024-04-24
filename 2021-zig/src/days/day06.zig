@@ -6,7 +6,7 @@ const helpers = @import("../helpers.zig");
 pub const RetDay6 = struct { p1: u64, p2: u64 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay6 {
-    var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day06.txt", 1000000);
+    const allText = try std.fs.cwd().readFileAlloc(alloc, "input/day06.txt", 1000000);
     defer alloc.free(allText);
     var fish: Fish = try Fish.init(alloc, allText);
     defer fish.deinit();
@@ -33,7 +33,7 @@ const Fish = struct {
         while (i > 0) : (i -= 1) try countdowns.append(0);
 
         while (nums_iter.next()) |n_str| {
-            var n = try std.fmt.parseInt(u64, n_str, 10);
+            const n = try std.fmt.parseInt(u64, n_str, 10);
             countdowns.items[n] += 1;
         }
 
@@ -50,7 +50,7 @@ const Fish = struct {
         self.countdowns.items[7] += self.countdowns.items[0];
 
         // New births, and counters are decremented by popFront
-        var new_births = self.countdowns.orderedRemove(0);
+        const new_births = self.countdowns.orderedRemove(0);
         try self.countdowns.append(new_births);
     }
 

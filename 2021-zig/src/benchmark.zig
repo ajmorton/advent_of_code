@@ -47,7 +47,7 @@ pub fn naiveBenchmark(mod: anytype, run_for: u64) !void {
     if (baseline_runtime > std.time.ns_per_us and baseline_runtime < std.time.ns_per_s * (run_for / 2)) {
         var total: u64 = 0;
         var run: u32 = 1;
-        var num_runs: u64 = @intCast(@divFloor(run_for * std.time.ns_per_s, baseline_runtime) + 1);
+        const num_runs: u64 = @intCast(@divFloor(run_for * std.time.ns_per_s, baseline_runtime) + 1);
         if (num_runs == 1) {
             // Test is too slow to run multiple times. Just take the baseline run time
             total = @intCast(baseline_runtime);

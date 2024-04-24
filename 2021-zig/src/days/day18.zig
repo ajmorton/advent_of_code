@@ -10,7 +10,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay18 {
     const lines = try helpers.asLines(alloc, "input/day18.txt");
     defer lines.deinit();
 
-    var p1 = try magnitudeOfSum(alloc, lines.items);
+    const p1 = try magnitudeOfSum(alloc, lines.items);
 
     var p2: u32 = std.math.minInt(u32);
     for (lines.items, 0..) |line1, i| {
@@ -31,7 +31,7 @@ fn magnitudeOfSum(alloc: std.mem.Allocator, numbers: [][]const u8) !u32 {
     var sum: ?Num = null;
     defer sum.?.deinit();
     for (numbers) |number| {
-        var num = try parseNum(alloc, number);
+        const num = try parseNum(alloc, number);
         sum = if (sum) |n| try addNums(alloc, n, num) else num;
         while (explode(&sum.?) or try split(&sum.?)) {}
     }
@@ -62,7 +62,7 @@ fn addRight(num: *Num, pos: u32, val: u32) void {
 fn addLeft(num: *Num, pos: u32, val: u32) void {
     var i: i32 = @intCast(pos - 1);
     while (i >= 0) : (i -= 1) {
-        var node = &num.items[@intCast(i)];
+        const node = &num.items[@intCast(i)];
         if (node.* == .val) {
             node.*.val += val;
             return;
@@ -90,7 +90,7 @@ fn explode(num: *Num) bool {
 }
 
 fn readSubNode(nodes: []Node, p: *u32) !u32 {
-    var next_node = nodes[p.*];
+    const next_node = nodes[p.*];
     p.* += 1;
     return switch (next_node) {
         .down => try magnitude(nodes, p),
@@ -101,9 +101,9 @@ fn readSubNode(nodes: []Node, p: *u32) !u32 {
 
 const MagnitudeError = error{unexpectedNode};
 fn magnitude(nodes: []Node, p: *u32) MagnitudeError!u32 {
-    var left = try readSubNode(nodes, p);
+    const left = try readSubNode(nodes, p);
     if (p.* >= nodes.len - 1) return left;
-    var right = try readSubNode(nodes, p);
+    const right = try readSubNode(nodes, p);
 
     p.* += 1;
     return 3 * left + 2 * right;
@@ -112,8 +112,8 @@ fn magnitude(nodes: []Node, p: *u32) MagnitudeError!u32 {
 fn split(num: *Num) !bool {
     for (num.items, 0..) |node, i| {
         if (node == .val and node.val >= 10) {
-            var left = try std.math.divFloor(u32, node.val, 2);
-            var right = try std.math.divCeil(u32, node.val, 2);
+            const left = try std.math.divFloor(u32, node.val, 2);
+            const right = try std.math.divCeil(u32, node.val, 2);
             _ = num.orderedRemove(i);
             try num.insertSlice(i, &[_]Node{ .down, .{ .val = left }, .{ .val = right }, .up });
             return true;

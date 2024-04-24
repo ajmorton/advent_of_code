@@ -16,10 +16,10 @@ const ID = enum(u64) { sum = 0, product = 1, min = 2, max = 3, literal = 4, grea
 const State = enum { version, typeID, lengthType, numSubpackets };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay16 {
-    var hex_str = try std.fs.cwd().readFileAlloc(alloc, "input/day16.txt", 1000000);
+    const hex_str = try std.fs.cwd().readFileAlloc(alloc, "input/day16.txt", 1000000);
     defer alloc.free(hex_str);
 
-    var bin_str = try hexToBin(alloc, hex_str);
+    const bin_str = try hexToBin(alloc, hex_str);
     defer alloc.free(bin_str);
 
     var pointer: u64 = 0;
@@ -119,18 +119,18 @@ fn performComputation(packet: Packet) u64 {
 }
 
 fn scanInt(bytes: []const u8, p: *u64, len: u64) !u64 {
-    var val = bytes[p.* .. p.* + len];
+    const val = bytes[p.* .. p.* + len];
     p.* += len;
     return try std.fmt.parseInt(u64, val, 2);
 }
 
 fn parse(alloc: std.mem.Allocator, bytes: []const u8, p: *u64) anyerror!Packet {
-    var version_num = try scanInt(bytes, p, 3);
-    var type_id = @as(ID, @enumFromInt(try scanInt(bytes, p, 3)));
+    const version_num = try scanInt(bytes, p, 3);
+    const type_id = @as(ID, @enumFromInt(try scanInt(bytes, p, 3)));
     if (type_id == .literal) {
         return Packet{ .literal = LiteralPacket{ .version = version_num, .type_id = type_id, .val = try scanLiteral(bytes, p) } };
     } else {
-        var length_type = try scanInt(bytes, p, 1);
+        const length_type = try scanInt(bytes, p, 1);
         var operator = OperatorPacket{
             .version = version_num,
             .type_id = type_id,
@@ -139,14 +139,14 @@ fn parse(alloc: std.mem.Allocator, bytes: []const u8, p: *u64) anyerror!Packet {
         };
 
         if (length_type == 0) {
-            var contents_len: u64 = try scanInt(bytes, p, 15);
-            var end_of_subpackets = p.* + contents_len;
+            const contents_len: u64 = try scanInt(bytes, p, 15);
+            const end_of_subpackets = p.* + contents_len;
             while (p.* < end_of_subpackets) {
                 try operator.subpackets.append(try parse(alloc, bytes, p));
             }
             return Packet{ .operator = operator };
         } else {
-            var num_children: u64 = try scanInt(bytes, p, 11);
+            const num_children: u64 = try scanInt(bytes, p, 11);
             var children_parsed: u64 = 0;
             while (children_parsed < num_children) : (children_parsed += 1) {
                 try operator.subpackets.append(try parse(alloc, bytes, p));

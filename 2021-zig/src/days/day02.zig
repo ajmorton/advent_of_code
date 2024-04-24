@@ -2,7 +2,7 @@ const expect = @import("std").testing.expect;
 const std = @import("std");
 const helpers = @import("../helpers.zig");
 
-pub const RetDay2 = struct { p1: i32, p2: i32 };
+pub const RetDay2 = struct { p1: u32, p2: u32 };
 
 const Direction = enum { up, down, forward };
 const Move = struct { dir: Direction, dist: i32 };
@@ -19,7 +19,7 @@ fn solve(lines: [][]const u8) !RetDay2 {
     var hor: i32 = 0;
 
     for (lines) |line| {
-        var move = try parseMove(line);
+        const move = try parseMove(line);
         switch (move.dir) {
             Direction.up => vert += move.dist,
             Direction.down => vert -= move.dist,
@@ -31,8 +31,8 @@ fn solve(lines: [][]const u8) !RetDay2 {
     }
 
     return RetDay2{
-        .p1 = try std.math.absInt(vert * hor),
-        .p2 = try std.math.absInt(vert2 * hor),
+        .p1 = @abs(vert * hor),
+        .p2 = @abs(vert2 * hor),
     };
 }
 
@@ -46,7 +46,7 @@ fn parseMove(str: []const u8) !Move {
 
 test "Examples Day 2" {
     var lines = [_][]const u8{ "forward 5", "down 5", "forward 8", "up 3", "down 8", "forward 2" };
-    var res = try solve(&lines);
+    const res = try solve(&lines);
     try expect(res.p1 == 150);
     try expect(res.p2 == 900);
 }

@@ -7,7 +7,7 @@ const Point = struct { x: i32, y: i32 };
 const Fold = union(enum) { vertical: i32, horizontal: i32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay13 {
-    var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day13.txt", 1000000);
+    const allText = try std.fs.cwd().readFileAlloc(alloc, "input/day13.txt", 1000000);
     defer alloc.free(allText);
     var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
@@ -75,7 +75,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay13 {
     while (y <= max_y) : (y += 1) {
         var x: i32 = min_x;
         while (x <= max_x) : (x += 1) {
-            var point = .{ .x = x, .y = y };
+            const point = .{ .x = x, .y = y };
             try str_acc.append(if (points.contains(point)) '#' else ' ');
         }
         try str_acc.append('\n');

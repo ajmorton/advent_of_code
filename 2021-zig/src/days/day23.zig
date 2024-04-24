@@ -37,7 +37,7 @@ fn Problem(comptime room_size: u32) type {
 
             var queue = NodeQueue.init(alloc, {});
             defer queue.deinit();
-            var start_state = State{ .path_cost = 0, .map = Map(room_size).init(init_rooms) };
+            const start_state = State{ .path_cost = 0, .map = Map(room_size).init(init_rooms) };
 
             try queue.add(start_state);
 
@@ -77,7 +77,7 @@ fn Problem(comptime room_size: u32) type {
         }
 
         fn tryNextPos(cur_state: State, cur_pos: Pos, end_pos: Pos, queue: *NodeQueue) !void {
-            var amphipod = cur_state.map.get(cur_pos);
+            const amphipod = cur_state.map.get(cur_pos);
 
             if (cur_state.map.canMoveTo(amphipod, cur_pos, end_pos)) {
                 if (cur_state.map.canReach(cur_pos, end_pos)) {
@@ -115,8 +115,8 @@ fn Map(comptime room_size: u32) type {
         }
 
         fn canMoveTo(self: Self, amphipod: Amphipod, cur_pos: Pos, end_pos: Pos) bool {
-            var cur_col = self.rooms[cur_pos.x];
-            var next_col = self.rooms[end_pos.x];
+            const cur_col = self.rooms[cur_pos.x];
+            const next_col = self.rooms[end_pos.x];
             if (cur_col == .hall and next_col == .hall) {
                 return false;
             }

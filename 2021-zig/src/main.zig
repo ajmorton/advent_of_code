@@ -15,7 +15,7 @@ pub fn main() !void {
 
 const test_allocator = std.testing.allocator;
 fn expectResults(mod: anytype, comptime p1: anytype, comptime p2: anytype) !void {
-    var res = try mod.run(test_allocator);
+    const res = try mod.run(test_allocator);
     try expect(p1 == res.p1);
     try expect(p2 == res.p2);
 }

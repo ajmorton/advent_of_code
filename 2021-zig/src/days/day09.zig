@@ -24,7 +24,7 @@ const Grid = struct {
     const Self = @This();
 
     pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]const u8)) !Self {
-        var width: i32 = @intCast(input.items[0].len);
+        const width: i32 = @intCast(input.items[0].len);
         var height: i32 = 0;
         var cells = std.ArrayList(Cell).init(alloc);
 
@@ -50,7 +50,7 @@ const Grid = struct {
     }
 
     fn isLowestPoint(self: Self, r: i32, c: i32) bool {
-        var cell = self.getCell(r, c).?;
+        const cell = self.getCell(r, c).?;
         var lowest = true;
         lowest = lowest and if (self.getCell(r, c - 1)) |left| cell.val < left.val else true;
         lowest = lowest and if (self.getCell(r, c + 1)) |right| cell.val < right.val else true;
@@ -75,7 +75,7 @@ const Grid = struct {
         try explore_queue.append(Pos{ .r = r, .c = c });
 
         while (explore_queue.items.len > 0) {
-            var next = explore_queue.orderedRemove(0);
+            const next = explore_queue.orderedRemove(0);
 
             var next_cell = self.getCell(next.r, next.c).?;
             if (next_cell.explored == false and next_cell.val != 9) {

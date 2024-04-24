@@ -27,7 +27,7 @@ const Grid = struct {
     const Self = @This();
 
     pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]const u8)) !Self {
-        var width: u32 = @intCast(input.items[0].len);
+        const width: u32 = @intCast(input.items[0].len);
         var height: u32 = 0;
         var cells = std.ArrayList(Cuke).init(alloc);
 
@@ -58,10 +58,10 @@ const Grid = struct {
 
         for (self.cells.items, 0..) |cuke, i| {
             if (cuke != dir) continue;
-            var r: usize = @divFloor(i, self.width);
-            var c: usize = @mod(i, self.width);
-            var next_r: usize = if (dir == .down) @mod(r + 1, self.height) else r;
-            var next_c: usize = if (dir == .right) @mod(c + 1, self.width) else c;
+            const r: usize = @divFloor(i, self.width);
+            const c: usize = @mod(i, self.width);
+            const next_r: usize = if (dir == .down) @mod(r + 1, self.height) else r;
+            const next_c: usize = if (dir == .right) @mod(c + 1, self.width) else c;
 
             if (self.cells.items[(next_r * self.width) + next_c] == .none) {
                 next_grid.items[(r * self.width) + c] = .none;

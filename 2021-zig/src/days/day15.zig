@@ -35,7 +35,7 @@ const Grid = struct {
     const Self = @This();
 
     pub fn init(alloc: std.mem.Allocator, input: std.ArrayList([]const u8)) !Self {
-        var width: i32 = @intCast(input.items[0].len);
+        const width: i32 = @intCast(input.items[0].len);
         var height: i32 = 0;
         var cells = std.ArrayList(u32).init(alloc);
 
@@ -63,13 +63,13 @@ const Grid = struct {
             return null;
         }
 
-        var rr = @as(u32, @intCast(r)) % @as(u32, @intCast(self.height));
-        var cc = @as(u32, @intCast(c)) % @as(u32, @intCast(self.width));
-        var cell_orig_map = self.cells.items[rr * @as(u32, @intCast(self.height)) + cc];
+        const rr = @as(u32, @intCast(r)) % @as(u32, @intCast(self.height));
+        const cc = @as(u32, @intCast(c)) % @as(u32, @intCast(self.width));
+        const cell_orig_map = self.cells.items[rr * @as(u32, @intCast(self.height)) + cc];
 
-        var risk_h = std.math.divFloor(i32, r, self.height) catch unreachable;
-        var risk_w = std.math.divFloor(i32, c, self.width) catch unreachable;
-        var cell_additional_score: u32 = @intCast(risk_h + risk_w);
+        const risk_h = std.math.divFloor(i32, r, self.height) catch unreachable;
+        const risk_w = std.math.divFloor(i32, c, self.width) catch unreachable;
+        const cell_additional_score: u32 = @intCast(risk_h + risk_w);
 
         var cell_score = cell_orig_map + cell_additional_score;
         while (cell_score > 9) cell_score -= 9;
@@ -88,9 +88,9 @@ const Grid = struct {
     }
 
     fn tryNode(self: Self, p1: bool, r: i32, c: i32, cur_cost: u32, queue: *NodeQueue, explored: *ExploredSet) !void {
-        var try_neighbour = if (p1) self.getCell(r, c) else self.getCell2(r, c);
+        const try_neighbour = if (p1) self.getCell(r, c) else self.getCell2(r, c);
         if (try_neighbour) |neigbour| {
-            var new_node = Node{
+            const new_node = Node{
                 .path_cost = cur_cost + neigbour,
                 .cur_pos = .{ .r = r, .c = c },
             };
@@ -102,7 +102,7 @@ const Grid = struct {
     }
 
     fn findShortestPath(self: Self, alloc: std.mem.Allocator, p1: bool) !?u32 {
-        var start = Node{ .path_cost = 0, .cur_pos = .{ .r = 0, .c = 0 } };
+        const start = Node{ .path_cost = 0, .cur_pos = .{ .r = 0, .c = 0 } };
         var queue = NodeQueue.init(alloc, {});
         defer queue.deinit();
 
@@ -112,8 +112,8 @@ const Grid = struct {
         try queue.add(start);
 
         while (queue.len > 0) {
-            var cur_node = queue.remove();
-            var cur_pos = cur_node.cur_pos;
+            const cur_node = queue.remove();
+            const cur_pos = cur_node.cur_pos;
 
             if (p1 and cur_pos.r == self.height - 1 and cur_pos.c == self.height - 1) {
                 return cur_node.path_cost;

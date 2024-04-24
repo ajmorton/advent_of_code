@@ -2,7 +2,7 @@ const std = @import("std");
 const helpers = @import("../helpers.zig");
 
 pub const RetDay12 = struct { p1: u32, p2: u32 };
-const FooErr = std.mem.Allocator.Error || std.os.WriteError;
+const FooErr = std.mem.Allocator.Error || std.posix.WriteError;
 
 pub fn run(alloc: std.mem.Allocator) !RetDay12 {
     const lines = try helpers.asLines(alloc, "input/day12.txt");
@@ -40,8 +40,8 @@ const Cave = struct {
         var connections = std.StringHashMap(Rooms).init(alloc);
         for (lines.items) |line| {
             var split = std.mem.splitScalar(u8, line, '-');
-            var from = split.next().?;
-            var to = split.next().?;
+            const from = split.next().?;
+            const to = split.next().?;
 
             // conn to-from
             var kv = try connections.getOrPut(from);
@@ -65,7 +65,7 @@ const Cave = struct {
     }
 
     pub fn countPaths(self: Self, alloc: std.mem.Allocator, path: std.ArrayList(Room), can_revisit_once: bool, has_revisited: bool) FooErr!u32 {
-        var cur_room = path.items[path.items.len - 1];
+        const cur_room = path.items[path.items.len - 1];
 
         if (std.mem.eql(u8, cur_room, "end")) return 1;
 

@@ -44,7 +44,7 @@ fn getRating(alloc: std.mem.Allocator, nums: std.ArrayList(u32), num_bits: u5, b
     var mask: u32 = 0;
 
     while (true) {
-        var most_common_bit = mostCommonBit(nums_local, index);
+        const most_common_bit = mostCommonBit(nums_local, index);
         index -= 1;
 
         mask <<= 1;
@@ -87,7 +87,7 @@ test "maskTest" {
 
 fn mostCommonBit(nums: std.ArrayList(u32), index: i32) u1 {
     var count_ones: i32 = 0;
-    var shift: u5 = @intCast(index);
+    const shift: u5 = @intCast(index);
 
     for (nums.items) |n| {
         if (((n >> shift) & 1) == 1) count_ones += 1;

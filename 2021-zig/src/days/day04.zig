@@ -4,7 +4,7 @@ const helpers = @import("../helpers.zig");
 pub const RetDay4 = struct { p1: u32, p2: u32 };
 
 pub fn run(alloc: std.mem.Allocator) !RetDay4 {
-    var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day04.txt", 1000000);
+    const allText = try std.fs.cwd().readFileAlloc(alloc, "input/day04.txt", 1000000);
     defer alloc.free(allText);
     var sections = std.mem.splitSequence(u8, allText, "\n\n");
 
@@ -28,7 +28,7 @@ fn play(boards: *std.ArrayList(Board), nums_iter: *std.mem.SplitIterator(u8, .sc
     var remaining_boards = boards.items.len;
 
     while (nums_iter.next()) |num| {
-        var n = try std.fmt.parseInt(u32, num, 10);
+        const n = try std.fmt.parseInt(u32, num, 10);
         for (boards.items) |*board| {
             board.hit(n);
             if (!board.has_won and board.isWin()) {
@@ -65,7 +65,7 @@ const Board = struct {
             }
         }
 
-        var n = std.math.sqrt(nums.items.len);
+        const n = std.math.sqrt(nums.items.len);
 
         return Board{ .cells = nums, .n = n, .has_won = false };
     }

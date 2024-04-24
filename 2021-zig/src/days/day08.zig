@@ -12,8 +12,8 @@ pub fn run(alloc: std.mem.Allocator) !RetDay8 {
     for (lines.items) |line| {
         // TODO - scanf function
         var inOut = std.mem.splitSequence(u8, line, " | ");
-        var in = inOut.next().?;
-        var out = inOut.next().?;
+        const in = inOut.next().?;
+        const out = inOut.next().?;
 
         var out_nums = std.mem.splitScalar(u8, out, ' ');
         while (out_nums.next()) |num| {
@@ -51,7 +51,7 @@ fn determineSegs(alloc: std.mem.Allocator, str: []const u8) !std.AutoHashMap(Sev
     defer len_sixes.deinit();
 
     while (seg_strs.next()) |seg_str| {
-        var seven_seg = createSevenSeg(seg_str);
+        const seven_seg = createSevenSeg(seg_str);
 
         switch (@popCount(seven_seg)) {
             2 => knownNums[1] = seven_seg,

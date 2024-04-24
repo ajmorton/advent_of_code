@@ -15,7 +15,7 @@ pub fn run(alloc: std.mem.Allocator) !RetDay7 {
 
 fn getCrabsList(alloc: std.mem.Allocator) !helpers.Counter(u32) {
     var crabsAtPos = helpers.Counter(u32).init(alloc);
-    var allText = try std.fs.cwd().readFileAlloc(alloc, "input/day07.txt", 1000000);
+    const allText = try std.fs.cwd().readFileAlloc(alloc, "input/day07.txt", 1000000);
     defer alloc.free(allText);
     var nums_iter = std.mem.tokenize(u8, allText, ",\n");
 
@@ -43,10 +43,10 @@ fn findBestPos(crabsAtPos: helpers.Counter(u32), part1: bool) u64 {
         var move_cost: u64 = 0;
         var crabs_iter = crabsAtPos.iterator();
         while (crabs_iter.next()) |kv| {
-            var dist: u32 = if (kv.key_ptr.* > try_pos) kv.key_ptr.* - try_pos else try_pos - kv.key_ptr.*;
+            const dist: u32 = if (kv.key_ptr.* > try_pos) kv.key_ptr.* - try_pos else try_pos - kv.key_ptr.*;
 
-            var fuel_cost: u32 = if (part1) dist else (dist * (dist + 1)) / 2;
-            var num_crabs: u64 = kv.value_ptr.*;
+            const fuel_cost: u32 = if (part1) dist else (dist * (dist + 1)) / 2;
+            const num_crabs: u64 = kv.value_ptr.*;
             move_cost += num_crabs * fuel_cost;
         }
         min_cost = @min(min_cost, move_cost);

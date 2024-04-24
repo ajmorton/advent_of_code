@@ -39,8 +39,8 @@ fn parsePoint(str: []const u8) !Point {
 
 fn parsePipe(str: []const u8) !Pipe {
     var points = std.mem.splitSequence(u8, str, " -> ");
-    var start = try parsePoint(points.next().?);
-    var end = try parsePoint(points.next().?);
+    const start = try parsePoint(points.next().?);
+    const end = try parsePoint(points.next().?);
     var dir = Direction.Vertical; // TODO - How to write multibranch if expressions
     if (start.x == end.x) {
         dir = Direction.Vertical;
@@ -80,8 +80,8 @@ const Grid = struct {
         var x = pipe.start.x;
         var y = pipe.start.y;
 
-        var x_dir = gradient(pipe.start.x, pipe.end.x);
-        var y_dir = gradient(pipe.start.y, pipe.end.y);
+        const x_dir = gradient(pipe.start.x, pipe.end.x);
+        const y_dir = gradient(pipe.start.y, pipe.end.y);
 
         while (x != pipe.end.x or y != pipe.end.y) {
             try self.cells.incr(.{ .x = x, .y = y });

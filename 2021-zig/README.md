@@ -1,6 +1,6 @@
 # Advent of Code 2021 - Zig
 
-Zig 0.11.0, no toolchain
+Zig 0.12.0, no toolchain
 
 ## How to run
 ```bash

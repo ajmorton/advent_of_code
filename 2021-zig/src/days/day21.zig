@@ -35,7 +35,7 @@ const Die = struct {
     const Self = @This();
 
     fn roll(self: *Self) u32 {
-        var next_roll: u32 = (self.num_rolls % 100) + 1;
+        const next_roll: u32 = (self.num_rolls % 100) + 1;
         self.num_rolls += 1;
         return next_roll;
     }
@@ -56,7 +56,7 @@ fn part2(alloc: std.mem.Allocator) !u64 {
     var all_states = helpers.Counter(GameState).init(alloc);
     defer all_states.deinit();
 
-    var start_state = GameState.init(8, 2);
+    const start_state = GameState.init(8, 2);
     try all_states.incr(start_state);
 
     var wins: [2]u64 = .{ 0, 0 };
@@ -66,12 +66,12 @@ fn part2(alloc: std.mem.Allocator) !u64 {
     while (!finished) {
         finished = true;
         var next_states = helpers.Counter(GameState).init(alloc);
-        var cur_player = turn % 2;
+        const cur_player = turn % 2;
         var cur_states = all_states.keyIterator();
         while (cur_states.next()) |cur_state| {
             finished = false;
             for (dirac_results) |dirac_res| {
-                var num_new_results = dirac_res.prob * all_states.count(cur_state.*);
+                const num_new_results = dirac_res.prob * all_states.count(cur_state.*);
 
                 var new_state = cur_state.*;
                 new_state.players[cur_player].move(dirac_res.dist);
@@ -94,9 +94,9 @@ fn part1() u32 {
     var die = Die{ .num_rolls = 0 };
     var game = GameState.init(8, 2);
 
-    var winner = while (true) {
-        var cur_player = game.turn % 2;
-        var dist = die.roll() + die.roll() + die.roll();
+    const winner = while (true) {
+        const cur_player = game.turn % 2;
+        const dist = die.roll() + die.roll() + die.roll();
         game.players[cur_player].move(dist);
         if (game.players[cur_player].score >= 1000) {
             break cur_player;
@@ -104,6 +104,6 @@ fn part1() u32 {
         game.turn += 1;
     } else unreachable;
 
-    var loser_score = game.players[(winner + 1) % 2].score;
+    const loser_score = game.players[(winner + 1) % 2].score;
     return loser_score * die.num_rolls;
 }
