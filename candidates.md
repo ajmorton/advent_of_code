@@ -19,6 +19,7 @@
 - `Flix`    Effect system, regions to allow mutability inside pure functions
 - `Koka`    Effect types 
 - `Pony`    Compile time type, memory, and thread safety. Reference Capabilites.
+- `Borgo`   Go, but removing all those stupid decisions I didn't like.
 
 ## One-offs
 

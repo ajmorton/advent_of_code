@@ -55,6 +55,7 @@ function download_for_year() {
     done
 }
 
+download_for_year "2024" "2024-pypy/input"
 download_for_year "2023" "2023-nim/input"
 download_for_year "2022" "2022-crystal/input"
 download_for_year "2021" "2021-zig/input"
