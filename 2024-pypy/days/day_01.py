@@ -3,25 +3,15 @@
 from . import read_as
 
 def run() -> (int, int):
-    l, r = [], []
+    left_list, right_list = [], []
     for line in read_as.lines("input/day01.txt"):
-        (left, right) = line.split()
-        l.append(int(left))
-        r.append(int(right))
+        (l, r) = line.split()
+        left_list.append(int(l))
+        right_list.append(int(r))
 
-    l.sort()
-    r.sort()
+    left_list.sort()
+    right_list.sort()
 
-    p1 = 0
-    for i in range(0, len(l)):
-        p1 += abs(abs(l[i]) - abs(r[i]))
-
-    p2 = 0
-    for n in l:
-        if n in r:            
-            p2 += n * len([x for x in r if x == n])
-
+    p1 = sum(abs(left_list[i] - right_list[i]) for i in range(0, len(left_list)))
+    p2 = sum(n * right_list.count(n) for n in left_list)
     return (p1, p2)
-
-if __name__ == "__main__":
-    print(run())
