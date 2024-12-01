@@ -27,7 +27,7 @@ def run_test(module, expected_output, benchmark: bool) -> (bool, int):
     if test_result != expected_output:
         result_text = f"{RED}NOK{END}"
     else:
-        result_text = f"{GREEN} OK{END}"
+        result_text = f"{GREEN} OK{END} {expected_output}"
 
     print(f"{module.__name__:6}  {result_text} {END}", end='', flush=True)
 
@@ -94,6 +94,8 @@ if __name__ == "__main__":
         if runtime:
             total_runtime += runtime
 
-    print('---------------------------------------')
-    print(f"Total   time (passing tests) = {format_time(total_runtime)}")
-    print(f"Average time (passing tests) = {format_time(total_runtime / num_success)}")
+    print("")
+    if(benchmark):
+        print('---------------------------------------')
+        print(f"Total   time (passing tests) = {format_time(total_runtime)}")
+        print(f"Average time (passing tests) = {format_time(total_runtime / num_success)}")
