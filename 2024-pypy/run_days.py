@@ -72,7 +72,7 @@ if __name__ == "__main__":
     benchmark = args.benchmark
 
     all_days = [
-        (day_01 , (0, 0)),
+        (day_01 , (2166959, 23741109)),
     ]
 
     to_run = []
