@@ -11,3 +11,6 @@ Not much to set up this year. Copy/paste from 2020 and update to perform (slight
 
 ## Day 01 - Historian Hysteria
 Split, sort, compare, and sum. No notes.
+
+## Day 02 - Red-Nosed Reports
+(581/1016) isn't terrible but it comes with the asterisk of the AoC servers returning 500 errors. Tried to refactor part 1 instead of copy-pasting it for part 2 which cost me a minute or two.
