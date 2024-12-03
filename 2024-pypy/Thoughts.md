@@ -16,6 +16,10 @@ Split, sort, compare, and sum. No notes.
 (581/1016) isn't terrible but it comes with the asterisk of the AoC servers returning 500 errors. Tried to refactor part 1 instead of copy-pasting it for part 2 which cost me a minute or two.
 
 ## Day 03 - Mull It Over
-(410/5285) The example was a single line and the input was multiple so I didn't reset the `do` flag on each line.
-Fucking.
+(410/5285) The example was a single line and the input was multiple so I didn't reset the `do` flag on each line.  
+Fucking.  
 Brutal.
+
+Todays lesson is to read the goddamn input, which I should know after literally years of AoC. Lost a couple of minutes not realising that part two had updated the example string. Lost **a lot** of minutes treating my input as one line when it was split across multiple lines. Ever more so because I took a shortcut and used `for line in lines` as a shortcut.
+Paying attention: 1  
+Andrew: 0
