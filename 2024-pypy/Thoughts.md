@@ -14,3 +14,8 @@ Split, sort, compare, and sum. No notes.
 
 ## Day 02 - Red-Nosed Reports
 (581/1016) isn't terrible but it comes with the asterisk of the AoC servers returning 500 errors. Tried to refactor part 1 instead of copy-pasting it for part 2 which cost me a minute or two.
+
+## Day 03 - Mull It Over
+(410/5285) The example was a single line and the input was multiple so I didn't reset the `do` flag on each line.
+Fucking.
+Brutal.
