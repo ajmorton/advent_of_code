@@ -20,7 +20,7 @@ python ./run_days.py -d 2 -b      # Run day 2 and benchmark it
 | day01   |   751.63 µs  |  ✅ |
 | day02   |     1.16 ms  |     |
 | day03   |   382.57 µs  |  ✅ |
-| day04   |              |     |
+| day04   |     2.38 ms  |     |
 | day05   |              |     |
 | day06   |              |     |
 | day07   |              |     |

@@ -1,42 +1,27 @@
 #! /usr/bin/env pypy3
 from . import read_as
-import re
-import itertools as itools
 
 def run() -> (int, int):
     p1 = p2 = 0
-
     grid = read_as.grid("input/day04.txt")
+    height, width = len(grid), len(grid[0])
 
-    for r in range(0, len(grid) - 3):
-        for c in range(0, len(grid[r])):
-            down = grid[r][c] + grid[r+1][c] + grid[r+2][c] + grid[r+3][c] 
-            if down == "XMAS" or down == "SAMX":
-                p1 += 1
+    # Pad the grid so we don't need bounds checking
+    grid.extend([['.'] * width] * 3)    
+    for row in grid:
+        row.extend(['.', '.', '.'])
 
-    for r in range(0, len(grid)):
-        for c in range(0, len(grid[r]) - 3):
-            right = grid[r][c] + grid[r][c+1] + grid[r][c+2] + grid[r][c+3] 
-            if right == "XMAS" or right == "SAMX":
-                p1 += 1
+    for r in range(0, height):
+        for c in range(0, width):
+            down       = grid[r][c] + grid[r+1][c  ] + grid[r+2][c  ] + grid[r+3][c  ] in ["XMAS", "SAMX"]
+            right      = grid[r][c] + grid[r  ][c+1] + grid[r  ][c+2] + grid[r  ][c+3] in ["XMAS", "SAMX"]
+            down_right = grid[r][c] + grid[r+1][c+1] + grid[r+2][c+2] + grid[r+3][c+3] in ["XMAS", "SAMX"] 
+            up_right   = grid[r][c] + grid[r-1][c+1] + grid[r-2][c+2] + grid[r-3][c+3] in ["XMAS", "SAMX"] 
 
-    for r in range(0, len(grid) - 3):
-        for c in range(0, len(grid[r]) - 3):
-            down_right = grid[r][c] + grid[r+1][c+1] + grid[r+2][c+2] + grid[r+3][c+3] 
-            if down_right == "XMAS" or down_right == "SAMX":
-                p1 += 1
+            p1 += down + right + down_right + up_right
 
-    for r in range(3, len(grid)):
-        for c in range(0, len(grid[r]) - 3):
-            up_right = grid[r][c] + grid[r-1][c+1] + grid[r-2][c+2] + grid[r-3][c+3] 
-            if up_right == "XMAS" or up_right == "SAMX":
-                p1 += 1
-
-    for r in range(1, len(grid) - 1):
-        for c in range(1, len(grid[r]) - 1):
-            if grid[r][c] == 'A':
-                if ((grid[r-1][c-1] == 'M' and grid[r+1][c+1] == 'S') or (grid[r-1][c-1] == 'S' and grid[r+1][c+1] == 'M')) and \
-                   ((grid[r+1][c-1] == 'M' and grid[r-1][c+1] == 'S') or (grid[r+1][c-1] == 'S' and grid[r-1][c+1] == 'M')):
-                    p2 += 1
+            if grid[r-1][c-1] + grid[r][c] + grid[r+1][c+1] in ("MAS", "SAM") and \
+                grid[r+1][c-1] + grid[r][c] + grid[r-1][c+1] in ("MAS", "SAM"):
+                p2 += 1
 
     return (p1, p2)

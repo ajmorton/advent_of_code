@@ -23,3 +23,8 @@ Brutal.
 Todays lesson is to read the goddamn input, which I should know after literally years of AoC. Lost a couple of minutes not realising that part two had updated the example string. Lost **a lot** of minutes treating my input as one line when it was split across multiple lines. Ever more so because I took a shortcut and used `for line in lines` as a shortcut.
 Paying attention: 1  
 Andrew: 0
+
+## Day 04 - Ceres Search
+Another day of stupid mistakes. reverse(XMAS) != SAXM.  
+Not very golfy today. It can get shorter with dicts but that adds a 20x slowdown. Hard to explain why I care about this in Python of all languages but here we are.  
+Today was a good reminder to make use of complex number for indices and `dict.get(pos, default_val)` in future days rather than handling annoying OOB accesses.
