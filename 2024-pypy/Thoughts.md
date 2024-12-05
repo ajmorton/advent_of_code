@@ -28,3 +28,14 @@ Andrew: 0
 Another day of stupid mistakes. reverse(XMAS) != SAXM.  
 Not very golfy today. It can get shorter with dicts but that adds a 20x slowdown. Hard to explain why I care about this in Python of all languages but here we are.  
 Today was a good reminder to make use of complex number for indices and `dict.get(pos, default_val)` in future days rather than handling annoying OOB accesses.
+
+## Day 05 - Print Queue
+Not  
+Happy
+Jan  
+
+1) Started P2 with a brute force permutation: Slow, didn't bother waiting.
+2) I know, let's create a DAG out of the page orders. Input was intentionally seeded with a cycle. Fuck.
+3) Custom partially ordered sort function? Works I guess
+
+If this years theme is malicious input I'mma live life on tilt.
