@@ -2,62 +2,43 @@
 from . import read_as
 from collections import defaultdict
 
+DIR = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # Up, Right, Down, Left
 
-def walk(grid, starting_pos) -> int:
-    visited = set()
-    starting_dir = 1j
+def walk(grid, starting_pos, starting_dir, custom_blocker=None):
+    visited = defaultdict(list)
 
-    cur_pos = starting_pos
-    cur_dir = starting_dir
+    cur_pos, cur_dir = starting_pos, starting_dir
+    height, width = len(grid), len(grid[0])
 
-    no_prog = 0
-
+    new_blocker_makes_loop = 0
     while True:
-        no_prog += 1
-        if cur_pos not in visited:
-            no_prog = 0
+        if cur_pos in visited and cur_dir in visited[cur_pos]:
+            return None
 
-        visited.add(cur_pos)
-        next_pos = cur_pos + cur_dir
+        next_dir = DIR[cur_dir]
+        next_pos = (cur_pos[0] + next_dir[0], cur_pos[1] + next_dir[1])
 
-        if next_pos not in grid.keys():
+        visited[cur_pos].append(cur_dir)
+
+        if not (0 <= next_pos[0] < height) or not (0 <= next_pos[1] < width):
             break
-        elif grid[next_pos]:
-            # can't move, turn instead
-            cur_dir = cur_dir * -1j
+        elif grid[next_pos[0]][next_pos[1]] == '#' or next_pos == custom_blocker:
+            cur_dir = (cur_dir + 1) % 4  # Turn right
         else:
-            cur_pos = cur_dir + cur_pos
+            if custom_blocker is None and next_pos not in visited:
+                if walk(grid, cur_pos, cur_dir, custom_blocker=next_pos) is None:
+                    new_blocker_makes_loop += 1
 
-        if no_prog > 1000:
-            return -1
+            cur_pos = next_pos
 
-    return len(visited)
+    return len(visited), new_blocker_makes_loop
 
 def run() -> (int, int):
-    p1 = p2 = 0
-    grid = defaultdict(bool)
+    grid = read_as.grid("input/day06.txt")
 
-    starting_pos = 0j
-    for r, row in enumerate(read_as.lines("input/day06.txt")):
-        for c, val in enumerate(row):
-            if val == '^':
-                starting_pos = -1j*r + c
-                grid[r*-1j + c] = False
-            elif val == '#':
-                grid[r*-1j + c] = True
-            else:
-                grid[r*-1j + c] = False
+    starting_pos = (-1, -1)
+    for r, row in enumerate(grid):
+        if '^' in row:
+            starting_pos = (r, row.index('^'))
 
-    p1 = walk(grid.copy(), starting_pos)
-
-    n = 0
-    for pos in grid.keys():
-        n+=1
-        print(f"{n=} of {len(grid)}")
-        if pos != starting_pos:
-            new_grid = grid.copy()
-            new_grid[pos] = True
-            if walk(new_grid, starting_pos) == -1:
-                p2 += 1
-
-    return (p1, p2)
+    return walk(grid, starting_pos, 0)
