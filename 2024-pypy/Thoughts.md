@@ -39,3 +39,12 @@ Jan
 3) Custom partially ordered sort function? Works I guess
 
 If this years theme is malicious input I'mma live life on tilt.
+
+# Day 06 - Guard Gallivant
+No stupid mistakes today(!!). Brute forced part 2 for a 38.44 second(!) runtime. There's probably a simple loop finder where you track the last 3 collisions and see if you can insert a blocker at
+```
+new_blocker_pos = third_last.x + 1 + current.y
+```
+allowing for current rotation.
+
+Will play around with this later. Only part 1 is 4.35ms so breaking 1ms will be tricky.

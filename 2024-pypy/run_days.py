@@ -1,7 +1,7 @@
 #! /usr/bin/env pypy3
 
 from datetime import datetime
-from days import day_01, day_02, day_03, day_04, day_05
+from days import day_01, day_02, day_03, day_04, day_05, day_06
 
 import argparse
 
@@ -77,6 +77,7 @@ if __name__ == "__main__":
         (day_03 , (187833789, 94455185)),
         (day_04 , (2662, 2034)),
         (day_05 , (6498, 5017)),
+        (day_06 , (4883, 1655)),
     ]
 
     to_run = []
