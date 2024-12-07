@@ -1,34 +1,32 @@
 #! /usr/bin/env pypy3
 from . import read_as
+import functools
 
-import itertools
+@functools.cache
+def can_score(target, inputs, is_p2):
+    if len(inputs) == 0: return False
+    if len(inputs) == 1: return inputs[0] == target
 
-def can_match(answer, inputs, operations):
-    for perm in itertools.product(operations, repeat=len(inputs) - 1):
-        x = inputs[0]
-        for j, command in enumerate(perm):
-            if command == '*':
-                x *= inputs[j + 1]
-            elif command == '+':
-                x += inputs[j + 1]
-            else:
-                x = int(str(x) + str(inputs[j + 1]))
+    if can_mul := target % inputs[-1] == 0 and can_score(target // inputs[-1], inputs[:-1], can_p2): 
+        return True
+    if can_add := can_score(target - inputs[-1], inputs[:-1], is_p2): 
+        return True
 
-        if x == answer:
-            return True
+    if(is_p2):
+        target_str, inp_str = str(target), str(inputs[-1])
+        if target_str.endswith(inp_str) and target_str != inp_str:
+            if is_concat := can_score(int(target_str[:-len(inp_str)]), inputs[:-1], is_p2):
+                return True
+
     return False
 
 def run() -> (int, int):
     p1 = p2 = 0
     for line in read_as.lines("input/day07.txt"):
         answer, inputs = line.split(": ")
-        answer = int(answer)
-        inputs = list(map(int, inputs.split()))
+        answer, inputs = int(answer), tuple(map(int, inputs.split()))
 
-        if can_match(answer, inputs, "*+"):
-            p1 += answer
-
-        if can_match(answer, inputs, "*+|"):
-            p2 += answer
+        p1 += answer if can_score(answer, inputs, False) else 0
+        p2 += answer if can_score(answer, inputs, True) else 0
 
     return (p1, p2)

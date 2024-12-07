@@ -59,4 +59,6 @@ edit: This idea only works for simple loops. Instead:
 So far this is 1n 86x speedup. Annoyed I can't hit 100x
 
 # Day 07 - Bridge Repair
-Go read itertools. Plug in values. Meh. I guess I should write the memoises version at some point.
+Go read itertools. Plug in values. Meh. I guess I should write the memoises version at some point.  
+
+edit: There we go, back under a millisecond. 3000x speedup for the memoised recursive impl. @functools.cache is a tiny cheat but I assume a handrolled dict gets similar results. Reversing the string cat was a fun one to think about.
