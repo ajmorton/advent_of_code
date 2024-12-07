@@ -57,3 +57,6 @@ edit: This idea only works for simple loops. Instead:
 - NameTuples are bloody slow. 3x slowdown compared to a normal tuple indexed with foo[0]
 
 So far this is 1n 86x speedup. Annoyed I can't hit 100x
+
+# Day 07 - Bridge Repair
+Go read itertools. Plug in values. Meh. I guess I should write the memoises version at some point.
