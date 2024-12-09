@@ -7,7 +7,7 @@ def can_score(target, inputs, is_p2):
     if len(inputs) == 0: return False
     if len(inputs) == 1: return inputs[0] == target
 
-    if can_mul := target % inputs[-1] == 0 and can_score(target // inputs[-1], inputs[:-1], can_p2): 
+    if can_mul := target % inputs[-1] == 0 and can_score(target // inputs[-1], inputs[:-1], is_p2): 
         return True
     if can_add := can_score(target - inputs[-1], inputs[:-1], is_p2): 
         return True
