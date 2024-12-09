@@ -66,3 +66,9 @@ edit: There we go, back under a millisecond. 3000x speedup for the memoised recu
 # Day 08 - Resonant Collinearity
 Good day. 00:07:47/413, 00:12:45/420
 Runtime is already well under a millisecond. Just golf the code and be done with it. There's a linear equations solution in this but the current code performs approx 2000 checks so it's not getting faster than that.
+
+# Day 09 - Disk Fragmenter
+Another good day with 00:08:00/231, 00:29:25/606. New PB on the silver star and probably top 200 if you only count the legitimate (read: non-LLM) times.  
+Started with a simple insertion sort for part 1 and then had to migrate to extent lists for part 2. There's a fun little pattern where my loop vars were k,j,i instead of i,j,k as I realised I needed an earlier loop twice. Part 2 worked on the first execution which was a nice surprise.  
+
+15ms is the slowest day so far. Would like to get that under 10 later on. Saved an extra 40% of runtime by removing the redundant -1 block ID from the holes list, so less tuple destructing is a good candidate.
