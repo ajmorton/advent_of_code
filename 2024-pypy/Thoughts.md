@@ -72,3 +72,8 @@ Another good day with 00:08:00/231, 00:29:25/606. New PB on the silver star and 
 Started with a simple insertion sort for part 1 and then had to migrate to extent lists for part 2. There's a fun little pattern where my loop vars were k,j,i instead of i,j,k as I realised I needed an earlier loop twice. Part 2 worked on the first execution which was a nice surprise.  
 
 15ms is the slowest day so far. Would like to get that under 10 later on. Saved an extra 40% of runtime by removing the redundant -1 block ID from the holes list, so less tuple destructing is a good candidate.
+
+# Day 10 - Hoof It
+Bad day for reading comprehension. Height must **always** increase by 1, not increase by at most 1.
+Surprised that part 2 was so trivial. Literally just drop the seen list and count the number of times we hit a 9. We should be entering the point where efficient code is required.  
+Although the code runs in 15ms unoptimised.. Eh, c'est la vie.
