@@ -80,4 +80,6 @@ Although the code runs in 15ms unoptimised.. Eh, c'est la vie.
 
 # Day 11 - Plutonian Pebbles
 15.9µs 🔥🔥🔥.
-Brute for part 1 and the a quick rewrite to a recursive impl. Don't think there's much cleanup to do today.
+Brute for part 1 and the a quick rewrite to a recursive impl. Don't think there's much cleanup to do today.  
+
+`@functools.cache` is straight up cheating today. Without the magic line the first stone (not even solution) still hasn't finished after 30 minutes. Today's clean up is actually marginally slower, but what's a quarter of a microsecond between friends? 
