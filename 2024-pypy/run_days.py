@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from days import day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09, day_10
+from days import day_11
 
 import argparse
 
@@ -82,6 +83,7 @@ if __name__ == "__main__":
         (day_08 , (256, 1005)),
         (day_09 , (6446899523367, 6478232739671)),
         (day_10 , (489, 1086)),
+        (day_11 , (183484, 218817038947400)),
     ]
 
     to_run = []

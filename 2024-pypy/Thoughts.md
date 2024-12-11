@@ -77,3 +77,7 @@ Started with a simple insertion sort for part 1 and then had to migrate to exten
 Bad day for reading comprehension. Height must **always** increase by 1, not increase by at most 1.
 Surprised that part 2 was so trivial. Literally just drop the seen list and count the number of times we hit a 9. We should be entering the point where efficient code is required.  
 Although the code runs in 15ms unoptimised.. Eh, c'est la vie.
+
+# Day 11 - Plutonian Pebbles
+15.9µs 🔥🔥🔥.
+Brute for part 1 and the a quick rewrite to a recursive impl. Don't think there's much cleanup to do today.
