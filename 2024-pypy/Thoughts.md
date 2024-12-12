@@ -83,3 +83,10 @@ Although the code runs in 15ms unoptimised.. Eh, c'est la vie.
 Brute for part 1 and the a quick rewrite to a recursive impl. Don't think there's much cleanup to do today.  
 
 `@functools.cache` is straight up cheating today. Without the magic line the first stone (not even solution) still hasn't finished after 30 minutes. Today's clean up is actually marginally slower, but what's a quarter of a microsecond between friends? 
+
+# Day 12 - Garden Groups
+Tricky one. Thought up an approach relatively quickly but then wasted a tonne of time because I tried a short cut of using  
+`for dirr, neighbour in enumerate([next_pos + 1j, next_pos -1j, next_pos +1, next_pos - 1]):`  
+so directions were indices `0`,`1`,`2`,`3` but then checked the directions using complex nums  
+`for dirr in [0, 1]:`  
+2.9 seconds ain't grand. Writing a smarter edge finding logic is gonna be rough with those internal boundaries
