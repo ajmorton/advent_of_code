@@ -90,3 +90,5 @@ Tricky one. Thought up an approach relatively quickly but then wasted a tonne of
 so directions were indices `0`,`1`,`2`,`3` but then checked the directions using complex nums  
 `for dirr in [0, 1]:`  
 2.9 seconds ain't grand. Writing a smarter edge finding logic is gonna be rough with those internal boundaries
+
+edit: The code's pretty jank, but 6ms is in the acceptable range. Didn't come up with the corners solution myself, but I do recognise it from previous years. It's just one of those AoC trivia items I guess. Here's hoping there's no Chinese Remainder Theorem this year.
