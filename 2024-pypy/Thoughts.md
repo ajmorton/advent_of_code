@@ -92,3 +92,10 @@ so directions were indices `0`,`1`,`2`,`3` but then checked the directions using
 2.9 seconds ain't grand. Writing a smarter edge finding logic is gonna be rough with those internal boundaries
 
 edit: The code's pretty jank, but 6ms is in the acceptable range. Didn't come up with the corners solution myself, but I do recognise it from previous years. It's just one of those AoC trivia items I guess. Here's hoping there's no Chinese Remainder Theorem this year.
+
+# Day 13: Claw Contraption
+Well that was an absolute schemozzle. Started with recursive solution; Slow but got part 1 ok.
+And then I knew it was linear equations, and I had to use my own brain(?!?!?!). Very unfair.
+Started hitting precision issues I think, but they went away when I stuck the code into a subfunction? Must've typod somewhere and not noticed the fix.
+
+First day over an hour. Should've been able to do that faster. The code is absolutely awful as well
