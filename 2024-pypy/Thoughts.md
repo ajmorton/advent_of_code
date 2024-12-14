@@ -102,3 +102,11 @@ First day over an hour. Should've been able to do that faster. The code is absol
 
 # Day 14: Restroom Redoubt
 I don't know how to do this one without manual review. I mean I had to guess that the tree pattern would contain a straight line based on the presence of a tree trunk. I also tried "All robuts are adjacent" under the assumption every single point was part of the image which wouldn't have worked, and then spent 15 minutes trying to get the console output to process in a clean way to manually review (101 * 103) possible frames. Is this just a case of make an assumption and check visually? Kinda hard to benchmark a generalised solution here.
+
+Today's speedups:
+- Stop printing everything
+- Find out there's a hidden assumption the hidden pattern appears the first time no robots overlap. Given the grid was 101 by 103 there must be some prime number theory involved. Not a reasonable assumption to make on first viewing of the problem though. This removes a bunch of checking and simplifies the check to checking for dupes in a list
+- Good old generational `seen` array
+- Skipping work that we know is redundant
+
+Under 10ms which is the current target. Good enough for now.

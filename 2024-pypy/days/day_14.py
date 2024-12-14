@@ -2,88 +2,52 @@
 from . import read_as
 
 from time import sleep
+import re
 
 def run() -> (int, int):
     p1, p2 = 0, 0
 
     robuts = []
-
+    line_regex = re.compile(r"p=(\d+),(\d+) v=(-?\d+),(-?\d+)")
     for line in read_as.lines("input/day14.txt"):
-        pos, vel = line.split()
-        posX, posY = pos.split(",")
-        posX, posY = int(posX[2:]), int(posY)
+        (_, posX, posY, velX, velY) = line_regex.match(line)
+        robuts.append(((int(posX), int(posY)), (int(velX), int(velY))))
 
-        velX, velY = vel.split(",")
-        velX, velY = int(velX[2:]), int(velY)
+    height, width = 103, 101
 
-        robuts.append(((posX, posY), (velX, velY)))
+    seen = [[0 for _ in range(width)] for _ in range(height)]
 
-    width = 101
-    height = 103
-
-
-    time = 100
-
-    newRobuts = []
-    # print(robuts)
-    for (pos, vel) in robuts:
-        newPos = ((pos[0] + time*vel[0]) % (width), (pos[1] + time*vel[1]) % (height))
-        newRobuts.append(newPos)
-
-    # print(newRobuts)/./
-
-    quads = [0,0,0,0]
-    for (x, y) in newRobuts:
-        # print(x, y)
-        if 0 <= x < width//2 and 0 <= y < height //2:
-            quads[0] += 1
-        elif 0 <= x < width//2 and y >= (height //2) + 1:
-            quads[1] += 1
-        elif x >= (width//2 + 1) and 0 <= y < height //2:
-            quads[2] += 1
-        elif x >= (width//2 + 1) and y >= (height //2) + 1:
-            quads[3] += 1
-
-
-    # for x in range(0, 101):
-
-    mult = 1
-    for quad in quads:
-        # print(quad)
-        mult *= quad
-
-    p1 = mult
-    # sleep(0.15)
-
-    for time in range(0, 101*103 + 1):
-        newRobuts = []
+    for time in range(0, height*width + 1):
+        quadrant = [[0,0],[0,0]]
+        no_overlaps = True
         for (pos, vel) in robuts:
             newPos = ((pos[0] + time*vel[0]) % (width), (pos[1] + time*vel[1]) % (height))
-            newRobuts.append(newPos)
+            if seen[newPos[1]][newPos[0]] == time:
+                no_overlaps = False
+                if time != 100:
+                    break
+            else:
+                seen[newPos[1]][newPos[0]] = time
+        
+            # P1
+            if time == 100:
+                x, y = newPos
+                if x == width // 2 or y == height // 2:
+                    # Ignore the center lines
+                    continue
+                else:
+                    quadrant[x > width // 2][y > height // 2] += 1
 
-        line = False
-        for robut in newRobuts:
-            if (robut[0], robut[1] + 1) in newRobuts:
-                if (robut[0], robut[1] + 2) in newRobuts:
-                    if (robut[0], robut[1] + 3) in newRobuts:
-                        if (robut[0], robut[1] + 4) in newRobuts:
-                            line = True
-                            break
-        if line:
-            for x in range(0, width):
-                for y in range(0, height):
-                    if (x, y) in newRobuts:
-                        print(".", end='')
-                    else:
-                        print(" ", end='')
-                print()
+        # P1
+        if time == 100:
+            p1 = quadrant[0][0] * quadrant[0][1] * quadrant[1][0] * quadrant[1][1]
 
-            print("===== ", time, "=======")
-            # sleep(0.5)
-            import os
-            import sys
-            os.system('clear')
-            sys.stdout.flush()
+        # P2
+        # **Heavy** assumption: The pattern appears the first time no robuts overlap.
+        if no_overlaps:
+            p2 = time
 
+        if p1 and p2:
+            break
 
-    return (p1, 7383)
+    return (p1, p2)
