@@ -99,3 +99,6 @@ And then I knew it was linear equations, and I had to use my own brain(?!?!?!). 
 Started hitting precision issues I think, but they went away when I stuck the code into a subfunction? Must've typod somewhere and not noticed the fix.
 
 First day over an hour. Should've been able to do that faster. The code is absolutely awful as well
+
+# Day 14: Restroom Redoubt
+I don't know how to do this one without manual review. I mean I had to guess that the tree pattern would contain a straight line based on the presence of a tree trunk. I also tried "All robuts are adjacent" under the assumption every single point was part of the image which wouldn't have worked, and then spent 15 minutes trying to get the console output to process in a clean way to manually review (101 * 103) possible frames. Is this just a case of make an assumption and check visually? Kinda hard to benchmark a generalised solution here.
