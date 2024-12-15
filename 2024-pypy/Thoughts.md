@@ -93,14 +93,14 @@ so directions were indices `0`,`1`,`2`,`3` but then checked the directions using
 
 edit: The code's pretty jank, but 6ms is in the acceptable range. Didn't come up with the corners solution myself, but I do recognise it from previous years. It's just one of those AoC trivia items I guess. Here's hoping there's no Chinese Remainder Theorem this year.
 
-# Day 13: Claw Contraption
+# Day 13 - Claw Contraption
 Well that was an absolute schemozzle. Started with recursive solution; Slow but got part 1 ok.
 And then I knew it was linear equations, and I had to use my own brain(?!?!?!). Very unfair.
 Started hitting precision issues I think, but they went away when I stuck the code into a subfunction? Must've typod somewhere and not noticed the fix.
 
 First day over an hour. Should've been able to do that faster. The code is absolutely awful as well
 
-# Day 14: Restroom Redoubt
+# Day 14 - Restroom Redoubt
 I don't know how to do this one without manual review. I mean I had to guess that the tree pattern would contain a straight line based on the presence of a tree trunk. I also tried "All robuts are adjacent" under the assumption every single point was part of the image which wouldn't have worked, and then spent 15 minutes trying to get the console output to process in a clean way to manually review (101 * 103) possible frames. Is this just a case of make an assumption and check visually? Kinda hard to benchmark a generalised solution here.
 
 Today's speedups:
@@ -110,3 +110,6 @@ Today's speedups:
 - Skipping work that we know is redundant
 
 Under 10ms which is the current target. Good enough for now.
+
+# Day 15 - Warehouse Woes
+:|
