@@ -113,3 +113,8 @@ Under 10ms which is the current target. Good enough for now.
 
 # Day 15 - Warehouse Woes
 :|
+
+# Day 16 - Reindeer Maze
+Absolutely terrible. Christ.  
+There's at least 2 bugs playing into each other. Mixed and matched the pruning logic in a way that flip flopped between pruning too much and not pruning things it should have. This should have been a trivial Dijkstra and somehow I spent all this time on A* and node reduction and still took over an hour and half. 
+Two bad days in a row and I'll be busy tomorrow.
