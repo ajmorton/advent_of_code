@@ -1,31 +1,25 @@
 #! /usr/bin/env pypy3
 from . import read_as
+from .helpers import Grid, Tup
+from heapq import *
 
-def search(start_pos, end_pos, gridd):
-    seen = {}
-    seen_combo = set()
+U, R, D, L = 0, 1, 2, 3
+DIRS = [Tup(-1,0), Tup(0,1), Tup(1,0), Tup(0,-1)] # U, R, D, L
 
-    a_star = lambda pos: abs(abs(pos.real) - abs(end_pos.real)) + abs(abs(pos.imag) - abs(end_pos.imag))
+def search(start_pos, end_pos, grid):
+    seen = Grid([[[None for _ in DIRS] for _ in grid[0]] for _ in grid])
 
-    start_astar = a_star(start_pos)
-    to_explore = [(start_pos, 1, 0, start_astar, [start_pos]), (start_pos, 1j, 1000, start_astar, [start_pos]), (start_pos, -1j, 1000,start_astar, [start_pos])]
+    to_explore = [(0, start_pos, R, [start_pos]), (1000, start_pos, D, [start_pos]), (1000, start_pos, U, [start_pos])]
+    heapify(to_explore)
+
     best_dist = 999999999999999
-
     all_spots = set()
 
     while to_explore:
-        to_explore = sorted(to_explore, key=lambda x: (x[2] + x[3]))
-        cur_pos, cur_dir, cur_dist, aa_ss, cur_path = to_explore[0]
-        to_explore = to_explore[1:]
+        cur_dist, cur_pos, cur_dir, cur_path = heappop(to_explore)
 
         if cur_dist > best_dist:
             continue
-
-        # if (cur_pos, cur_dir) in seen:
-        #     if cur_dist < seen[(cur_pos, cur_dir)]:
-        #         seen[(cur_pos, cur_dir)] = cur_dist
-        #     else:
-        #         continue
 
         if cur_pos == end_pos:
             if cur_dist < best_dist:
@@ -35,73 +29,49 @@ def search(start_pos, end_pos, gridd):
             elif cur_dist == best_dist:
                 for spot in cur_path:
                     all_spots.add(spot)
-            else:
-                return cur_dist, all_spots
         else:
 
             # Walk to end
             num_steps = 1
             interim_positions = []
             while True:
-                next_pos = cur_pos + (num_steps *cur_dir)
+                to_insert = []
+
+                next_pos = cur_pos + num_steps * DIRS[cur_dir]
+                next_dist = cur_dist + num_steps
+                next_dist_turn = next_dist + 1000
                 interim_positions.append(next_pos)
-                if next_pos not in gridd:
-                    if (next_pos + cur_dir) in gridd:
-                        if (next_pos, cur_dir) in seen and cur_dist + num_steps > seen[(next_pos, cur_dir)]:
+                if grid[next_pos] != '#':
+                    if grid[next_pos + DIRS[cur_dir]] == '#':
+                        if seen[next_pos][cur_dir] and next_dist > seen[next_pos][cur_dir]:
                            pass
                         else:
-                            new_path = cur_path.copy()
-                            new_path.extend(interim_positions)
-                            to_explore.append((next_pos, cur_dir, cur_dist + num_steps, a_star(next_pos), new_path))
+                            seen[next_pos][cur_dir] = next_dist
+                            new_path = cur_path + interim_positions
+                            heappush(to_explore, (next_dist, next_pos, cur_dir, new_path))
                 else: 
                     break
 
-                if not (next_pos + (cur_dir * 1j)) in gridd:
-                    if (next_pos, cur_dir * 1j) in seen:
-                        if cur_dist + num_steps + 1000 <= seen[(next_pos, cur_dir * 1j)]:
-                            seen[(next_pos, cur_dir * 1j)] = cur_dist + num_steps + 1000
-                            new_path = cur_path.copy()
-                            new_path.extend(interim_positions)
-                            to_explore.append((next_pos, cur_dir * 1j, cur_dist + num_steps + 1000, a_star(next_pos), new_path))
-                    else:
-                        seen[(next_pos, cur_dir * 1j)] = cur_dist + num_steps + 1000
-                        new_path = cur_path.copy()
-                        new_path.extend(interim_positions)
-                        to_explore.append((next_pos, cur_dir * 1j, cur_dist + num_steps + 1000, a_star(next_pos), new_path))
+                for turn in [(cur_dir - 1) % 4, (cur_dir + 1) % 4]:
+                    if grid[next_pos + DIRS[turn]] != '#':
+                        if seen[next_pos][turn]:
+                            if next_dist_turn <= seen[next_pos][turn]:
+                                seen[next_pos][turn] = next_dist_turn
+                                new_path = cur_path + interim_positions
+                                heappush(to_explore, (next_dist_turn, next_pos, turn, new_path))
+                        else:
+                            seen[next_pos][turn] = next_dist_turn
+                            new_path = cur_path + interim_positions
+                            heappush(to_explore, (next_dist_turn, next_pos, turn, new_path))
     
-                if not (next_pos + (cur_dir * -1j)) in gridd:
-                    if (next_pos, cur_dir * -1j) in seen:
-                        if cur_dist + num_steps + 1000 <= seen[(next_pos, cur_dir * -1j)]:
-                            seen[(next_pos, cur_dir * -1j)] = cur_dist + num_steps + 1000
-                            new_path = cur_path.copy()
-                            new_path.extend(interim_positions)
-                            to_explore.append((next_pos, cur_dir * -1j, cur_dist + num_steps + 1000, a_star(next_pos), new_path))
-                    else:
-                        seen[(next_pos, cur_dir * -1j)] = cur_dist + num_steps + 1000
-                        new_path = cur_path.copy()
-                        new_path.extend(interim_positions)
-                        to_explore.append((next_pos, cur_dir * -1j, cur_dist + num_steps + 1000, a_star(next_pos), new_path))
-
                 num_steps += 1
-    return best_dist, all_spots
+
+    return best_dist, len(all_spots)
 
 def run() -> (int, int):
-    p1 = p2 = 0
-    grid = read_as.grid("input/day16.txt")
+    grid = Grid(read_as.grid("input/day16.txt"))
 
-    end_pos = start_pos = 0
+    start_pos = grid.find2D('S')
+    end_pos = grid.find2D('E')
 
-    gridd = {}
-
-    for r, row in enumerate(grid):
-        for c, cell in enumerate(row):
-            if cell == 'E':
-                end_pos = (r*1j + c)
-            elif cell == 'S':
-                start_pos = (r*1j + c)
-            elif cell == '#':
-                gridd[r*1j + c] = True
-
-
-    p1, p2 = search(start_pos, end_pos, gridd)
-    return (p1, len(p2))
+    return search(start_pos, end_pos, grid)
