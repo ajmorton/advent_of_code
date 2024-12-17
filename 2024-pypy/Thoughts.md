@@ -118,3 +118,10 @@ Under 10ms which is the current target. Good enough for now.
 Absolutely terrible. Christ.  
 There's at least 2 bugs playing into each other. Mixed and matched the pruning logic in a way that flip flopped between pruning too much and not pruning things it should have. This should have been a trivial Dijkstra and somehow I spent all this time on A* and node reduction and still took over an hour and half. 
 Two bad days in a row and I'll be busy tomorrow.
+
+# Day 17 - Chronospatial Computer
+RETURN THE STRING WITH THE COMMAS INCLUDED.16 days of numbers only and I waste a frankly insane amount of time debugging a correct implementation that was written by minute 15. Even worse because emulators are my fave of the puzzles. Add a visit from a tradie and other distractions means todays result is Bad (TM).
+
+Initially tried to reverse engineer the pattern, but all that bit twizzling messed things up. Instead we run for a while reporting the (binary repr) of numbers that produced a longer match to the instructions. The last bits of these numbers tended to repeat in batches of six. To force those last bits and only increment the parent bits. Repeat until P2 falls out.
+
+I don't see any way to produce a generalised solution here. Not even gonna try. Just call it 500ms for now and come back to it later(????)
