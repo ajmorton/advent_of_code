@@ -125,3 +125,6 @@ RETURN THE STRING WITH THE COMMAS INCLUDED.16 days of numbers only and I waste a
 Initially tried to reverse engineer the pattern, but all that bit twizzling messed things up. Instead we run for a while reporting the (binary repr) of numbers that produced a longer match to the instructions. The last bits of these numbers tended to repeat in batches of six. To force those last bits and only increment the parent bits. Repeat until P2 falls out.
 
 I don't see any way to produce a generalised solution here. Not even gonna try. Just call it 500ms for now and come back to it later(????)
+
+# Day 18 - RAM Run
+That seemed very straight forward.. I think it was a trap for people predicting part 2 and trying to find a path while the blocks fall
