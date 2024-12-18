@@ -124,7 +124,7 @@ RETURN THE STRING WITH THE COMMAS INCLUDED.16 days of numbers only and I waste a
 
 Initially tried to reverse engineer the pattern, but all that bit twizzling messed things up. Instead we run for a while reporting the (binary repr) of numbers that produced a longer match to the instructions. The last bits of these numbers tended to repeat in batches of six. To force those last bits and only increment the parent bits. Repeat until P2 falls out.
 
-I don't see any way to produce a generalised solution here. Not even gonna try. Just call it 500ms for now and come back to it later(????)
+~~I don't see any way to produce a generalised solution here. Not even gonna try. Just call it 500ms for now and come back to it later(????)~~ As always the emulator problems turn out to be the best. Brute force on my laptop: would be 21.5 hours assuming checking each number took only a single clock cycle. Realistically we're looking at weeks of time. But apply a bit os smarts and we're down to 200µs. Even the most generous numbers put that at a 400,000x speedup 🔥. I can't pretend I found this myself. I had a similar approach in my first attempt but with much hackery and a bit of guesswork.
 
 # Day 18 - RAM Run
 That seemed very straight forward.. I think it was a trap for people predicting part 2 and trying to find a path while the blocks fall
