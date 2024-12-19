@@ -128,3 +128,7 @@ Initially tried to reverse engineer the pattern, but all that bit twizzling mess
 
 # Day 18 - RAM Run
 That seemed very straight forward.. I think it was a trap for people predicting part 2 and trying to find a path while the blocks fall
+
+# Day 19 - Linen Layout
+functools.cache == 💪
+Not much clean needed today I expect. probably merge the two can_make subfunctions and get down to 5ms. Small stumble calling can_make in my can_make2 function that cost a few minutes.
