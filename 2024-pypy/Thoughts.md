@@ -132,3 +132,8 @@ That seemed very straight forward.. I think it was a trap for people predicting 
 # Day 19 - Linen Layout
 functools.cache == 💪
 Not much clean needed today I expect. probably merge the two can_make subfunctions and get down to 5ms. Small stumble calling can_make in my can_make2 function that cost a few minutes.
+
+# Day 20 - Race Condition
+:|  
+Tried BFS. Decided that was too slow so I'd do recursive and memoise results. Ran out of stack space on the machine which seems insane for a max depth of < 10,000.
+w/e Hopefully we're done with grid searches this year.
