@@ -1,40 +1,24 @@
 #! /usr/bin/env pypy3
 from . import read_as
  
-def find_path(grid, start_node, end):
+NONE = 999999999999
 
-    height, width = len(grid), len(grid[0])
+def flood(grid, dists, start, end):
+    cur_pos = start
+    dist = 0
+    while cur_pos != end:
+        dists[cur_pos[0]][cur_pos[1]] = dist
+        dist += 1
+        for n in [(cur_pos[0] + 1, cur_pos[1]),(cur_pos[0] - 1, cur_pos[1]),(cur_pos[0], cur_pos[1] + 1),(cur_pos[0], cur_pos[1] - 1)]:
+            if grid[n[0]][n[1]] != '#' and dists[n[0]][n[1]] == NONE:
+                cur_pos = n
+                break
 
-    to_explore = [start_node]
-    dists = []
-    while to_explore:
-        cur_node = to_explore[0]
-        to_explore = to_explore[1:]
-
-        cur_dist, cur_pos, cur_seen = cur_node
-
-        if cur_pos == end:
-            return cur_dist, cur_seen
-
-        for n in [(cur_pos[0] +1, cur_pos[1]),(cur_pos[0] -1, cur_pos[1]),(cur_pos[0], cur_pos[1] + 1),(cur_pos[0], cur_pos[1] - 1)]:
-            if n in cur_seen:
-                continue
-
-            if 0 <= cur_pos[0] < height and 0 <= cur_pos[1] < width:
-                new_seen = cur_seen.copy()
-                new_seen[n] = cur_dist + 1
-                if grid[n[0]][n[1]] != '#':
-                    next_node = (cur_dist + 1, n, new_seen)
-                    to_explore.append(next_node)
-
-    print("nope")
-    exit(1)
+    dists[cur_pos[0]][cur_pos[1]] = dist
 
 def run() -> (int, int):
     p1 = p2 = 0
     grid = read_as.grid("input/day20.txt")
-
-    height, width = len(grid), len(grid[0])
 
     start = end = 0
     for r, row in enumerate(grid):
@@ -44,17 +28,26 @@ def run() -> (int, int):
             elif cell == 'E':
                 end = (r,c)
 
-    start_node = (0, start, {start: 0})
-    no_cheat_dist, path_dists = find_path(grid, start_node, end)
+    dists = [[NONE for c in row] for row in grid]
+    flood(grid, dists, start, end)
 
-    saves = []
-    for (pos1, dist1) in path_dists.items():
-        for (pos2, dist2) in path_dists.items():
-            if dist1 < dist2:
-                cheat_dist = abs(abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1]))
-                saves.append((cheat_dist, dist1 - dist2 + cheat_dist))
+    height, width = len(grid), len(grid[0])
+    for r1 in range(0, height):
+        for c1 in range(0, width):
+            if dists[r1][c1] == NONE: continue
 
-    p1 = [time_save for (dist, time_save) in saves if time_save <= -100 and dist == 2]
-    p2 = [time_save for (dist, time_save) in saves if time_save <= -100 and dist <= 20]
+            for delta_r in range(-20, 21):
+                if not (0 <= r1 + delta_r < height): continue
+                for delta_c in range(-20 + abs(delta_r), 21 - abs(delta_r)):
+                    if not (0 <= c1 + delta_c < width):  continue
+                    if delta_r == delta_c == 0:          continue
 
-    return len(p1), len(p2)
+                    r2, c2 = r1 + delta_r, c1 + delta_c
+                    if dists[r2][c2] == NONE: continue
+
+                    cur_dist, next_dist = dists[r2][c2], dists[r1][c1]
+                    skip_len = abs(r2-r1) + abs(c2-c1)
+                    if (cur_dist + skip_len) <= (next_dist - 100):
+                        p2 += 1
+                        p1 += skip_len == 2
+    return p1, p2
