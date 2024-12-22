@@ -141,3 +141,6 @@ w/e Hopefully we're done with grid searches this year.
 # Day 21 - Keypad Conundrum
 So much time spent debugging. Root cause you can't move from A -> 7 by travelling `<<^` as that enters the empty sopt on the number pad. All this because I missed reading the paragraph about the gap. What a waste of time.
 At least it's fast. I should check if my orig approach would have worked with that gap check. I hope it doesn't.
+
+# Day 22 - Monkey Market
+Reading is hard. Took like 5 times through those requirements to understand them. Did it brute force, but I see modular maths in my immediate code optimising future.
