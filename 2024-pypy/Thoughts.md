@@ -143,4 +143,5 @@ So much time spent debugging. Root cause you can't move from A -> 7 by travellin
 At least it's fast. I should check if my orig approach would have worked with that gap check. I hope it doesn't.
 
 # Day 22 - Monkey Market
-Reading is hard. Took like 5 times through those requirements to understand them. Did it brute force, but I see modular maths in my immediate code optimising future.
+Reading is hard. Took like 5 times through those requirements to understand them. Did it brute force, but I see modular maths in my immediate code optimising future.  
+Turns out most of the timesaves were in removing sets and array indexes. 4x speedup changing a 4d array to a 1D array so it must be the memory accesses taking all the time. I'd still like to reduce the shift and xor logic down at some point, but not convinced it's possible.
