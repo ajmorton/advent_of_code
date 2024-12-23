@@ -145,3 +145,9 @@ At least it's fast. I should check if my orig approach would have worked with th
 # Day 22 - Monkey Market
 Reading is hard. Took like 5 times through those requirements to understand them. Did it brute force, but I see modular maths in my immediate code optimising future.  
 Turns out most of the timesaves were in removing sets and array indexes. 4x speedup changing a 4d array to a 1D array so it must be the memory accesses taking all the time. I'd still like to reduce the shift and xor logic down at some point, but not convinced it's possible.
+
+# Day 23 - LAN Party
+Bitten again by part 2 requiring the value to be joined by commas. Only a minute though.
+Yay sets! Always makes things easy, although it took a bit of thought to ID a solution to part 2.
+The existing code has to be pretty close to optimal. Maybe prune some inputs but I don't see this going under 1ms.
+Also yay the easy hack of just dividing part 1 by 3 instead of computing all unique sets.
