@@ -5,17 +5,16 @@ from collections import defaultdict
 
 def run() -> (int, int):
     p1 = p2 = 0
-    connections = defaultdict(list)
-
+    connections = defaultdict(set)
     largest = set()
 
     for line in read_as.lines("input/day23.txt"):
         l,r  = line.split('-')
-        connections[l].append(r)
-        connections[r].append(l)
+        connections[l].add(r)
+        connections[r].add(l)
 
     for l in connections.keys():
-        others = connections[l]
+        others = list(connections[l])
         if len(others) >= 2:
             for i in range(0, len(others)):
                 for j in range(i+1, len(others)):
@@ -24,6 +23,10 @@ def run() -> (int, int):
                         if l.startswith("t") or other_1.startswith("t") or other_2.startswith("t"):
                             p1 += 1
     
+            # No need to check potential groups that are already smaller than our largest group
+            if len(others) <= len(largest):
+                continue
+
             all_comps = [l] + others
             not_connected = True
             while not_connected:
