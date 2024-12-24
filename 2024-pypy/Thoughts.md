@@ -17,8 +17,7 @@ Split, sort, compare, and sum. No notes.
 
 ## Day 03 - Mull It Over
 (410/5285) The example was a single line and the input was multiple so I didn't reset the `do` flag on each line.  
-Fucking.  
-Brutal.
+Brütal.
 
 Todays lesson is to read the goddamn input, which I should know after literally years of AoC. Lost a couple of minutes not realising that part two had updated the example string. Lost **a lot** of minutes treating my input as one line when it was split across multiple lines. Ever more so because I took a shortcut and used `for line in lines` as a shortcut.
 Paying attention: 1  
@@ -35,7 +34,7 @@ Happy
 Jan  
 
 1) Started P2 with a brute force permutation: Slow, didn't bother waiting.
-2) I know, let's create a DAG out of the page orders. Input was intentionally seeded with a cycle. Fuck.
+2) I know, let's create a DAG out of the page orders. Input was intentionally seeded with a cycle.
 3) Custom partially ordered sort function? Works I guess
 
 If this years theme is malicious input I'mma live life on tilt.
@@ -151,3 +150,8 @@ Bitten again by part 2 requiring the value to be joined by commas. Only a minute
 Yay sets! Always makes things easy, although it took a bit of thought to ID a solution to part 2.
 The existing code has to be pretty close to optimal. Maybe prune some inputs but I don't see this going under 1ms.
 Also yay the easy hack of just dividing part 1 by 3 instead of computing all unique sets.
+
+# Day 24 - Crossed Wires
+Annoying. The code pumps out 4 possible solutions, one of which is correct. Could've just submitted all 4 much earlier and finished much faster. Also spent too much time messing up the data format and needs to reverse endianess.
+The circuit is an adder, so `z(N) = (x(N) xor y(N)) xor (x(N-1) AND y(N-1))`. Ended up manually inspecting to find that my original answer was correct. Still some investigation to figure out why I get four answers. Probably an off by one somewhere.  
+35 seconds. Slow
