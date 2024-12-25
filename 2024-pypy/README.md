@@ -17,30 +17,30 @@ python ./run_days.py -d 2 -b      # Run day 2 and benchmark it
 
 | Day     | Runtime      |     |
 | :-----: | :----------: | :-: |
-| day01   |   751.63 µs  |  ✅ |
-| day02   |     1.16 ms  |     |
-| day03   |   382.57 µs  |  ✅ |
-| day04   |     2.38 ms  |     |
-| day05   |     8.16 ms  |     |
-| day06   |   542.95 ms  |     |
-| day07   |   940.36 µs  |  ✅ |
-| day08   |   160.16 µs  |  ✅ |
-| day09   |    16.21 ms  |     |
-| day10   |     8.51 ms  |     |
+| day01   |   724.23 µs  |  ✅ |
+| day02   |     1.07 ms  |     |
+| day03   |   405.20 µs  |  ✅ |
+| day04   |     2.41 ms  |     |
+| day05   |     8.35 ms  |     |
+| day06   |   497.07 ms  |     |
+| day07   |   898.51 µs  |  ✅ |
+| day08   |   164.19 µs  |  ✅ |
+| day09   |    18.28 ms  |     |
+| day10   |     8.39 ms  |     |
 | day11   |    16.23 µs  |  ✅ |
-| day12   |     5.91 ms  |     |
-| day13   |   687.25 µs  |  ✅ |
-| day14   |     8.57 ms  |     |
-| day15   |     2.06 ms  |     |
-| day16   |   430.98 ms  |     |
-| day17   |   226.30 µs  |  ✅ |
-| day18   |     2.95 ms  |     |
+| day12   |     6.22 ms  |     |
+| day13   |   669.85 µs  |  ✅ |
+| day14   |     8.65 ms  |     |
+| day15   |     2.09 ms  |     |
+| day16   |   294.17 ms  |     |
+| day17   |   223.15 µs  |  ✅ |
+| day18   |     3.14 ms  |     |
 | day19   |     4.89 ms  |     | 
-| day20   |   160.29 ms  |     |
-| day21   |    16.21 µs  |  ✅ |
-| day22   |    52.26 ms  |     |
-| day23   |     5.31 ms  |     |
-| day24   |   635.17 µs  |  ✅ |
-| day25   |     1.78 ms  |     |
-| Total   |              |     |
-| Average |              |     |
+| day20   |   158.98 ms  |     |
+| day21   |    15.01 µs  |  ✅ |
+| day22   |    54.75 ms  |     |
+| day23   |     5.46 ms  |     |
+| day24   |   560.80 µs  |  ✅ |
+| day25   |     1.97 ms  |     |
+| Total   |     1.08  s  |     |
+| Average |    43.18 ms  |     |
