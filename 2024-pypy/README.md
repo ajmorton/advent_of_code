@@ -35,12 +35,12 @@ python ./run_days.py -d 2 -b      # Run day 2 and benchmark it
 | day16   |   430.98 ms  |     |
 | day17   |   226.30 µs  |  ✅ |
 | day18   |     2.95 ms  |     |
-| day19   |    11.31 ms  |     | 
-| day20   |     4.84 ms  |     |
-| day21   |   159.83 ms  |     |
-| day22   |    16.21 µs  |  ✅ |
-| day23   |    52.26 ms  |     |
-| day24   |     5.31 ms  |     |
-| day25   |   635.17 µs  |  ✅ |
+| day19   |     4.89 ms  |     | 
+| day20   |   160.29 ms  |     |
+| day21   |    16.21 µs  |  ✅ |
+| day22   |    52.26 ms  |     |
+| day23   |     5.31 ms  |     |
+| day24   |   635.17 µs  |  ✅ |
+| day25   |              |     |
 | Total   |              |     |
 | Average |              |     |
