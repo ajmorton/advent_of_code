@@ -154,4 +154,6 @@ Also yay the easy hack of just dividing part 1 by 3 instead of computing all uni
 # Day 24 - Crossed Wires
 Annoying. The code pumps out 4 possible solutions, one of which is correct. Could've just submitted all 4 much earlier and finished much faster. Also spent too much time messing up the data format and needs to reverse endianess.
 The circuit is an adder, so `z(N) = (x(N) xor y(N)) xor (x(N-1) AND y(N-1))`. Ended up manually inspecting to find that my original answer was correct. Still some investigation to figure out why I get four answers. Probably an off by one somewhere.  
-35 seconds. Slow
+35 seconds. Slow  
+
+edit: Very much coded toward the specific problem input. I'm not sure it'll pass on all inputs, and certainly not for an arbitrary swapping of inputs.
