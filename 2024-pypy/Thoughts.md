@@ -157,3 +157,7 @@ The circuit is an adder, so `z(N) = (x(N) xor y(N)) xor (x(N-1) AND y(N-1))`. En
 35 seconds. Slow  
 
 edit: Very much coded toward the specific problem input. I'm not sure it'll pass on all inputs, and certainly not for an arbitrary swapping of inputs.
+
+# Day 25 - Code Chronicle
+Nice quick one to end the year. First time I've used asserts to take some reasonable shortcuts.  
+This year went *fast*. I guess it's time to get total runtime under 1 second. Looking at the runtimes that's really just fixing up day 16 at this point. Then onto OCaml(?)

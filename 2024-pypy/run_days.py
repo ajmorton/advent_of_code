@@ -3,7 +3,7 @@
 from datetime import datetime
 from days import day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09, day_10
 from days import day_11, day_12, day_13, day_14, day_15, day_16, day_17, day_18, day_19, day_20
-from days import day_21, day_22, day_23, day_24
+from days import day_21, day_22, day_23, day_24, day_25
 
 import argparse
 
@@ -98,6 +98,7 @@ if __name__ == "__main__":
         (day_22 , (20506453102, 2423)),
         (day_23 , (1154, "aj,ds,gg,id,im,jx,kq,nj,ql,qr,ua,yh,zn")),
         (day_24 , (56278503604006, "bhd,brk,dhg,dpd,nbf,z06,z23,z38")),
+        (day_25 , (3495, 0)),
     ]
 
     to_run = []
