@@ -1,9 +1,16 @@
 #! /usr/bin/env pypy3
 from . import read_as
 
+# All jumps from n to n + 1 are in {1,2,3} or {-1,-2,-3}. Bit manip to get execution under 1ms.
 def good_rule(nums) -> bool:
-    jumps = [nums[i + 1] - nums[i] for i in range(0, len(nums) - 1)]
-    return all(j in [1,2,3] for j in jumps) or all(j in [-1,-2,-3] for j in jumps)
+    bits2 = bits2_neg = 0
+    for i in range(0, len(nums) - 1):
+        jump = nums[i+1] - nums[i]
+        if jump == 0: return False
+        bits2 |= jump
+        bits2_neg |= -jump
+       
+    return bits2_neg & 3 == bits2_neg or bits2 & 3 == bits2
 
 def good_rule_lax(nums) -> bool:
     return any(good_rule(nums[:i] + nums[i + 1 :]) for i in range(len(nums)))
