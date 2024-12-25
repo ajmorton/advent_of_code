@@ -55,7 +55,10 @@ edit: This idea only works for simple loops. Instead:
 - The visited grid is sparse enough that a set works better than a 2D grid for all cells.
 - NameTuples are bloody slow. 3x slowdown compared to a normal tuple indexed with foo[0]
 
-So far this is 1n 86x speedup. Annoyed I can't hit 100x
+So far this is an 86x speedup. Annoyed I can't hit 100x
+
+edit 2: Good ol' generational arrays. Most time was spent hashing and creating defaultdicts. Store all that information in a single 3D array (allocated once) and we get a 10x speedup. I'll struggle reading this code in future, but such is life.  
+Total speedup: ~768x
 
 # Day 07 - Bridge Repair
 Go read itertools. Plug in values. Meh. I guess I should write the memoises version at some point.  
