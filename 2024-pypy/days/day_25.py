@@ -2,37 +2,19 @@
 from . import read_as
 
 def run() -> (int, int):
-    p1 = p2 = 0
-    grids = read_as.groups("input/day25.txt")
-    keys = []
-    locks = []
-    tot_height = len(grids[0])
-    for grid in grids:
-        width = len(grid[0])
-        assert(len(grid) <= tot_height)
-        diag = []
-        for c in range(0, width):
-            height = 0
-            for row in grid:
-                height += row[c] == '#'
-            diag.append(height - 1)
-        if grid[0][0] == '#':
-            keys.append(diag)
-        else:
-            locks.append(diag)
+    keys, locks = [], []
+    diag_height = None
+    for grid in read_as.groups("input/day25.txt"):
+        assert(diag_height is None or diag_height == len(grid))
+        diag_height = len(grid)
 
+        counts = tuple([row[c] for row in grid].count('#') for c in range(len(grid[0])))
+        keys.append(counts) if grid[0][0] == '#' else locks.append(counts)
+
+    p1 = 0
     for key in keys:
-        for lock in locks:
-            first = key[0] + lock[0]
-            assert(len(key) == len(lock))
-            all_small = True
-            for i in range(len(key)):
-                if key[i] + lock[i] > tot_height - 2:
-                    # print(key, lock, "NOPE")
-                    all_small = False
-            
-            if all_small:
-                # print(key, lock, "YEP")
-                p1 += 1
-
-    return (p1, p2)
+        matching_locks = locks.copy()
+        for i in range(0,len(key)):
+            matching_locks = [lock for lock in matching_locks if key[i] + lock[i] <= diag_height]
+        p1 += len(matching_locks)
+    return (p1, 0)
