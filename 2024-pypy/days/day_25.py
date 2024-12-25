@@ -2,19 +2,19 @@
 from . import read_as
 
 def run() -> (int, int):
-    keys, locks = [], []
-    diag_height = None
-    for grid in read_as.groups("input/day25.txt"):
-        assert(diag_height is None or diag_height == len(grid))
-        diag_height = len(grid)
 
-        counts = tuple([row[c] for row in grid].count('#') for c in range(len(grid[0])))
-        keys.append(counts) if grid[0][0] == '#' else locks.append(counts)
+    keys, locks = [], []
+    for schematic in read_as.flat_groups("input/day25.txt"):
+        bitmap = 0
+        for cell in schematic:
+            bitmap *= 2
+            bitmap += cell == '#'
+
+        (keys if (bitmap & 1) else locks).append(bitmap)
 
     p1 = 0
     for key in keys:
-        matching_locks = locks.copy()
-        for i in range(0,len(key)):
-            matching_locks = [lock for lock in matching_locks if key[i] + lock[i] <= diag_height]
-        p1 += len(matching_locks)
+        for lock in locks:
+            p1 += not key & lock
+
     return (p1, 0)
