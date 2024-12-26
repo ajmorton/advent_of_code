@@ -19,36 +19,38 @@ def run() -> (int, int):
 
         cur_offset += lenn
 
-    mapp2 = mapp.copy()
-
     # P1 - Single pass swap sort
     left_pos, right_pos = 0, len(mapp) - 1
+    checksum1 = 0
     while left_pos < right_pos:
         if mapp[left_pos] != EMPTY:
+            checksum1 += left_pos * mapp[left_pos]
             left_pos += 1
         elif mapp[right_pos] != EMPTY:
-            mapp[left_pos] = mapp[right_pos]
-            mapp[right_pos] = EMPTY
+            checksum1 += left_pos * mapp[right_pos]
+            left_pos += 1
+            right_pos -= 1
         else:
             right_pos -= 1
 
+    first_hole_of_size = [0] * 10 # Technically position where no holes of size are before
+    checksum2 = 0
     # P2 - Extent lists
     for (start_pos, lenn_data, val) in reversed(exts):
-        for hole_idx, (start_pos_hole, lenn_hole) in enumerate(holes):
+        new_data = (start_pos, lenn_data, val)
+        for hole_idx in range(first_hole_of_size[lenn_data], len(holes)):
+            (start_pos_hole, lenn_hole) = holes[hole_idx]
+
             if start_pos < start_pos_hole:
+                first_hole_of_size[lenn_data] = 99999999
                 break
 
             if lenn_data <= lenn_hole:
-                for i in range(0, lenn_data):
-                    mapp2[start_pos_hole + i] = val
-                    mapp2[start_pos + i] = EMPTY
-
-                if lenn_hole == lenn_data:
-                    del holes[hole_idx]
-                else:
-                    holes[hole_idx] = (start_pos_hole + lenn_data, lenn_hole - lenn_data)
-
+                first_hole_of_size[lenn_data] = hole_idx
+                holes[hole_idx] = (start_pos_hole + lenn_data, lenn_hole - lenn_data)
+                new_data = (start_pos_hole, lenn_data, val)
                 break
+    
+        checksum2 += sum(range(new_data[0], new_data[0] + new_data[1])) * new_data[2]
 
-    checksum = lambda mapp: sum(pos * val for (pos, val) in enumerate(mapp) if val != EMPTY)
-    return (checksum(mapp), checksum(mapp2))
+    return (checksum1, checksum2)
