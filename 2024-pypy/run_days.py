@@ -11,14 +11,17 @@ import argparse
 
 def format_time(runtime):
     if runtime < 0.000001:
-        (time, unit, colour) = (runtime * 1e9, "ns", GREEN)
+        (time, unit, colour) = (runtime * 1e9, "ns", GREY)
     elif runtime < 0.001:
-        (time, unit, colour) = (runtime * 1e6, "µs", GREY)
+        (time, unit, colour) = (runtime * 1e6, "µs", GREEN)
     elif runtime < 1:
         (time, unit, colour) = (runtime * 1e3, "ms", "")
     else:
         (time, unit, colour) = (runtime, "s", RED)
-    return f"  {round(time, 2): >5} {unit} {END}"
+    # Over 10ms
+    if runtime > 0.01:
+        colour = RED
+    return f"{colour}  {round(time, 2): >5} {unit} {END}"
 
 
 def run_test(module, expected_output, benchmark: bool) -> (bool, int):
@@ -55,7 +58,7 @@ def run_test(module, expected_output, benchmark: bool) -> (bool, int):
         else:
             avg_runtime = single_run_time
 
-        print(format_time(avg_runtime))
+        print(f"{format_time(avg_runtime)}")
 
         return (True, avg_runtime)
     return (True, 0)
