@@ -140,6 +140,8 @@ Not much clean needed today I expect. probably merge the two can_make subfunctio
 Tried BFS. Decided that was too slow so I'd do recursive and memoise results. Ran out of stack space on the machine which seems insane for a max depth of < 10,000.
 w/e Hopefully we're done with grid searches this year.
 
+edit: 70ms. Still slow but not making much headway with further improvements. It's probably just an unavoidably large number of comparisons required to find all skips. Need to create a delta of points that enter and exit the surrounding circle, and see if we can reduce the number of `abs()` calls.
+
 # Day 21 - Keypad Conundrum
 So much time spent debugging. Root cause you can't move from A -> 7 by travelling `<<^` as that enters the empty sopt on the number pad. All this because I missed reading the paragraph about the gap. What a waste of time.
 At least it's fast. I should check if my orig approach would have worked with that gap check. I hope it doesn't.
