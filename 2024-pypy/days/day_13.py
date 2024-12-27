@@ -9,11 +9,14 @@ def run() -> (int, int):
     for group in groups:
 
         button_regex = r".*?: X\+(\d+), Y\+(\d+)"
-        (_,aX,aY) = re.match(button_regex, group[0])
-        (_,bX,bY) = re.match(button_regex, group[1])
+        a = re.match(button_regex, group[0])
+        aX, aY = a[1], a[2]
+        b = re.match(button_regex, group[1])
+        bX, bY = b[1], b[2]
 
         prize_regex = r".*?: X=(\d+), Y=(\d+)"
-        (_,prizeX,prizeY) = re.match(prize_regex, group[2])
+        prize = re.match(prize_regex, group[2])
+        prizeX, prizeY = prize[1], prize[2] 
 
         a = (int(aX), int(aY))
         b = (int(bX), int(bY))

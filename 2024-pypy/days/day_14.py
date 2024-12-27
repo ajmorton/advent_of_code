@@ -10,7 +10,8 @@ def run() -> (int, int):
     robuts = []
     line_regex = re.compile(r"p=(\d+),(\d+) v=(-?\d+),(-?\d+)")
     for line in read_as.lines("input/day14.txt"):
-        (_, posX, posY, velX, velY) = line_regex.match(line)
+        m = line_regex.match(line)
+        posX, posY, velX, velY = m[1], m[2], m[3], m[4]
         robuts.append(((int(posX), int(posY)), (int(velX), int(velY))))
 
     height, width = 103, 101
