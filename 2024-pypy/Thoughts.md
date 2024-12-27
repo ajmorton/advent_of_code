@@ -121,6 +121,9 @@ Absolutely terrible. Christ.
 There's at least 2 bugs playing into each other. Mixed and matched the pruning logic in a way that flip flopped between pruning too much and not pruning things it should have. This should have been a trivial Dijkstra and somehow I spent all this time on A* and node reduction and still took over an hour and half. 
 Two bad days in a row and I'll be busy tomorrow.
 
+edit: Way too much effort to speed this up. Tried a bi-directional search but that ended up depending on sets which slowed things down a tonne. The key here is realising that finding a single shortest path takes a few milliseconds while finding all shortests paths takes a few hundred. The big change is when we find an explored node with the same path cost to truncate that search branch *but* track that we reached the node via this path. Then we can use this info to walk backwards along the path and find predecessors. The truncated node will mean we have multiple ways to reach the critical path.
+
+
 # Day 17 - Chronospatial Computer
 RETURN THE STRING WITH THE COMMAS INCLUDED.16 days of numbers only and I waste a frankly insane amount of time debugging a correct implementation that was written by minute 15. Even worse because emulators are my fave of the puzzles. Add a visit from a tradie and other distractions means todays result is Bad (TM).
 

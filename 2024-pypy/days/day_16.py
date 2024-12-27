@@ -1,64 +1,67 @@
 #! /usr/bin/env pypy3
 from . import read_as
 from heapq import *
+from collections import defaultdict
 
 U, R, D, L = 0, 1, 2, 3
 DIRS = [(-1,0), (0,1), (1,0), (0,-1)] # U, R, D, L
 
+def find_spots_on_shortest_paths(end_node, predecessors):
+    nodes_on_shortest_paths = [end_node[0]]
+    preds = predecessors[end_node]
+    while preds:
+        pred = preds.pop()
+        nodes_on_shortest_paths.append(pred)
+        preds.extend(predecessors[pred])
+    positions_only = [p for (p, dirr) in nodes_on_shortest_paths]
+    return set(positions_only)
+
 def search(start_pos, end_pos, grid):
     seen = [[[999999999999999 for _ in DIRS] for _ in grid[0]] for _ in grid]
+    seen[start_pos[0]][start_pos[1]][R] = 0
 
-    to_explore = [(0, start_pos, R, [start_pos]), (1000, start_pos, D, [start_pos]), (1000, start_pos, U, [start_pos])]
+    to_explore = [(0, start_pos, R, [(start_pos, R)])]
     heapify(to_explore)
 
     best_dist = 999999999999999
-    all_spots = set()
+    predecessors = defaultdict(list)
 
     while to_explore:
         cur_dist, cur_pos, cur_dir, cur_path = heappop(to_explore)
 
-        if cur_dist > best_dist:
+        if cur_dist >= best_dist:
             break
 
         if cur_pos == end_pos:
-            if cur_dist < best_dist:
-                best_dist = cur_dist
-                all_spots = set(cur_path)
-                all_spots.add(end_pos)
-            elif cur_dist == best_dist:
-                for spot in cur_path:
-                    all_spots.add(spot)
-        else:
+            # Shortest path found.
+            best_dist = cur_dist
+            spots_on_paths = find_spots_on_shortest_paths((end_pos, cur_dir), predecessors)
+            return best_dist, spots_on_paths
 
-            # Walk to end
-            num_steps = 1
-            interim_positions = []
-            while True:
-                next_pos = (cur_pos[0] + num_steps * DIRS[cur_dir][0], cur_pos[1] + num_steps * DIRS[cur_dir][1])
-                next_dist = cur_dist + num_steps
-                interim_positions.append(next_pos)
-                if grid[next_pos[0]][next_pos[1]] != '#':
-                    if grid[(next_pos[0] + DIRS[cur_dir][0])][(next_pos[1] + DIRS[cur_dir][1])] == '#':
-                        # About to hit wall
-                        if next_dist <= seen[next_pos[0]][next_pos[1]][cur_dir]:
-                            seen[next_pos[0]][next_pos[1]][cur_dir] = next_dist
-                            new_path = cur_path + interim_positions
-                            heappush(to_explore, (next_dist, next_pos, cur_dir, new_path))
-                else:
-                    # In a wall
-                    break
+        next_nodes = []
+        forward = (cur_dist + 1, ((cur_pos[0] + DIRS[cur_dir][0], cur_pos[1] + DIRS[cur_dir][1])), cur_dir)
+        if grid[forward[1][0]][forward[1][1]] != '#':
+            next_nodes.append(forward)
 
-                next_dist_turn = next_dist + 1000
-                for turn in [(cur_dir - 1) % 4, (cur_dir + 1) % 4]:
-                    if grid[next_pos[0] + DIRS[turn][0]][next_pos[1] + DIRS[turn][1]] != '#':
-                        if next_dist_turn <= seen[next_pos[0]][next_pos[1]][turn]:
-                            seen[next_pos[0]][next_pos[1]][turn] = next_dist_turn
-                            new_path = cur_path + interim_positions
-                            heappush(to_explore, (next_dist_turn, next_pos, turn, new_path))
-    
-                num_steps += 1
+        to_left = cur_pos[0] + DIRS[(cur_dir - 1) % 4][0], cur_pos[1] + DIRS[(cur_dir - 1) % 4][1]
+        if grid[to_left[0]][to_left[1]] != '#':
+            left = (cur_dist + 1000, cur_pos, (cur_dir - 1) % 4)
+            next_nodes.append(left)
 
-    return best_dist, len(all_spots)
+        to_right = cur_pos[0] + DIRS[(cur_dir + 1) % 4][0], cur_pos[1] + DIRS[(cur_dir + 1) % 4][1]
+        if grid[to_right[0]][to_right[1]] != '#':
+            right = (cur_dist + 1000, cur_pos, (cur_dir + 1) % 4)
+            next_nodes.append(right)
+
+        for next_dist, next_pos, next_dir in next_nodes:
+            if next_dist < seen[next_pos[0]][next_pos[1]][next_dir]:
+                seen[next_pos[0]][next_pos[1]][next_dir] = next_dist
+                heappush(to_explore, (next_dist, next_pos, next_dir, []))
+                predecessors[(next_pos, next_dir)] = [(cur_pos, cur_dir)]
+            elif next_dist == seen[next_pos[0]][next_pos[1]][next_dir]:
+                predecessors[(next_pos, next_dir)].append((cur_pos, cur_dir))
+
+    assert(False) # No solution found
 
 def run() -> (int, int):
     grid = read_as.grid("input/day16.txt")
@@ -69,4 +72,6 @@ def run() -> (int, int):
             if cell == 'S': start_pos = (r, c)
             if cell == 'E': end_pos = (r, c)
 
-    return search(start_pos, end_pos, grid)
+    ret = search(start_pos, end_pos, grid)
+
+    return ret[0], len(ret[1])
