@@ -11,7 +11,7 @@ Solutions for Advent of Code, written in different languages when I feel like pl
 | [2022](./2022-crystal)  | Crystal 1.6.1  | N/A              |
 | [2021](./2021-zig)      | Zig 0.12.0     | N/A              |
 | [2020](./2020-python)   | Python 3.8.5   | N/A              |
-| 2019                    | -              |                  |
+| [2019](./2018-rust2024) | Rust 2024      | Cargo, criterion |
 | [2018](./2018-rust)     | Rust 2018      | Cargo, criterion |
 | 2017                    | -              |                  |
 | [2016](./2016-haskell)  | Haskell        | Cabal            |
