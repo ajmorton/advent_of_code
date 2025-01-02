@@ -40,16 +40,15 @@ def run() -> (int, int):
 
     for pos in path:
         r1, c1 = pos[0]
-        for delta_r in range(-20, 21):
-            if not (0 <= r1 + delta_r < height): continue
-            for delta_c in range(-20 + abs(delta_r), 21 - abs(delta_r)):
-                if not (0 <= c1 + delta_c < width):  continue
-                if delta_r == delta_c == 0:          continue
+        next_dist = dists[r1 * height + c1]
+        for delta_r in range(max(-20, -r1), min(21, height - r1)):
+            for delta_c in range(max(-20 + abs(delta_r), -c1), min(21 - abs(delta_r), width - c1)):
+                if delta_r == delta_c == 0: continue
 
                 r2, c2 = r1 + delta_r, c1 + delta_c
                 if dists[r2 * height + c2] == NONE: continue
 
-                cur_dist, next_dist = dists[r2 * height + c2], dists[r1 * height + c1]
+                cur_dist = dists[r2 * height + c2]
                 skip_len = abs(r2-r1) + abs(c2-c1)
                 if (cur_dist + skip_len) <= (next_dist - 100):
                     p2 += 1
