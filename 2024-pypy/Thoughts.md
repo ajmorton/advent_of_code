@@ -1,5 +1,8 @@
 # Thoughts on PyPy 3.10
 
+## Final thoughts
+Not much new learned this year. Python is still quick, pypy gets me speedups for free, arrays are faster than set and hashmaps. Sub 0.25 seconds for all days, and the 80/20 rule applies where there's only 3/4 days that eat up all that time. No point trying further in a lang like Python. I think things could look a lot cleaner while maintaining perf if I used libraries outside the stlib such as numpy. Certainly would nice if there were a way to index into a multi-dimensional array using a tuple, or better yet a vector class that supports pair-wise addition. Still, Python's a very good fit for AoC and scored me a few new PBs on the leaderboards. LLMs will only get worse next year so I think this is the last time I look at that instead of the raw numbers, or I get serious and create helper libs for common patterns like search instead of writing from scratch each day. We shall see
+
 ## Day 00 - Setting up the framework
 Not happy to be using a prior language this year. I left things late due to other priorities and today's attempts with Mojo were underwhelming. It's missing a tonne of convenience functions (list comprehension, f-strings) and for a language that promises dynamic typing I sure ran into a tonne of type system errors. Whatever. On we move.  
 
