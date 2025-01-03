@@ -9,6 +9,6 @@ pub fn day_02(c: &mut Criterion) {
     c.bench_function("day_02", |b| b.iter(day_02::run));
 }
 
-criterion_group!(benches, day_02);
+criterion_group!(benches, day_01, day_02);
 
 criterion_main!(benches);

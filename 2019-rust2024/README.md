@@ -3,10 +3,12 @@
 Rust rustc 1.85.0-nightly (2024 edition pre-release), Cargo
 
 ## How to run
-```
+```sh
 cargo run
 cargo test
 cargo bench
+CARGO_PROFILE_BENCH_DEBUG=true cargo flamegraph --root --bench all_days -- --
+bench 02 # Run the benchmark for day 02 and output a flamegraph
 ```
 
 ## Execution times

@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 criterion = "0.5.1"
+flamegraph = "0.6.7"
 
 [[bench]]
 name = "all_days"

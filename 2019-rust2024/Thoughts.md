@@ -13,3 +13,8 @@ Using a chain of `.map()` and `.sum()` squeezes out an extra 40% perf over a nor
 
 ## Day 2: 1202 Program Alarm
 And now the borrow checker starts to appear. `prog[prog[pc+3]] = prog[prog[pc+1]] + prog[prog[pc+2]]` should work, we need to store the internal `prog[pc]` in an interim var. Bit annoying. I know IntCode's going to be a staple for the rest of the year. Time to look into proper structs.
+
+## Day 2.5: Add flamegraphs
+ok this is **very** impressive. Install one cargo dependency, spend a few minutes reading the docs, and flamegraph runs - on a mac no less - with zero diffculties. I'm so used to stringing together my own script to hook the perf output into the .pl files. Cargo is 🔥💯🔥.  
+
+For the downsides there's already 128 dependencies and full compilation time of my, what, 200 lines of rust is 13 seconds (21 seconds in release). Incremental builds fix this, but it's a bit of a concern.
