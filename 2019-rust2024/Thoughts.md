@@ -18,3 +18,6 @@ And now the borrow checker starts to appear. `prog[prog[pc+3]] = prog[prog[pc+1]
 ok this is **very** impressive. Install one cargo dependency, spend a few minutes reading the docs, and flamegraph runs - on a mac no less - with zero diffculties. I'm so used to stringing together my own script to hook the perf output into the .pl files. Cargo is 🔥💯🔥.  
 
 For the downsides there's already 128 dependencies and full compilation time of my, what, 200 lines of rust is 13 seconds (21 seconds in release). Incremental builds fix this, but it's a bit of a concern.
+
+## Day 3: Crossed Wires
+First time in the milliseconds. The default HashMap is cryptographically secure so changing the hashing policy should take care of that. This is also the first day where string handling got a bit icky. It's reasonable as Rust strings support UTF-8, but it's still annoying you can't index an ASCII string with `foo[0]`.
