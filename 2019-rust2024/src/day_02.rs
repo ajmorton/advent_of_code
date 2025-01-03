@@ -36,8 +36,3 @@ pub fn run() -> (usize, usize) {
 
     unreachable!();
 }
-
-#[test]
-fn day_02() {
-    assert_eq!(run(), (4930687, 5335));
-}

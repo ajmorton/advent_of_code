@@ -1,0 +1,6 @@
+max_width = 120
+
+ignore = [
+    "src/lib.rs",
+    "benches/all_days.rs",
+]

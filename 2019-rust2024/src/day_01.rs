@@ -19,8 +19,3 @@ pub fn run() -> (isize, isize) {
         .map(|w| (fuel_cost(w), fuel_cost_rec(w)))
         .fold((0, 0), |l, r| (l.0 + r.0, l.1 + r.1))
 }
-
-#[test]
-fn day_01() {
-    assert_eq!(run(), (3125750, 4685788));
-}

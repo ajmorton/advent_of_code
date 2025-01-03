@@ -6,10 +6,7 @@ pub struct IntComputer {
 
 impl IntComputer {
     pub fn new(program: Vec<usize>) -> IntComputer {
-        IntComputer {
-            memory: program,
-            pc: 0,
-        }
+        IntComputer { memory: program, pc: 0 }
     }
 
     pub fn run(&mut self) -> usize {
