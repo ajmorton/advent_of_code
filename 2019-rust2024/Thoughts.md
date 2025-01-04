@@ -25,3 +25,6 @@ First time in the milliseconds. The default HashMap is cryptographically secure 
 edit: Nope, only 70% faster for a 4ms runtime. This can go under 1ms but it'll probably need to drop the hashmap and compute intersections of the extents. The complexity goes from O(len_w1 + len_w2) to O(len_w1 * len_w2) but removing the hashing overhead should win out. Come back to this at the end.  
 
 It's a weird choice not to support a quick/unsafe hashing polocy in the stdlib hashmap and requiring a 3rd party AHash library. I guess the friction prevents devs from taking a shortcut in code that does need safety? 
+
+## Day 4: Secure Container
+No need to speed this up. I'm gonna claim that I'm loop unrolling and not that I hard coded all conditions.
