@@ -2,6 +2,6 @@ max_width = 120
 
 ignore = [
     "src/lib.rs",
-    "src/day04.rs",
+    "src/day_04.rs",
     "benches/all_days.rs",
 ]

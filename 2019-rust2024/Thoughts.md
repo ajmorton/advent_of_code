@@ -28,3 +28,8 @@ It's a weird choice not to support a quick/unsafe hashing polocy in the stdlib h
 
 ## Day 4: Secure Container
 No need to speed this up. I'm gonna claim that I'm loop unrolling and not that I hard coded all conditions.
+
+## Day 5: Sunny with a Chance of Asteroids
+😩  
+The arguments are always param mode Pos. You only Imm them when accessing the value they point to. So much debugging on that assuming my param modes logic was wrong.
+Ran into the borrow checker a few times. It's annoying passing an isize into a function taking &isize doesn't autopromote it. I can't see any reason not to do so. Hopefully future IntCode days don't require futher re-engineering of old days like today did with day 02. It's also done a number on my day 02 runtime which is annoying. I guess I'll trade that for a blazing fast day 05. For now.
