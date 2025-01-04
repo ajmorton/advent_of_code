@@ -20,4 +20,8 @@ ok this is **very** impressive. Install one cargo dependency, spend a few minute
 For the downsides there's already 128 dependencies and full compilation time of my, what, 200 lines of rust is 13 seconds (21 seconds in release). Incremental builds fix this, but it's a bit of a concern.
 
 ## Day 3: Crossed Wires
-First time in the milliseconds. The default HashMap is cryptographically secure so changing the hashing policy should take care of that. This is also the first day where string handling got a bit icky. It's reasonable as Rust strings support UTF-8, but it's still annoying you can't index an ASCII string with `foo[0]`.
+First time in the milliseconds. The default HashMap is cryptographically secure so changing the hashing policy should take care of that. This is also the first day where string handling got a bit icky. It's reasonable as Rust strings support UTF-8, but it's still annoying you can't index an ASCII string with `foo[0]`.  
+
+edit: Nope, only 70% faster for a 4ms runtime. This can go under 1ms but it'll probably need to drop the hashmap and compute intersections of the extents. The complexity goes from O(len_w1 + len_w2) to O(len_w1 * len_w2) but removing the hashing overhead should win out. Come back to this at the end.  
+
+It's a weird choice not to support a quick/unsafe hashing polocy in the stdlib hashmap and requiring a 3rd party AHash library. I guess the friction prevents devs from taking a shortcut in code that does need safety? 
