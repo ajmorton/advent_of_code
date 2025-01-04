@@ -54,3 +54,5 @@ The IntCode giveth, and the IntCode breaketh your face. No wonder I was struggli
 
 ## Day 9: Sensor Boost
 Easy once I'd fixed the gd parameter modes above. BigInts slow down my day 02 to over a millisecond though, grumble grumble. It's been a while since I used a language with an proper type system. It's so nice to make a type change and have the language server points me at all the places that need updating. It missed a few places where we're using ints that cast to enums, but that's expected. I've probably made too many things i128. To check and see if we can keep the IntComputer fast.
+
+edit: I guess 64 bits counts as BigInts these days? w/e I'll take it. Still a factor of 2 away from my sub millisecond runtimes. Why does rust shout at me when I use branch prediction hints? I know what I'm doing. Probably. Either way likely_stable saves the day.

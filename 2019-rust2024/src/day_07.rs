@@ -2,8 +2,8 @@ use crate::intcode::{IntComputer, RetCode};
 use itertools::Itertools;
 
 #[must_use]
-pub fn run() -> (i128, i128) {
-    let prog: Vec<i128> = include_str!("../input/day07.txt")
+pub fn run() -> (isize, isize) {
+    let prog: Vec<isize> = include_str!("../input/day07.txt")
         .trim_ascii()
         .split(',')
         .map(|n| n.parse().unwrap())
@@ -16,7 +16,7 @@ pub fn run() -> (i128, i128) {
     for perm in permutations_p1 {
         let mut output = 0;
         for param in perm.iter().take(5) {
-            let mut intcomp = IntComputer::new(prog.clone(), vec![**param, output]);
+            let mut intcomp = IntComputer::new(&prog, vec![**param, output]);
             let res = intcomp.run();
             if let RetCode::Output(out) = res {
                 output = out;
@@ -33,11 +33,11 @@ pub fn run() -> (i128, i128) {
 
     for perm in permutations_p2 {
         let mut chain = [
-            IntComputer::new(prog.clone(), vec![*perm[0]]),
-            IntComputer::new(prog.clone(), vec![*perm[1]]),
-            IntComputer::new(prog.clone(), vec![*perm[2]]),
-            IntComputer::new(prog.clone(), vec![*perm[3]]),
-            IntComputer::new(prog.clone(), vec![*perm[4]]),
+            IntComputer::new(&prog, vec![*perm[0]]),
+            IntComputer::new(&prog, vec![*perm[1]]),
+            IntComputer::new(&prog, vec![*perm[2]]),
+            IntComputer::new(&prog, vec![*perm[3]]),
+            IntComputer::new(&prog, vec![*perm[4]]),
         ];
 
         let mut signal = 0;

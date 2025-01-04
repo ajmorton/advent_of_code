@@ -16,14 +16,14 @@ bench 02 # Run the benchmark for day 02 and output a flamegraph
 | Day     | Runtime      |     |
 | :-----: | :----------: | :-: |
 | day01   |     1.39 µs  |  ✅  |
-| day02   |     5.64 ms  |     |
+| day02   |     1.66 ms  |     |
 | day03   |     4.18 ms  |     |
 | day04   |     9.32 µs  |  ✅  |
-| day05   |    12.89 µs  |  ✅  |
+| day05   |     9.34 µs  |  ✅  |
 | day06   |   704.32 µs  |  ✅  |
-| day07   |   864.29 µs  |  ✅  |
+| day07   |   408.92 µs  |  ✅  |
 | day08   |    29.45 µs  |  ✅  |
-| day09   |     8.14 ms  |     |
+| day09   |     2.14 ms  |     |
 | day10   |              |     |
 | day11   |              |     |
 | day12   |              |     |

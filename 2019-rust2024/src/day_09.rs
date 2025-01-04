@@ -1,14 +1,14 @@
 use crate::intcode::{IntComputer, RetCode};
 
 #[must_use]
-pub fn run() -> (i128, i128) {
-    let prog: Vec<i128> = include_str!("../input/day09.txt")
+pub fn run() -> (isize, isize) {
+    let prog: Vec<isize> = include_str!("../input/day09.txt")
         .trim_ascii()
         .split(',')
         .map(|n| n.parse().unwrap())
         .collect();
 
-    let mut computer = IntComputer::new(prog.clone(), vec![1]);
+    let mut computer = IntComputer::new(&prog, vec![1]);
     let mut outputs = vec![];
 
     loop {
@@ -19,7 +19,7 @@ pub fn run() -> (i128, i128) {
         }
     }
 
-    let mut computer2 = IntComputer::new(prog.clone(), vec![2]);
+    let mut computer2 = IntComputer::new(&prog, vec![2]);
     let p2;
     if let RetCode::Output(out) = computer2.run() {
         p2 = out;
