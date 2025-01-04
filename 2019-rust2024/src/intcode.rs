@@ -1,8 +1,10 @@
+use std::collections::VecDeque;
+
 #[derive(Debug)]
 pub struct IntComputer {
     memory: Vec<isize>,
     pc: isize,
-    input: Option<isize>,
+    input: VecDeque<isize>,
 }
 
 #[derive(Debug)]
@@ -47,17 +49,16 @@ fn get_modes(mut param: isize, num_args: isize) -> [Param; 4] {
 }
 
 impl IntComputer {
-    pub fn new(program: Vec<isize>) -> IntComputer {
+    pub fn new(program: Vec<isize>, input: Vec<isize>) -> IntComputer {
         IntComputer {
             memory: program,
             pc: 0,
-            input: None,
+            input: VecDeque::from(input),
         }
     }
 
     pub fn input(&mut self, inp: isize) {
-        assert!(self.input.is_none());
-        self.input = Some(inp);
+        self.input.push_back(inp);
     }
 
     fn fetch_instr(&self, pc: isize) -> Instr {
@@ -153,7 +154,7 @@ impl IntComputer {
                     self.pc += 4;
                 }
                 Instr::Input { save_to } => {
-                    if let Some(inp) = self.input {
+                    if let Some(inp) = self.input.pop_front() {
                         self.set(save_to, inp);
                         self.pc += 2;
                     } else {

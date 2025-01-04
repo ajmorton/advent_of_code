@@ -8,15 +8,13 @@ pub fn run() -> (isize, isize) {
         .map(|n| n.parse().unwrap())
         .collect();
 
-    let mut intcomputer = IntComputer::new(prog.clone());
+    let mut intcomputer = IntComputer::new(prog.clone(), vec![1]);
 
     let mut p1 = 0;
     loop {
         match intcomputer.run() {
             RetCode::Done(_) => break,
-            RetCode::NeedInput => {
-                intcomputer.input(1);
-            }
+            RetCode::NeedInput => panic!("Missing input"),
             RetCode::Output(out) => {
                 if out != 0 {
                     p1 = out;
@@ -26,13 +24,11 @@ pub fn run() -> (isize, isize) {
     }
 
     let mut p2 = 0;
-    let mut intcomputer2 = IntComputer::new(prog.clone());
+    let mut intcomputer2 = IntComputer::new(prog.clone(), vec![5]);
     loop {
         match intcomputer2.run() {
             RetCode::Done(_) => break,
-            RetCode::NeedInput => {
-                intcomputer2.input(5);
-            }
+            RetCode::NeedInput => panic!("missing input!"),
             RetCode::Output(out) => {
                 if out != 0 {
                     p2 = out;

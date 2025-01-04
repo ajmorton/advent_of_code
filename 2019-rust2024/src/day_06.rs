@@ -62,7 +62,7 @@ pub fn run() -> (usize, usize) {
         .count();
 
     // Removing the common path to COM yields the paths from YOU to COMMON_PARENT and SAN to COMMON_PARENT.
-    // By extension the sum of these paths is the path from YOU to SAN. 
+    // By extension the sum of these paths is the path from YOU to SAN.
     // -1 as we want jumps between planets, not number of planets
     let jumps_you_common = you_path[common_path_len..].len() - 1;
     let jumps_common_san = san_path[common_path_len..].len() - 1;

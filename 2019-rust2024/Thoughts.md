@@ -38,3 +38,8 @@ edit: There we go. No suprise mallocing all those vectors took so long. Also dro
 
 ## Day 6: Universal Orbit Map
 Kinda messy. No need for a hashset in the orbiting map as there's only ever one parent. Eh, fix it in a mo.
+edit: Pretty straight forward. Get replace hashmaps with vectors, replace HashSet with a vector. Computer go fast.
+
+## Day 7: Amplification Circuit
+This day is very cool. Hooking together multiple computers to build a larger system? The rest of the year looks promising.
+This is also blazingly fast given there are 1200 vector clones taking place. I don't know what rust is doing under the hood but that's 4.8MB copied in less than 400 µs.

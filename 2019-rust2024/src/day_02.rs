@@ -18,7 +18,7 @@ pub fn run() -> (isize, isize) {
             program[1] = noun;
             program[2] = verb;
 
-            if let RetCode::Done(result) = IntComputer::new(program).run() {
+            if let RetCode::Done(result) = IntComputer::new(program, vec![]).run() {
                 if noun == 12 && verb == 2 {
                     p1 = result;
                 }
