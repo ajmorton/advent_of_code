@@ -25,22 +25,20 @@ enum Instr {
     Halt,
 }
 
-#[derive(PartialEq, Debug)] 
+#[derive(PartialEq, Debug, Copy, Clone)]
 enum Param {
     Imm, // Treat the argument as an immediate
     Pos, // Treat the argument as a position in memory
 }
 
-fn get_modes(mut param: isize, num_args: isize) -> Vec<Param> {
-
-    let mut param_modes = Vec::new();
-    for _ in 0..num_args {
-        param_modes.push(
-            match param % 10 {
-                0 => Param::Pos,
-                1 => Param::Imm,
-                _ => panic!("unexpected bit in param flag {param} {}", param % 10),
-            });
+fn get_modes(mut param: isize, num_args: isize) -> [Param; 4] {
+    let mut param_modes = [Param::Pos; 4];
+    for i in 0..num_args as usize {
+        param_modes[i] = match param % 10 {
+            0 => Param::Pos,
+            1 => Param::Imm,
+            _ => panic!("unexpected bit in param flag {param} {}", param % 10),
+        };
 
         param /= 10;
     }
@@ -127,23 +125,15 @@ impl IntComputer {
         }
     }
 
-    fn get(&self, pos: isize, mode:&Param) -> isize {
-        if let Ok(pos_usize) = usize::try_from(pos.clone()) {
-            match mode {
-                Param::Imm => pos,
-                Param::Pos => self.memory[pos_usize]
-            }
-        } else {
-            panic!("Cannot cast pos {} to usize!", pos);
+    fn get(&self, pos: isize, mode: &Param) -> isize {
+        match mode {
+            Param::Imm => pos,
+            Param::Pos => self.memory[pos as usize],
         }
     }
 
     fn set(&mut self, pos: isize, val: isize) {
-        if let Ok(pos_usize) = usize::try_from(pos) {
-            self.memory[pos_usize] = val;
-        } else {
-            panic!("Cannot cast pos {} to usize!", pos);
-        }
+        self.memory[pos as usize] = val;
     }
 
     pub fn run(&mut self) -> RetCode {
