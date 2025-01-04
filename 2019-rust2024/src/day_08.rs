@@ -1,3 +1,5 @@
+use std::iter::zip;
+
 #[must_use]
 pub fn run() -> (usize, String) {
     let mut input = include_str!("../input/day08.txt").trim_ascii().chars();
@@ -6,7 +8,7 @@ pub fn run() -> (usize, String) {
 
     let mut p1 = 0;
 
-    let mut decoded_message: Vec<Vec<Option<char>>> = vec![vec![None; width]; height];
+    let mut decoded_message: Vec<Option<char>> = vec![None; height * width];
 
     let mut least_zeros = usize::MAX;
     loop {
@@ -16,14 +18,15 @@ pub fn run() -> (usize, String) {
             break;
         }
 
-        for (idx, pixel) in layer.iter().enumerate() {
-            let r = idx / width;
-            let c = idx % width;
-
-            if *pixel != '2' && decoded_message[r][c].is_none() {
-                decoded_message[r][c] = Some(*pixel);
-            }
-        }
+        decoded_message = zip(&layer, decoded_message)
+            .map(|(layer_pix, decoded_pix)| {
+                if decoded_pix.is_none() && *layer_pix != '2' {
+                    Some(*layer_pix)
+                } else {
+                    decoded_pix
+                }
+            })
+            .collect();
 
         let num_zeros = layer.iter().filter(|c| **c == '0').count();
         let num_ones = layer.iter().filter(|c| **c == '1').count();
@@ -36,15 +39,15 @@ pub fn run() -> (usize, String) {
     }
 
     let mut p2 = String::new();
-    for row in decoded_message {
-        for pixel in row {
-            match pixel.unwrap() {
-                '0' => p2 += " ",
-                '1' => p2 += "#",
-                _ => panic!("bad pixel!"),
-            }
+    for (idx, pixel) in decoded_message.iter().enumerate() {
+        match pixel.unwrap() {
+            '0' => p2 += " ",
+            '1' => p2 += "#",
+            _ => panic!("bad pixel!"),
         }
-        p2 += "\n";
+        if idx % width == width - 1 {
+            p2 += "\n";
+        }
     }
 
     (p1, p2)
