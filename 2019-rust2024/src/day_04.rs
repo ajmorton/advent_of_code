@@ -18,7 +18,7 @@ pub fn run() -> (usize, usize) {
         let d3 = (pass / 1_000)  % 10;
         let d4 = (pass / 100)    % 10;
         let d5 = (pass / 10)     % 10;
-        let d6 = (pass / 1)      % 10;
+        let d6 =  pass           % 10;
 
         if d1 > d2 { pass = d1 * 111_111; continue; }
         if d2 > d3 { pass = (pass / 100_000) * 100000 + d2 * 11111; continue; }

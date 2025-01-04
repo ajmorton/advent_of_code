@@ -33,8 +33,8 @@ enum Param {
 
 fn get_modes(mut param: isize, num_args: isize) -> [Param; 4] {
     let mut param_modes = [Param::Pos; 4];
-    for i in 0..num_args as usize {
-        param_modes[i] = match param % 10 {
+    for mode in param_modes.iter_mut().take(num_args as usize) {
+        *mode = match param % 10 {
             0 => Param::Pos,
             1 => Param::Imm,
             _ => panic!("unexpected bit in param flag {param} {}", param % 10),
@@ -56,7 +56,7 @@ impl IntComputer {
     }
 
     pub fn input(&mut self, inp: isize) {
-        assert!(self.input == None);
+        assert!(self.input.is_none());
         self.input = Some(inp);
     }
 

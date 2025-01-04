@@ -34,11 +34,9 @@ pub fn run() -> (isize, isize) {
                 (r, c) = (r + dr, c + dc);
                 if is_wire1 {
                     wire1.insert((r, c), travel_dist);
-                } else {
-                    if wire1.contains_key(&(r, c)) {
-                        shortest_manhattan_dist = std::cmp::min(shortest_manhattan_dist, manhattan((r, c)));
-                        shortest_travel_dist = std::cmp::min(shortest_travel_dist, travel_dist + wire1[&(r, c)]);
-                    }
+                } else if wire1.contains_key(&(r, c)) {
+                    shortest_manhattan_dist = std::cmp::min(shortest_manhattan_dist, manhattan((r, c)));
+                    shortest_travel_dist = std::cmp::min(shortest_travel_dist, travel_dist + wire1[&(r, c)]);
                 }
             }
         }
