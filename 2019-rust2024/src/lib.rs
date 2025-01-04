@@ -8,6 +8,7 @@ pub mod day_05;
 pub mod day_06;
 pub mod day_07;
 pub mod day_08;
+pub mod day_09;
 
 #[test] fn day_01() { assert_eq!(day_01::run(), (3125750, 4685788)); }
 #[test] fn day_02() { assert_eq!(day_02::run(), (4930687, 5335)); }
@@ -25,3 +26,4 @@ pub mod day_08;
 #    # #  #  # #  # #    
 #    #  # #  # #  # #### 
 ".to_string())); }
+#[test] fn day_09() { assert_eq!(day_09::run(), (2752191671, 87571)); }

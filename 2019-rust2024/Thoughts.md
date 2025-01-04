@@ -51,3 +51,6 @@ edit: Yeah these iterators go fast. 25% speedup on an already speedy 40µs run b
 
 ## Day 9.0: Rework parameter modes
 The IntCode giveth, and the IntCode breaketh your face. No wonder I was struggling to get the parameter modes working. Inputs and outputs need to be treated differently since we're storing into the output which requires an additional access to memory that you can't compute at the same time as you compute the inputs (since they can become immediates). The existing code was jank and mixed and matched parameter accesses and direct memory accesses. That's now thankfully gone and future changes should be much easier.
+
+## Day 9: Sensor Boost
+Easy once I'd fixed the gd parameter modes above. BigInts slow down my day 02 to over a millisecond though, grumble grumble. It's been a while since I used a language with an proper type system. It's so nice to make a type change and have the language server points me at all the places that need updating. It missed a few places where we're using ints that cast to enums, but that's expected. I've probably made too many things i128. To check and see if we can keep the IntComputer fast.

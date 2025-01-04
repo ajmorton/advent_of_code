@@ -2,16 +2,17 @@ use std::collections::VecDeque;
 
 #[derive(Debug)]
 pub struct IntComputer {
-    memory: Vec<isize>,
-    pc: isize,
-    input: VecDeque<isize>,
+    memory: Vec<i128>,
+    pc: i128,
+    input: VecDeque<i128>,
+    relative_base: i128
 }
 
 #[derive(Debug)]
 pub enum RetCode {
-    Done(isize),
+    Done(i128),
     NeedInput,
-    Output(isize),
+    Output(i128),
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -24,10 +25,11 @@ enum Instr {
     JumpZ,
     LessThan,
     Equals,
+    AdjustBase,
     Halt,
 }
 
-fn to_instr(opcode: isize) -> Result<Instr, isize> {
+fn to_instr(opcode: i128) -> Result<Instr, i128> {
     match opcode {
         1 => Ok(Instr::Add),
         2 => Ok(Instr::Mult),
@@ -37,6 +39,7 @@ fn to_instr(opcode: isize) -> Result<Instr, isize> {
         6 => Ok(Instr::JumpZ),
         7 => Ok(Instr::LessThan),
         8 => Ok(Instr::Equals),
+        9 => Ok(Instr::AdjustBase),
         99 => Ok(Instr::Halt),
         _ => Err(opcode),
     }
@@ -46,14 +49,16 @@ fn to_instr(opcode: isize) -> Result<Instr, isize> {
 enum Param {
     Imm, // Treat the argument as an immediate
     Pos, // Treat the argument as a position in memory
+    Rel, // Treat the argument as a position in memory, but offset from the relative_base
 }
 
-fn get_modes(mut param: isize, num_args: isize) -> [Param; 4] {
+fn get_modes(mut param: i128, num_args: i128) -> [Param; 4] {
     let mut param_modes = [Param::Pos; 4];
     for mode in param_modes.iter_mut().take(num_args as usize) {
         *mode = match param % 10 {
             0 => Param::Pos,
             1 => Param::Imm,
+            2 => Param::Rel,
             _ => panic!("unexpected bit in param flag {param} {}", param % 10),
         };
 
@@ -64,37 +69,48 @@ fn get_modes(mut param: isize, num_args: isize) -> [Param; 4] {
 }
 
 impl IntComputer {
-    pub fn new(program: Vec<isize>, input: Vec<isize>) -> IntComputer {
+    pub fn new(program: Vec<i128>, input: Vec<i128>) -> IntComputer {
         IntComputer {
             memory: program,
             pc: 0,
             input: VecDeque::from(input),
+            relative_base: 0
         }
     }
 
-    pub fn input(&mut self, inp: isize) {
+    pub fn input(&mut self, inp: i128) {
         self.input.push_back(inp);
     }
 
-    fn get_out(&self, pos: isize, mode: &Param) -> isize {
+    fn get_out(&mut self, pos: i128, mode: &Param) -> i128 {
         match mode {
             Param::Imm => panic!("outputs will never be immediates!"),
             Param::Pos => self.get(pos),
+            Param::Rel => self.get(pos) + self.relative_base
         }
     }
 
-    fn get_in(&self, pos: isize, mode: &Param) -> isize {
+    fn get_in(&mut self, pos: i128, mode: &Param) -> i128 {
+        let reg_content = self.get(pos);
         match mode {
-            Param::Imm => self.get(pos),
-            Param::Pos => self.get(self.get(pos)),
+            Param::Imm => reg_content,
+            Param::Pos => self.get(reg_content),
+            Param::Rel => self.get(reg_content + self.relative_base)
         }
     }
 
-    fn get(&self, pos: isize) -> isize {
+    fn get(&mut self, pos: i128) -> i128 {
+        if pos >= self.memory.len() as i128 {
+            self.memory.resize((pos + 1) as usize, 0);
+        }
+
         self.memory[pos as usize]
     }
 
-    fn set(&mut self, pos: isize, val: isize) {
+    fn set(&mut self, pos: i128, val: i128) {
+        if pos >= self.memory.len() as i128 {
+            self.memory.resize((pos + 1) as usize, 0);
+        }
         self.memory[pos as usize] = val;
     }
 
@@ -165,6 +181,11 @@ impl IntComputer {
 
                     self.set(c, if a == b { 1 } else { 0 });
                     self.pc += 4;
+                }
+                Ok(Instr::AdjustBase) => {
+                    let a = self.get_in(self.pc + 1, &param_modes[0]);
+                    self.relative_base += a;
+                    self.pc += 2;
                 }
                 Ok(Instr::Halt) => break,
                 Err(_) => panic!("Unrecognised opcode {opcode}!"),

@@ -1,8 +1,8 @@
 use crate::intcode::{IntComputer, RetCode};
 
 #[must_use]
-pub fn run() -> (isize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day05.txt")
+pub fn run() -> (i128, i128) {
+    let prog: Vec<i128> = include_str!("../input/day05.txt")
         .trim_ascii()
         .split(",")
         .map(|n| n.parse().unwrap())

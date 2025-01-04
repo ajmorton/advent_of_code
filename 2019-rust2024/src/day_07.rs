@@ -2,21 +2,21 @@ use crate::intcode::{IntComputer, RetCode};
 use itertools::Itertools;
 
 #[must_use]
-pub fn run() -> (isize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day07.txt")
+pub fn run() -> (i128, i128) {
+    let prog: Vec<i128> = include_str!("../input/day07.txt")
         .trim_ascii()
         .split(',')
         .map(|n| n.parse().unwrap())
         .collect();
 
-    let config_p1 = vec![0, 1, 2, 3, 4];
+    let config_p1 = [0, 1, 2, 3, 4];
     let permutations_p1: Vec<Vec<_>> = config_p1.iter().permutations(5).collect();
     let mut p1 = 0;
 
     for perm in permutations_p1 {
         let mut output = 0;
-        for i in 0..=4 {
-            let mut intcomp = IntComputer::new(prog.clone(), vec![*perm[i], output]);
+        for param in perm.iter().take(5) {
+            let mut intcomp = IntComputer::new(prog.clone(), vec![**param, output]);
             let res = intcomp.run();
             if let RetCode::Output(out) = res {
                 output = out;
@@ -27,7 +27,7 @@ pub fn run() -> (isize, isize) {
         p1 = std::cmp::max(p1, output);
     }
 
-    let config_p2 = vec![5, 6, 7, 8, 9];
+    let config_p2 = [5, 6, 7, 8, 9];
     let permutations_p2: Vec<Vec<_>> = config_p2.iter().permutations(5).collect();
     let mut p2 = 0;
 
@@ -43,9 +43,9 @@ pub fn run() -> (isize, isize) {
         let mut signal = 0;
         let mut last_ext_sig = 0;
         'feedback: loop {
-            for i in 0..=4 {
-                chain[i].input(signal);
-                let res = chain[i].run();
+            for (i, computer) in chain.iter_mut().enumerate() {
+                computer.input(signal);
+                let res = computer.run();
                 if let RetCode::Output(out) = res {
                     signal = out;
                     if i == 4 {
