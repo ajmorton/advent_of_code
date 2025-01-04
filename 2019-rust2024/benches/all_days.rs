@@ -6,6 +6,7 @@ pub fn day_02(c: &mut Criterion) { c.bench_function("day_02", |b| b.iter(day_02:
 pub fn day_03(c: &mut Criterion) { c.bench_function("day_03", |b| b.iter(day_03::run)); }
 pub fn day_04(c: &mut Criterion) { c.bench_function("day_04", |b| b.iter(day_04::run)); }
 pub fn day_05(c: &mut Criterion) { c.bench_function("day_05", |b| b.iter(day_05::run)); }
+pub fn day_06(c: &mut Criterion) { c.bench_function("day_06", |b| b.iter(day_06::run)); }
 
-criterion_group!(benches, day_01, day_02, day_03, day_04, day_05);
+criterion_group!(benches, day_01, day_02, day_03, day_04, day_05, day_06);
 criterion_main!(benches);

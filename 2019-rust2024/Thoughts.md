@@ -35,3 +35,6 @@ The arguments are always param mode Pos. You only Imm them when accessing the va
 Ran into the borrow checker a few times. It's annoying passing an isize into a function taking &isize doesn't autopromote it. I can't see any reason not to do so. Hopefully future IntCode days don't require futher re-engineering of old days like today did with day 02. It's also done a number on my day 02 runtime which is annoying. I guess I'll trade that for a blazing fast day 05. For now.
 
 edit: There we go. No suprise mallocing all those vectors took so long. Also dropping the safe casts from usize to isize. It's pretty obvious when we pass a negative number and try access the array at MAX_INT. Still a bit of a slowdown but day 02 is back under 1ms so all is forgiven.
+
+## Day 6: Universal Orbit Map
+Kinda messy. No need for a hashset in the orbiting map as there's only ever one parent. Eh, fix it in a mo.
