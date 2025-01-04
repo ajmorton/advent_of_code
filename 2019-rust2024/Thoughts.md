@@ -43,3 +43,6 @@ edit: Pretty straight forward. Get replace hashmaps with vectors, replace HashSe
 ## Day 7: Amplification Circuit
 This day is very cool. Hooking together multiple computers to build a larger system? The rest of the year looks promising.
 This is also blazingly fast given there are 1200 vector clones taking place. I don't know what rust is doing under the hood but that's 4.8MB copied in less than 400 µs.
+
+## Day 8: Space Image Format
+These visualisation tasks are always my fave. Not much to report here other than we're looking very good for the < 50ms target. It's interesting that three independent `iter().filter(|x| x == '1').count()` loops is 20% faster than inserting a counter into the existing `for pixel in layer` loop. There should be 3 times fewer iterations. Either the branching causes mispredicts or Rust really prefers chaining calls on iters when it comes to optimisation. 
