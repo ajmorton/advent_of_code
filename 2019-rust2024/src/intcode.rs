@@ -14,17 +14,32 @@ pub enum RetCode {
     Output(isize),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 enum Instr {
-    Add { out: isize, a: isize, b: isize },
-    Mult { out: isize, a: isize, b: isize },
-    Input { save_to: isize },
-    Output { fetch_from: isize },
-    JumpNZ { chk: isize, jump_to: isize },
-    JumpZ { chk: isize, jump_to: isize },
-    LessThan { out: isize, a: isize, b: isize },
-    Equals { out: isize, a: isize, b: isize },
+    Add,
+    Mult,
+    Input,
+    Output,
+    JumpNZ,
+    JumpZ,
+    LessThan,
+    Equals,
     Halt,
+}
+
+fn to_instr(opcode: isize) -> Result<Instr, isize> {
+    match opcode {
+        1 => Ok(Instr::Add),
+        2 => Ok(Instr::Mult),
+        3 => Ok(Instr::Input),
+        4 => Ok(Instr::Output),
+        5 => Ok(Instr::JumpNZ),
+        6 => Ok(Instr::JumpZ),
+        7 => Ok(Instr::LessThan),
+        8 => Ok(Instr::Equals),
+        99 => Ok(Instr::Halt),
+        _ => Err(opcode),
+    }
 }
 
 #[derive(PartialEq, Debug, Copy, Clone)]
@@ -61,76 +76,22 @@ impl IntComputer {
         self.input.push_back(inp);
     }
 
-    fn fetch_instr(&self, pc: isize) -> Instr {
-        let instr = self.get(pc, &Param::Pos);
-        let (param_mode, opcode) = (instr / 100, instr % 100);
-
-        match opcode {
-            1 => {
-                let param_modes = get_modes(param_mode, 3);
-                let a = self.get(pc + 1, &param_modes[0]);
-                let b = self.get(pc + 2, &param_modes[1]);
-                let out = self.get(pc + 3, &param_modes[2]);
-                Instr::Add { a, b, out }
-            }
-            2 => {
-                let param_modes = get_modes(param_mode, 3);
-                let a = self.get(pc + 1, &param_modes[0]);
-                let b = self.get(pc + 2, &param_modes[1]);
-                let out = self.get(pc + 3, &param_modes[2]);
-                Instr::Mult { a, b, out }
-            }
-            3 => {
-                let param_modes = get_modes(param_mode, 1);
-                let save_to = self.get(self.pc + 1, &param_modes[0]);
-                Instr::Input { save_to }
-            }
-            4 => {
-                let param_modes = get_modes(param_mode, 1);
-                let fromm = self.get(self.pc + 1, &Param::Pos);
-                let fetch_from = self.get(fromm, &param_modes[0]);
-                Instr::Output { fetch_from }
-            }
-            5 => {
-                let param_modes = get_modes(param_mode, 2);
-                let arg1 = self.get(self.pc + 1, &Param::Pos);
-                let arg2 = self.get(self.pc + 2, &Param::Pos);
-                let chk = self.get(arg1, &param_modes[0]);
-                let jump_to = self.get(arg2, &param_modes[1]);
-                Instr::JumpNZ { chk, jump_to }
-            }
-            6 => {
-                let param_modes = get_modes(param_mode, 2);
-                let arg1 = self.get(self.pc + 1, &Param::Pos);
-                let arg2 = self.get(self.pc + 2, &Param::Pos);
-                let chk = self.get(arg1, &param_modes[0]);
-                let jump_to = self.get(arg2, &param_modes[1]);
-                Instr::JumpZ { chk, jump_to }
-            }
-            7 => {
-                let param_modes = get_modes(param_mode, 3);
-                let a = self.get(pc + 1, &param_modes[0]);
-                let b = self.get(pc + 2, &param_modes[1]);
-                let out = self.get(pc + 3, &param_modes[2]);
-                Instr::LessThan { a, b, out }
-            }
-            8 => {
-                let param_modes = get_modes(param_mode, 3);
-                let a = self.get(pc + 1, &param_modes[0]);
-                let b = self.get(pc + 2, &param_modes[1]);
-                let out = self.get(pc + 3, &param_modes[2]);
-                Instr::Equals { a, b, out }
-            }
-            99 => Instr::Halt,
-            _ => panic!("Unknown opcode: {opcode}"),
+    fn get_out(&self, pos: isize, mode: &Param) -> isize {
+        match mode {
+            Param::Imm => panic!("outputs will never be immediates!"),
+            Param::Pos => self.get(pos),
         }
     }
 
-    fn get(&self, pos: isize, mode: &Param) -> isize {
+    fn get_in(&self, pos: isize, mode: &Param) -> isize {
         match mode {
-            Param::Imm => pos,
-            Param::Pos => self.memory[pos as usize],
+            Param::Imm => self.get(pos),
+            Param::Pos => self.get(self.get(pos)),
         }
+    }
+
+    fn get(&self, pos: isize) -> isize {
+        self.memory[pos as usize]
     }
 
     fn set(&mut self, pos: isize, val: isize) {
@@ -139,60 +100,74 @@ impl IntComputer {
 
     pub fn run(&mut self) -> RetCode {
         loop {
-            let instr = self.fetch_instr(self.pc);
-            match instr {
-                Instr::Add { out, a, b } => {
-                    let val_a = self.get(a, &Param::Pos);
-                    let val_b = self.get(b, &Param::Pos);
-                    self.set(out, val_a + val_b);
+            let instr = self.get(self.pc);
+            let (param_flag, opcode) = (instr / 100, instr % 100);
+            let param_modes = get_modes(param_flag, 3);
+            match to_instr(opcode) {
+                Ok(Instr::Add) => {
+                    let a = self.get_in(self.pc + 1, &param_modes[0]);
+                    let b = self.get_in(self.pc + 2, &param_modes[1]);
+                    let c = self.get_out(self.pc + 3, &param_modes[2]);
+                    self.set(c, a + b);
                     self.pc += 4;
                 }
-                Instr::Mult { out, a, b } => {
-                    let val_a = self.get(a, &Param::Pos);
-                    let val_b = self.get(b, &Param::Pos);
-                    self.set(out, val_a * val_b);
+                Ok(Instr::Mult) => {
+                    let a = self.get_in(self.pc + 1, &param_modes[0]);
+                    let b = self.get_in(self.pc + 2, &param_modes[1]);
+                    let c = self.get_out(self.pc + 3, &param_modes[2]);
+                    self.set(c, a * b);
                     self.pc += 4;
                 }
-                Instr::Input { save_to } => {
+                Ok(Instr::Input) => {
                     if let Some(inp) = self.input.pop_front() {
-                        self.set(save_to, inp);
+                        let a = self.get_out(self.pc + 1, &param_modes[0]);
+                        self.set(a, inp);
                         self.pc += 2;
                     } else {
                         return RetCode::NeedInput;
                     }
                 }
-                Instr::Output { fetch_from } => {
+                Ok(Instr::Output) => {
+                    let a = self.get_in(self.pc + 1, &param_modes[0]);
                     self.pc += 2;
-                    let outp = fetch_from;
-                    return RetCode::Output(outp);
+                    return RetCode::Output(a);
                 }
-                Instr::JumpNZ { chk, jump_to } => {
-                    if chk != 0 {
-                        self.pc = jump_to;
+                Ok(Instr::JumpNZ) => {
+                    let a = self.get_in(self.pc + 1, &param_modes[0]);
+                    let b = self.get_in(self.pc + 2, &param_modes[1]);
+                    if a != 0 {
+                        self.pc = b;
                     } else {
                         self.pc += 3;
                     }
                 }
-                Instr::JumpZ { chk, jump_to } => {
-                    if chk == 0 {
-                        self.pc = jump_to;
+                Ok(Instr::JumpZ) => {
+                    let a = self.get_in(self.pc + 1, &param_modes[0]);
+                    let b = self.get_in(self.pc + 2, &param_modes[1]);
+                    if a == 0 {
+                        self.pc = b;
                     } else {
                         self.pc += 3;
                     }
                 }
-                Instr::LessThan { out, a, b } => {
-                    let val_a = self.get(a, &Param::Pos);
-                    let val_b = self.get(b, &Param::Pos);
-                    self.set(out, if val_a < val_b { 1 } else { 0 });
+                Ok(Instr::LessThan) => {
+                    let a = self.get_in(self.pc + 1, &param_modes[0]);
+                    let b = self.get_in(self.pc + 2, &param_modes[1]);
+                    let c = self.get_out(self.pc + 3, &param_modes[2]);
+
+                    self.set(c, if a < b { 1 } else { 0 });
                     self.pc += 4;
                 }
-                Instr::Equals { out, a, b } => {
-                    let val_a = self.get(a, &Param::Pos);
-                    let val_b = self.get(b, &Param::Pos);
-                    self.set(out, if val_a == val_b { 1 } else { 0 });
+                Ok(Instr::Equals) => {
+                    let a = self.get_in(self.pc + 1, &param_modes[0]);
+                    let b = self.get_in(self.pc + 2, &param_modes[1]);
+                    let c = self.get_out(self.pc + 3, &param_modes[2]);
+
+                    self.set(c, if a == b { 1 } else { 0 });
                     self.pc += 4;
                 }
-                Instr::Halt => break,
+                Ok(Instr::Halt) => break,
+                Err(_) => panic!("Unrecognised opcode {opcode}!"),
             }
         }
 

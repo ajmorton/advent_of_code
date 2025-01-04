@@ -48,3 +48,6 @@ This is also blazingly fast given there are 1200 vector clones taking place. I d
 These visualisation tasks are always my fave. Not much to report here other than we're looking very good for the < 50ms target. It's interesting that three independent `iter().filter(|x| x == '1').count()` loops is 20% faster than inserting a counter into the existing `for pixel in layer` loop. There should be 3 times fewer iterations. Either the branching causes mispredicts or Rust really prefers chaining calls on iters when it comes to optimisation. 
 
 edit: Yeah these iterators go fast. 25% speedup on an already speedy 40µs run by converting a for loop into an iterator. I wouldn't claim improved readability, but we're here for the µs BB. 
+
+## Day 9.0: Rework parameter modes
+The IntCode giveth, and the IntCode breaketh your face. No wonder I was struggling to get the parameter modes working. Inputs and outputs need to be treated differently since we're storing into the output which requires an additional access to memory that you can't compute at the same time as you compute the inputs (since they can become immediates). The existing code was jank and mixed and matched parameter accesses and direct memory accesses. That's now thankfully gone and future changes should be much easier.
