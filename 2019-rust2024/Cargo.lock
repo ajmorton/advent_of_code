@@ -125,6 +125,7 @@ dependencies = [
  "itertools 0.14.0",
  "likely_stable",
  "num",
+ "regex",
 ]
 
 [[package]]

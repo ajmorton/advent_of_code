@@ -64,3 +64,9 @@ Fiddling with the atan2 math was painful. So many tweaks just to reverse directi
 
 ## Day 11: Space Police
 Not much to say other than when copy-pasting the code from day 09 I forgot to remove the initial inputs. Code was fine otherwise.
+
+## Day 12: The N-Body Problem
+35 ms 💀💀💀  
+Should only need to run ~6000 steps for this. This actually feels kinda slow..  
+In other news this is the first day of regex(!?) and hitting the borrow checker properly where I wanted to iterate of array items while mutating them. Indexing works but it's a bit of a mental jump to go from the iterator first model to now needing indexing like some kind of C programmer.  
+A majority of time is spent on the hashset insertions. I expect `contains()` is also there but not being shown in the flamegraph. A 6D array is gonna be sizeable.. tbd on how we 86 the hashset. 
