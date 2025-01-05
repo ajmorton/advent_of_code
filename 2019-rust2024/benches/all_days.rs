@@ -15,7 +15,8 @@ pub fn day_11(c: &mut Criterion) { c.bench_function("day_11", |b| b.iter(day_11:
 pub fn day_12(c: &mut Criterion) { c.bench_function("day_12", |b| b.iter(day_12::run)); }
 pub fn day_13(c: &mut Criterion) { c.bench_function("day_13", |b| b.iter(day_13::run)); }
 pub fn day_14(c: &mut Criterion) { c.bench_function("day_14", |b| b.iter(day_14::run)); }
+pub fn day_15(c: &mut Criterion) { c.bench_function("day_15", |b| b.iter(day_15::run)); }
 
 criterion_group!(benches, day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09, day_10,
-                          day_11, day_12, day_13, day_14);
+                          day_11, day_12, day_13, day_14, day_15);
 criterion_main!(benches);

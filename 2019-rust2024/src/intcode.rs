@@ -1,7 +1,7 @@
 use likely_stable::if_unlikely;
 use std::collections::VecDeque;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct IntComputer {
     memory: Vec<isize>,
     pc: isize,

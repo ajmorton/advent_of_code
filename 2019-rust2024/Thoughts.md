@@ -81,3 +81,9 @@ Yeah this is cool. I wonder who wrote a fully fledged brick breaker game in IntC
 I did **not** vibe with this at all. Even the string parsing gave me a headache.
 Part 2 still needs a proper solution. It was solved by a manual binary search with a bunch of guesses and printlns.  
 The current time of 40µs isn't accurate but it'll still be under a millisecond provided I can binary search part 2 in under 25 attempts.
+
+## Day 15: Oxygen System
+I didn't expect this to come in under a millisecond. I just spammed hashmaps and sets everywhere. Copying the compute as part of the state was a cool idea. I wan't looking forward to implementing backtracking all over the place.  
+edit: This doesn't make sense. 3,308 `clone`s, 3250 `insert`s, 6390 `contain`s makes for a lot of hashing and memcopies. Half the runtime is spent inside the IntComputer(!!). Is AHash smart enough to recognise the key is (isize, isize) and use a fast hash? This is way faster than it should be.
+
+Some cleanup to do. Will probably come back to it when all days are finished.
