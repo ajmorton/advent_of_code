@@ -61,3 +61,6 @@ edit: I guess 64 bits counts as BigInts these days? w/e I'll take it. Still a fa
 :|  
 Fiddling with the atan2 math was painful. So many tweaks just to reverse direction and rotate by 90 degrees. Couple that with my inability to understand `100*x + y` != `100*y + x` and we're gonna have a bad time.
 2ms. I guess that's fine for now unless there's obvious time saves.
+
+## Day 11: Space Police
+Not much to say other than when copy-pasting the code from day 09 I forgot to remove the initial inputs. Code was fine otherwise.
