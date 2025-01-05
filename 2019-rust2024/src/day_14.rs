@@ -18,7 +18,7 @@ fn ore_for_fuel(reactions: &Reactions, num_fuel: usize) -> usize {
         if *excess_chem >= need {
             *excess_chem -= need;
             continue;
-        } else if *excess_chem > 0 {
+        } else {
             need -= *excess_chem;
             *excess_chem = 0;
         }
@@ -71,8 +71,22 @@ pub fn run() -> (usize, usize) {
     }
 
     let ore_per_fuel = ore_for_fuel(&reactions, 1);
-    // println!("{}", ore_for_fuel(&reactions, 1_000_000_000_000 / ore_per_fuel + 1022904));
-    // println!("{}", 1_000_000_000_000 as usize);
 
-    (ore_per_fuel, 1_000_000_000_000 / ore_per_fuel + 1022904)
+    // P2
+    const TRILLION: usize = 1_000_000_000_000;
+    let mut ore_required;
+    let mut try_fuel = TRILLION / ore_per_fuel;
+    loop {
+        ore_required = ore_for_fuel(&reactions, try_fuel);
+        if ore_required >= TRILLION {
+            while (ore_for_fuel(&reactions, try_fuel)) > TRILLION {
+                try_fuel -= 1;
+            }
+            break;
+        } else {
+            try_fuel = 1_000_000_000_000 / (ore_required / try_fuel);
+        }
+    }
+
+    (ore_per_fuel, try_fuel)
 }
