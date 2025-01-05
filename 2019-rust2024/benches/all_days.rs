@@ -10,6 +10,7 @@ pub fn day_06(c: &mut Criterion) { c.bench_function("day_06", |b| b.iter(day_06:
 pub fn day_07(c: &mut Criterion) { c.bench_function("day_07", |b| b.iter(day_07::run)); }
 pub fn day_08(c: &mut Criterion) { c.bench_function("day_08", |b| b.iter(day_08::run)); }
 pub fn day_09(c: &mut Criterion) { c.bench_function("day_09", |b| b.iter(day_09::run)); }
+pub fn day_10(c: &mut Criterion) { c.bench_function("day_10", |b| b.iter(day_10::run)); }
 
-criterion_group!(benches, day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09);
+criterion_group!(benches, day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09, day_10);
 criterion_main!(benches);
