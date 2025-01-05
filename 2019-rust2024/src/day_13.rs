@@ -1,11 +1,10 @@
 use crate::intcode::{IntComputer, RetCode};
-use ahash::AHashMap;
 use std::thread::sleep;
 use std::time;
 
-type Screen = AHashMap<(isize, isize), Tile>;
+type Screen = [[Tile; 36]; 21];
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Copy, Clone)]
 enum Tile {
     Empty = 0,
     Wall = 1,
@@ -54,21 +53,19 @@ fn process_frame(computer: &mut IntComputer, screen: &mut Screen) -> (Option<isi
             if tile == Tile::Paddle {
                 paddle_x = x;
             }
-            screen.insert((y, x), tile);
+            screen[y as usize][x as usize] = tile;
         }
     }
 
     (score, game_done, ball_x, paddle_x)
 }
 
+#[allow(dead_code)]
 fn print_screen(screen: &Screen, score: isize) {
     println!("\x1B[2J\x1B[1;1H");
-    let max_r = screen.keys().map(|k| k.0).max().unwrap();
-    let max_c = screen.keys().map(|k| k.1).max().unwrap();
-
-    for r in 0..=max_r {
-        for c in 0..=max_c {
-            print!("{}", match screen[&(r, c)] {
+    for r in 0..=20 {
+        for c in 0..=35 {
+            print!("{}", match screen[r][c] {
                 Tile::Empty => " ",
                 Tile::Wall => "|",
                 Tile::Block => "#",
@@ -90,25 +87,29 @@ pub fn run() -> (usize, isize) {
         .map(|n| n.parse().unwrap())
         .collect();
 
-    // P1
-    let mut screen = AHashMap::new();
+    let mut screen: Screen = [[Tile::Empty; 36]; 21];
+
     let mut computer = IntComputer::new(&prog, vec![]);
     let (_, _, _, _) = process_frame(&mut computer, &mut screen);
-    let p1 = screen.values().filter(|tile| **tile == Tile::Block).count();
+    let p1 = screen
+        .iter()
+        .map(|row| row.iter().filter(|t| **t == Tile::Block).count())
+        .sum();
 
     // P2
     let p2;
-    let mut screen_p2 = AHashMap::new();
     let mut score = 0;
     let mut piracy = prog.clone();
     piracy[0] = 2;
     let mut computer_p2 = IntComputer::new(&piracy, vec![]);
     loop {
-        let (frame_score, game_done, ball_x, paddle_x) = process_frame(&mut computer_p2, &mut screen_p2);
+        let (frame_score, game_done, ball_x, paddle_x) = process_frame(&mut computer_p2, &mut screen);
         if let Some(sscore) = frame_score {
             score = sscore;
         }
-        // print_screen(&screen_p2, score);
+
+        // print_screen(&screen, score);
+
         if game_done {
             p2 = score;
             break;
