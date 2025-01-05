@@ -76,3 +76,8 @@ edit: Somebody smarter than me realised that the system is fully deterministic s
 
 ## Day 13: Care Package
 Yeah this is cool. I wonder who wrote a fully fledged brick breaker game in IntCode of all things? Hope they had a an interpreter.
+
+## Day 14: Space Stoichiometry
+I did **not** vibe with this at all. Even the string parsing gave me a headache.
+Part 2 still needs a proper solution. It was solved by a manual binary search with a bunch of guesses and printlns.  
+The current time of 40µs isn't accurate but it'll still be under a millisecond provided I can binary search part 2 in under 25 attempts.
