@@ -23,7 +23,7 @@ pub fn run() -> (isize, isize) {
                     p1 = result;
                 }
 
-                if result == 19690720 {
+                if result == 19_690_720 {
                     p2 = noun * 100 + verb;
                 }
 

@@ -18,10 +18,10 @@ fn ore_for_fuel(reactions: &Reactions, num_fuel: usize) -> usize {
         if *excess_chem >= need {
             *excess_chem -= need;
             continue;
-        } else {
-            need -= *excess_chem;
-            *excess_chem = 0;
         }
+
+        need -= *excess_chem;
+        *excess_chem = 0;
 
         if chem == "ORE" {
             total_ore_needed += need;
@@ -57,14 +57,14 @@ pub fn run() -> (usize, usize) {
 
         let mut inputs = vec![];
         for input in inn.split(", ") {
-            let parts: Vec<_> = input.split(" ").collect();
+            let parts: Vec<_> = input.split(' ').collect();
 
             let n = parts[0].parse::<usize>().unwrap();
             let chem = parts[1];
             inputs.push((n, chem));
         }
 
-        let out: Vec<_> = out.split(" ").collect();
+        let out: Vec<_> = out.split(' ').collect();
         let (out_num, out_name) = (out[0].parse::<usize>().unwrap(), out[1]);
 
         reactions.insert(out_name, (out_num, inputs));
@@ -83,9 +83,8 @@ pub fn run() -> (usize, usize) {
                 try_fuel -= 1;
             }
             break;
-        } else {
-            try_fuel = 1_000_000_000_000 / (ore_required / try_fuel);
         }
+        try_fuel = 1_000_000_000_000 / (ore_required / try_fuel);
     }
 
     (ore_per_fuel, try_fuel)

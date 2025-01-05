@@ -1,4 +1,4 @@
-fn fuel_cost(weight: isize) -> isize {
+const fn fuel_cost(weight: isize) -> isize {
     weight / 3 - 2
 }
 

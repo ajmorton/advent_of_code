@@ -2,7 +2,7 @@
 pub fn run() -> (usize, usize) {
     let inputs: Vec<usize> = include_str!("../input/day04.txt")
         .trim_ascii()
-        .split("-")
+        .split('-')
         .map(|n| n.parse::<usize>().unwrap())
         .collect();
 
@@ -21,10 +21,10 @@ pub fn run() -> (usize, usize) {
         let d6 =  pass           % 10;
 
         if d1 > d2 { pass = d1 * 111_111; continue; }
-        if d2 > d3 { pass = (pass / 100_000) * 100000 + d2 * 11111; continue; }
-        if d3 > d4 { pass = (pass / 10_000 ) *  10000 + d3 * 1111 ; continue; }
-        if d4 > d5 { pass = (pass / 1000   ) *   1000 + d4 * 111  ; continue; }
-        if d5 > d6 { pass = (pass / 100    ) *    100 + d5 * 11   ; continue; }
+        if d2 > d3 { pass = (pass / 100_000) * 100_000 + d2 * 11_111; continue; }
+        if d3 > d4 { pass = (pass /  10_000) *  10_000 + d3 *  1_111; continue; }
+        if d4 > d5 { pass = (pass /    1000) *    1000 + d4 *    111; continue; }
+        if d5 > d6 { pass = (pass /     100) *     100 + d5 *     11; continue; }
 
         if d1 != d2 && d2 != d3 && d3 != d4 && d4 != d5 && d5 != d6 {
             pass += 1;

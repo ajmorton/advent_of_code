@@ -32,8 +32,8 @@ fn process_frame(computer: &mut IntComputer, screen: &mut Screen) -> (Option<isi
         };
     }
 
-    let mut tiles = outputs.chunks(3);
-    while let Some(tile) = tiles.next() {
+    let tiles = outputs.chunks(3);
+    for tile in tiles {
         let (x, y, id) = (tile[0], tile[1], tile[2]);
         if x == -1 && y == 0 {
             score = Some(id);
@@ -63,9 +63,9 @@ fn process_frame(computer: &mut IntComputer, screen: &mut Screen) -> (Option<isi
 #[allow(dead_code)]
 fn print_screen(screen: &Screen, score: isize) {
     println!("\x1B[2J\x1B[1;1H");
-    for r in 0..=20 {
-        for c in 0..=35 {
-            print!("{}", match screen[r][c] {
+    for row in screen {
+        for tile in row {
+            print!("{}", match tile {
                 Tile::Empty => " ",
                 Tile::Wall => "|",
                 Tile::Block => "#",
@@ -73,7 +73,7 @@ fn print_screen(screen: &Screen, score: isize) {
                 Tile::Ball => "O",
             });
         }
-        println!("");
+        println!();
     }
     println!("{score}");
     sleep(time::Duration::from_millis(10));
@@ -99,7 +99,7 @@ pub fn run() -> (usize, isize) {
     // P2
     let p2;
     let mut score = 0;
-    let mut piracy = prog.clone();
+    let mut piracy = prog;
     piracy[0] = 2;
     let mut computer_p2 = IntComputer::new(&piracy, vec![]);
     loop {
@@ -113,10 +113,10 @@ pub fn run() -> (usize, isize) {
         if game_done {
             p2 = score;
             break;
-        } else {
-            let move_paddle = ball_x.cmp(&paddle_x) as isize;
-            computer_p2.input(move_paddle);
         }
+
+        let move_paddle = ball_x.cmp(&paddle_x) as isize;
+        computer_p2.input(move_paddle);
     }
 
     (p1, p2)

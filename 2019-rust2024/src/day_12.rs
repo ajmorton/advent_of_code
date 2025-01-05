@@ -13,7 +13,7 @@ struct Moon {
     z: Kine,
 }
 
-fn energy(moon: &Moon) -> isize {
+const fn energy(moon: &Moon) -> isize {
     let potential = moon.x.pos.abs() + moon.y.pos.abs() + moon.z.pos.abs();
     let kinetic = moon.x.vel.abs() + moon.y.vel.abs() + moon.z.vel.abs();
     potential * kinetic
@@ -47,7 +47,7 @@ pub fn run() -> (isize, usize) {
     let init_z_state = (moons[0].z, moons[1].z, moons[2].z, moons[3].z);
     let mut found_z = None;
 
-    for step in 0 as usize.. {
+    for step in 0_usize.. {
         if found_x.is_none() {
             let x_state = (moons[0].x, moons[1].x, moons[2].x, moons[3].x);
             if step != 0 && x_state == init_x_state {
@@ -91,14 +91,15 @@ pub fn run() -> (isize, usize) {
         }
 
         // Moving on up
-        for i in 0..moons.len() {
-            moons[i].x.pos += moons[i].x.vel;
-            moons[i].y.pos += moons[i].y.vel;
-            moons[i].z.pos += moons[i].z.vel;
+        for moon in &mut moons {
+        // for i in 0..moons.len() {
+            moon.x.pos += moon.x.vel;
+            moon.y.pos += moon.y.vel;
+            moon.z.pos += moon.z.vel;
         }
 
         if step == 999 {
-            p1 = moons.iter().map(|m| energy(m)).sum();
+            p1 = moons.iter().map(energy).sum();
         }
     }
 

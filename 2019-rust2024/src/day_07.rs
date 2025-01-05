@@ -21,7 +21,7 @@ pub fn run() -> (isize, isize) {
             if let RetCode::Output(out) = res {
                 output = out;
             } else {
-                panic!("Unexpected item in the intcode area: {:?}", res);
+                panic!("Unexpected item in the intcode area: {res:?}");
             }
         }
         p1 = std::cmp::max(p1, output);
@@ -54,7 +54,7 @@ pub fn run() -> (isize, isize) {
                 } else if let RetCode::Done(_) = res {
                     break 'feedback;
                 } else {
-                    panic!("Unexpected item in the intcode area: {:?}", res);
+                    panic!("Unexpected item in the intcode area: {res:?}");
                 }
             }
         }

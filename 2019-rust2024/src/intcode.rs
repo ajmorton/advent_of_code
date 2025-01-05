@@ -30,7 +30,7 @@ enum Instr {
     Halt,
 }
 
-fn to_instr(opcode: isize) -> Result<Instr, isize> {
+const fn to_instr(opcode: isize) -> Result<Instr, isize> {
     match opcode {
         1 => Ok(Instr::Add),
         2 => Ok(Instr::Mult),
@@ -70,8 +70,8 @@ fn get_modes(mut param: isize, num_args: isize) -> [Param; 4] {
 }
 
 impl IntComputer {
-    pub fn new(program: &[isize], input: Vec<isize>) -> IntComputer {
-        IntComputer {
+    pub fn new(program: &[isize], input: Vec<isize>) -> Self {
+        Self {
             memory: program.to_owned(),
             pc: 0,
             input: VecDeque::from(input),
@@ -83,7 +83,7 @@ impl IntComputer {
         self.input.push_back(inp);
     }
 
-    fn get_out(&mut self, pos: isize, mode: &Param) -> isize {
+    fn get_out(&self, pos: isize, mode: Param) -> isize {
         match mode {
             Param::Imm => panic!("outputs will never be immediates!"),
             Param::Pos => pos,
@@ -91,7 +91,7 @@ impl IntComputer {
         }
     }
 
-    fn get_in(&mut self, pos: isize, mode: &Param) -> isize {
+    fn get_in(&mut self, pos: isize, mode: Param) -> isize {
         match mode {
             Param::Imm => pos,
             Param::Pos => self.get(pos),
@@ -126,76 +126,75 @@ impl IntComputer {
             let arg2 = self.memory[self.pc as usize + 2];
             let arg3 = self.memory[self.pc as usize + 3];
 
-            match to_instr(opcode) {
-                Ok(Instr::Add) => {
-                    let a = self.get_in(arg1, &param_modes[0]);
-                    let b = self.get_in(arg2, &param_modes[1]);
-                    let c = self.get_out(arg3, &param_modes[2]);
+            match to_instr(opcode).expect("unknown opcode!") {
+                Instr::Add => {
+                    let a = self.get_in(arg1, param_modes[0]);
+                    let b = self.get_in(arg2, param_modes[1]);
+                    let c = self.get_out(arg3, param_modes[2]);
                     self.set(c, a + b);
                     self.pc += 4;
                 }
-                Ok(Instr::Mult) => {
-                    let a = self.get_in(arg1, &param_modes[0]);
-                    let b = self.get_in(arg2, &param_modes[1]);
-                    let c = self.get_out(arg3, &param_modes[2]);
+                Instr::Mult => {
+                    let a = self.get_in(arg1, param_modes[0]);
+                    let b = self.get_in(arg2, param_modes[1]);
+                    let c = self.get_out(arg3, param_modes[2]);
                     self.set(c, a * b);
                     self.pc += 4;
                 }
-                Ok(Instr::Input) => {
+                Instr::Input => {
                     if let Some(inp) = self.input.pop_front() {
-                        let a = self.get_out(arg1, &param_modes[0]);
+                        let a = self.get_out(arg1, param_modes[0]);
                         self.set(a, inp);
                         self.pc += 2;
                     } else {
                         return RetCode::NeedInput;
                     }
                 }
-                Ok(Instr::Output) => {
-                    let a = self.get_in(arg1, &param_modes[0]);
+                Instr::Output => {
+                    let a = self.get_in(arg1, param_modes[0]);
                     self.pc += 2;
                     return RetCode::Output(a);
                 }
-                Ok(Instr::JumpNZ) => {
-                    let a = self.get_in(arg1, &param_modes[0]);
-                    let b = self.get_in(arg2, &param_modes[1]);
+                Instr::JumpNZ => {
+                    let a = self.get_in(arg1, param_modes[0]);
+                    let b = self.get_in(arg2, param_modes[1]);
                     if a != 0 {
                         self.pc = b;
                     } else {
                         self.pc += 3;
                     }
                 }
-                Ok(Instr::JumpZ) => {
-                    let a = self.get_in(arg1, &param_modes[0]);
-                    let b = self.get_in(arg2, &param_modes[1]);
+                Instr::JumpZ => {
+                    let a = self.get_in(arg1, param_modes[0]);
+                    let b = self.get_in(arg2, param_modes[1]);
                     if a == 0 {
                         self.pc = b;
                     } else {
                         self.pc += 3;
                     }
                 }
-                Ok(Instr::LessThan) => {
-                    let a = self.get_in(arg1, &param_modes[0]);
-                    let b = self.get_in(arg2, &param_modes[1]);
-                    let c = self.get_out(arg3, &param_modes[2]);
+                Instr::LessThan => {
+                    let a = self.get_in(arg1, param_modes[0]);
+                    let b = self.get_in(arg2, param_modes[1]);
+                    let c = self.get_out(arg3, param_modes[2]);
 
-                    self.set(c, if a < b { 1 } else { 0 });
+                    self.set(c, isize::from(a < b));
                     self.pc += 4;
                 }
-                Ok(Instr::Equals) => {
-                    let a = self.get_in(arg1, &param_modes[0]);
-                    let b = self.get_in(arg2, &param_modes[1]);
-                    let c = self.get_out(arg3, &param_modes[2]);
+                Instr::Equals => {
+                    let a = self.get_in(arg1, param_modes[0]);
+                    let b = self.get_in(arg2, param_modes[1]);
+                    let c = self.get_out(arg3, param_modes[2]);
 
-                    self.set(c, if a == b { 1 } else { 0 });
+                    self.set(c, isize::from(a == b));
                     self.pc += 4;
                 }
-                Ok(Instr::AdjustBase) => {
-                    let a = self.get_in(arg1, &param_modes[0]);
+                Instr::AdjustBase => {
+                    let a = self.get_in(arg1, param_modes[0]);
                     self.relative_base += a;
                     self.pc += 2;
                 }
-                Ok(Instr::Halt) => break,
-                Err(_) => panic!("Unrecognised opcode {opcode}!"),
+                Instr::Halt => break,
             }
         }
 

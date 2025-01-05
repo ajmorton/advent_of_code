@@ -1,6 +1,6 @@
 use ahash::AHashMap;
 
-fn manhattan(point: (isize, isize)) -> isize {
+const fn manhattan(point: (isize, isize)) -> isize {
     point.0.abs() + point.1.abs()
 }
 
@@ -26,7 +26,7 @@ pub fn run() -> (isize, isize) {
                 'D' => (1, 0),
                 'L' => (0, -1),
                 'R' => (0, 1),
-                _ => panic!("Unexpected direction {}!", dir),
+                _ => panic!("Unexpected direction {dir}!"),
             };
 
             for _ in 1..=dist {

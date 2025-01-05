@@ -4,7 +4,7 @@ use crate::intcode::{IntComputer, RetCode};
 pub fn run() -> (isize, isize) {
     let prog: Vec<isize> = include_str!("../input/day05.txt")
         .trim_ascii()
-        .split(",")
+        .split(',')
         .map(|n| n.parse().unwrap())
         .collect();
 
