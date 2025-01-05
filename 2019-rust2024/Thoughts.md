@@ -69,4 +69,7 @@ Not much to say other than when copy-pasting the code from day 09 I forgot to re
 35 ms 💀💀💀  
 Should only need to run ~6000 steps for this. This actually feels kinda slow..  
 In other news this is the first day of regex(!?) and hitting the borrow checker properly where I wanted to iterate of array items while mutating them. Indexing works but it's a bit of a mental jump to go from the iterator first model to now needing indexing like some kind of C programmer.  
-A majority of time is spent on the hashset insertions. I expect `contains()` is also there but not being shown in the flamegraph. A 6D array is gonna be sizeable.. tbd on how we 86 the hashset. 
+A majority of time is spent on the hashset insertions. I expect `contains()` is also there but not being shown in the flamegraph. A 6D array is gonna be sizeable.. tbd on how we 86 the hashset.  
+
+edit: Somebody smarter than me realised that the system is fully deterministic so each state leads to exactly one future state and is deribed from exactly one previous state. This means if there's a loop we're already in it and only need to check when we first reach the original system state. Coincidentally my original impl utilised this without knowing. I should've had some check to remove a non-looping set of initial states.  
+5ms? Not great but we're probably on track for sub 50ms.

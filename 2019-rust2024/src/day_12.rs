@@ -1,19 +1,21 @@
-use ahash::AHashSet;
 use regex::Regex;
+
+#[derive(Debug, PartialEq, Copy, Clone)]
+struct Kine {
+    pos: isize,
+    vel: isize,
+}
 
 #[derive(Debug)]
 struct Moon {
-    x: isize,
-    y: isize,
-    z: isize,
-    vx: isize,
-    vy: isize,
-    vz: isize,
+    x: Kine,
+    y: Kine,
+    z: Kine,
 }
 
 fn energy(moon: &Moon) -> isize {
-    let potential = moon.x.abs() + moon.y.abs() + moon.z.abs();
-    let kinetic = moon.vx.abs() + moon.vy.abs() + moon.vz.abs();
+    let potential = moon.x.pos.abs() + moon.y.pos.abs() + moon.z.pos.abs();
+    let kinetic = moon.x.vel.abs() + moon.y.vel.abs() + moon.z.vel.abs();
     potential * kinetic
 }
 
@@ -30,75 +32,40 @@ pub fn run() -> (isize, usize) {
             let z: isize = pos[3].parse().unwrap();
 
             Moon {
-                x,
-                y,
-                z,
-                vx: 0,
-                vy: 0,
-                vz: 0,
+                x: Kine { pos: x, vel: 0 },
+                y: Kine { pos: y, vel: 0 },
+                z: Kine { pos: z, vel: 0 },
             }
         })
         .collect();
 
     let mut p1 = 0;
-    let mut x_state = AHashSet::new();
+    let init_x_state = (moons[0].x, moons[1].x, moons[2].x, moons[3].x);
     let mut found_x = None;
-    let mut y_state = AHashSet::new();
+    let init_y_state = (moons[0].y, moons[1].y, moons[2].y, moons[3].y);
     let mut found_y = None;
-    let mut z_state = AHashSet::new();
+    let init_z_state = (moons[0].z, moons[1].z, moons[2].z, moons[3].z);
     let mut found_z = None;
+
     for step in 0 as usize.. {
         if found_x.is_none() {
-            let xx = (
-                moons[0].x,
-                moons[0].vx,
-                moons[1].x,
-                moons[1].vx,
-                moons[2].x,
-                moons[2].vx,
-                moons[3].x,
-                moons[3].vx,
-            );
-            if x_state.contains(&xx) {
+            let x_state = (moons[0].x, moons[1].x, moons[2].x, moons[3].x);
+            if step != 0 && x_state == init_x_state {
                 found_x = Some(step);
-            } else {
-                x_state.insert(xx);
             }
         }
 
         if found_y.is_none() {
-            let yy = (
-                moons[0].y,
-                moons[0].vy,
-                moons[1].y,
-                moons[1].vy,
-                moons[2].y,
-                moons[2].vy,
-                moons[3].y,
-                moons[3].vy,
-            );
-            if y_state.contains(&yy) {
+            let y_state = (moons[0].y, moons[1].y, moons[2].y, moons[3].y);
+            if step != 0 && y_state == init_y_state {
                 found_y = Some(step);
-            } else {
-                y_state.insert(yy);
             }
         }
 
         if found_z.is_none() {
-            let zz = (
-                moons[0].z,
-                moons[0].vz,
-                moons[1].z,
-                moons[1].vz,
-                moons[2].z,
-                moons[2].vz,
-                moons[3].z,
-                moons[3].vz,
-            );
-            if z_state.contains(&zz) {
+            let z_state = (moons[0].z, moons[1].z, moons[2].z, moons[3].z);
+            if step != 0 && z_state == init_z_state {
                 found_z = Some(step);
-            } else {
-                z_state.insert(zz);
             }
         }
 
@@ -109,25 +76,25 @@ pub fn run() -> (isize, usize) {
         // Update velocities
         for i in 0..moons.len() {
             for j in i + 1..moons.len() {
-                let x_delta = moons[i].x.cmp(&moons[j].x) as isize;
-                moons[i].vx -= x_delta;
-                moons[j].vx += x_delta;
+                let x_delta = moons[i].x.pos.cmp(&moons[j].x.pos) as isize;
+                moons[i].x.vel -= x_delta;
+                moons[j].x.vel += x_delta;
 
-                let y_delta = moons[i].y.cmp(&moons[j].y) as isize;
-                moons[i].vy -= y_delta;
-                moons[j].vy += y_delta;
+                let y_delta = moons[i].y.pos.cmp(&moons[j].y.pos) as isize;
+                moons[i].y.vel -= y_delta;
+                moons[j].y.vel += y_delta;
 
-                let z_delta = moons[i].z.cmp(&moons[j].z) as isize;
-                moons[i].vz -= z_delta;
-                moons[j].vz += z_delta;
+                let z_delta = moons[i].z.pos.cmp(&moons[j].z.pos) as isize;
+                moons[i].z.vel -= z_delta;
+                moons[j].z.vel += z_delta;
             }
         }
 
         // Moving on up
         for i in 0..moons.len() {
-            moons[i].x += moons[i].vx;
-            moons[i].y += moons[i].vy;
-            moons[i].z += moons[i].vz;
+            moons[i].x.pos += moons[i].x.vel;
+            moons[i].y.pos += moons[i].y.vel;
+            moons[i].z.pos += moons[i].z.vel;
         }
 
         if step == 999 {
