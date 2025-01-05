@@ -73,3 +73,6 @@ A majority of time is spent on the hashset insertions. I expect `contains()` is 
 
 edit: Somebody smarter than me realised that the system is fully deterministic so each state leads to exactly one future state and is deribed from exactly one previous state. This means if there's a loop we're already in it and only need to check when we first reach the original system state. Coincidentally my original impl utilised this without knowing. I should've had some check to remove a non-looping set of initial states.  
 5ms? Not great but we're probably on track for sub 50ms.
+
+## Day 13: Care Package
+Yeah this is cool. I wonder who wrote a fully fledged brick breaker game in IntCode of all things? Hope they had a an interpreter.
