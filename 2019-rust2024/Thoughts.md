@@ -90,3 +90,7 @@ Some cleanup to do. Will probably come back to it when all days are finished.
 
 ## Day 16: Flawed Frequency Transmission
 I saw `Flawed Frequency Transmission` and immediately knew it was Fast Fourier transforms. Turns out my ElEng degreee will be used for precisely one thing. Didn't really care for today, and worst of all it's *slow*. I'll need to come back to this but definitely at a later date.
+
+## Day 17: Set and Forget
+Manual solution to P2. I can't imagine anyone's found a programatic solution.
+Code is messy but don't want to fight with the IntComputer interface right now. As per the previous days will clean up later once everything is solved.
