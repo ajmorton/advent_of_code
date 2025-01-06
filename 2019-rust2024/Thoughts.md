@@ -87,3 +87,6 @@ I didn't expect this to come in under a millisecond. I just spammed hashmaps and
 edit: This doesn't make sense. 3,308 `clone`s, 3250 `insert`s, 6390 `contain`s makes for a lot of hashing and memcopies. Half the runtime is spent inside the IntComputer(!!). Is AHash smart enough to recognise the key is (isize, isize) and use a fast hash? This is way faster than it should be.
 
 Some cleanup to do. Will probably come back to it when all days are finished.
+
+## Day 16: Flawed Frequency Transmission
+I saw `Flawed Frequency Transmission` and immediately knew it was Fast Fourier transforms. Turns out my ElEng degreee will be used for precisely one thing. Didn't really care for today, and worst of all it's *slow*. I'll need to come back to this but definitely at a later date.
