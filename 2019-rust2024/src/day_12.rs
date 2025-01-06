@@ -92,7 +92,6 @@ pub fn run() -> (isize, usize) {
 
         // Moving on up
         for moon in &mut moons {
-        // for i in 0..moons.len() {
             moon.x.pos += moon.x.vel;
             moon.y.pos += moon.y.vel;
             moon.z.pos += moon.z.vel;
