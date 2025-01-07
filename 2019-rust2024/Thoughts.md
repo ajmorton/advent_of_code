@@ -94,3 +94,6 @@ I saw `Flawed Frequency Transmission` and immediately knew it was Fast Fourier t
 ## Day 17: Set and Forget
 Manual solution to P2. I can't imagine anyone's found a programatic solution.
 Code is messy but don't want to fight with the IntComputer interface right now. As per the previous days will clean up later once everything is solved.
+
+## Day 18: Many-Worlds Interpretation
+😮‍💨
