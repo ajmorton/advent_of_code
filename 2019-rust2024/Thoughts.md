@@ -97,3 +97,6 @@ Code is messy but don't want to fight with the IntComputer interface right now. 
 
 ## Day 18: Many-Worlds Interpretation
 😮‍💨
+
+## Day 19: Tractor Beam
+Easier day to follow 18

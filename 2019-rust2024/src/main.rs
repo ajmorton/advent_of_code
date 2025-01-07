@@ -37,6 +37,7 @@ fn run(day: usize) {
         16 => println!("{:?}", day_16::run()),
         17 => println!("{:?}", day_17::run()),
         18 => println!("{:?}", day_18::run()),
+        19 => println!("{:?}", day_19::run()),
         _ => println!("Unrecognised number {}", day),
     }
 }
