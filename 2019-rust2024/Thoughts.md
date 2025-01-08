@@ -111,3 +111,6 @@ Pretty much just guess and check today. You could do it programatically but not 
 
 ## Day 22: Slam Shuffle
 I'm not a fan of the modular maths questions. There's always very specific knowledge required and I've written implementations of it I'm not interested in writing another. Perhaps I come back to it later but today is not the day. 1234 is a cool number for part 1 at least and we're finally back under a millisecond ever though my part 1 solution is Not Good(TM).
+
+## Day 23: Category Six
+Simulating a network of independent agents? Also very cool. Some of the requirements are vague enough I wouldn't want to be chasing the leaderboard, but doing this at a casual pace is definitely worth it. It's a shame IntCode died after one year, but I can see where it has some friction points given the target audience.
