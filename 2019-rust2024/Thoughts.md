@@ -108,3 +108,6 @@ I reckon I can get this down to 10ms with some effort. I'm not seeing a path to 
 
 ## Day 21: Springdroid Adventure
 Pretty much just guess and check today. You could do it programatically but not really worth the effort.
+
+## Day 22: Slam Shuffle
+I'm not a fan of the modular maths questions. There's always very specific knowledge required and I've written implementations of it I'm not interested in writing another. Perhaps I come back to it later but today is not the day. 1234 is a cool number for part 1 at least and we're finally back under a millisecond ever though my part 1 solution is Not Good(TM).
