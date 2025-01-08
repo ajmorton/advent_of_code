@@ -14,16 +14,16 @@ struct ExploreNode {
 
 impl PartialOrd for ExploreNode {
     fn partial_cmp(&self, other: &ExploreNode) -> Option<std::cmp::Ordering> {
-        let selff = (-(self.dist as isize), self.state.1.len());
-        let otherr = (-(other.dist as isize), other.state.1.len());
-
-        Some(selff.cmp(&otherr))
+        Some(self.cmp(other))
     }
 }
 
 impl Ord for ExploreNode {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.partial_cmp(other).unwrap()
+        let selff = (-(self.dist as isize), self.state.1.len());
+        let otherr = (-(other.dist as isize), other.state.1.len());
+
+        selff.cmp(&otherr)
     }
 }
 

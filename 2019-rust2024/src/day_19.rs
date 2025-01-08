@@ -1,7 +1,7 @@
 use crate::intcode::{IntComputer, RetCode};
 
-fn poll(prog: &Vec<isize>, y: isize, x: isize) -> bool {
-    let mut comp = IntComputer::new(&prog, vec![y, x]);
+fn poll(prog: &[isize], y: isize, x: isize) -> bool {
+    let mut comp = IntComputer::new(prog, vec![y, x]);
     if let RetCode::Output(x) = comp.run() {
         return x == 1;
     }

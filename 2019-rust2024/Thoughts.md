@@ -114,3 +114,28 @@ I'm not a fan of the modular maths questions. There's always very specific knowl
 
 ## Day 23: Category Six
 Simulating a network of independent agents? Also very cool. Some of the requirements are vague enough I wouldn't want to be chasing the leaderboard, but doing this at a casual pace is definitely worth it. It's a shame IntCode died after one year, but I can see where it has some friction points given the target audience.
+
+## Day 23.5: Clippy
+Clippy can see this
+```rust
+} else if line.starts_with("cut ") {
+    let cut: isize = line[4..].parse().unwrap();
+```
+and know I actually wanted to do
+```rust
+} else if let Some(<stripped>) = line.strip_prefix("cut ") {
+    let cut: isize = <stripped>.parse().unwrap();
+```
+This is very impressive. Even if it's a handwritten edge case someone's put in the effort to find exactly this. I wasn't expecting to find new language feature I liked this time round since I've reused Python and Rust, but I have a new appreciation for clippy and I don't think I've seen anything comparable in other languages. Linters sure, but not to this level where it's adivising proper use of a stlib function (and giving the exact changes). It's robust too. I can stick arbitrary code in between the two lines and it still finds the exact change to make.  
+
+Digging into it clippy identifies the improvement based on the length of `"cur "` and the fact I've made a same-sized slice on the following lines. Intelligent parsing like this sounds *crazy* powerful. 10/10
+
+I don't know I agree with all of the suggestions such as
+```rust
+for r in 0..height {
+```
+changing to
+```rust
+for (r, <item>) in grid.iter().enumerate().take(height) {
+```
+It's dubious that this is clearer in its intent

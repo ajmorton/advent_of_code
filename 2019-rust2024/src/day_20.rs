@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, usize};
+use std::collections::VecDeque;
 
 use ahash::{AHashMap, AHashSet};
 
@@ -16,7 +16,7 @@ struct ExploreNode {
 }
 
 fn find_shortest(
-    grid: &Vec<Vec<char>>,
+    grid: &[Vec<char>],
     jump_to: &AHashMap<Pos, (Pos, isize)>,
     start_pos: Pos,
     end_pos: Pos,
@@ -58,18 +58,17 @@ fn find_shortest(
                 continue;
             }
 
-            if ('A'..='Z').contains(&grid[next_pos.0][next_pos.1]) {
+            if grid[next_pos.0][next_pos.1].is_ascii_uppercase() {
                 // Through the portal we go.
-                // println!("portal jump: {next_pos:?}");
-                let foo = jump_to.get(&next_pos).unwrap();
-                level_change = foo.1;
+                let portal_jump = jump_to.get(&next_pos).unwrap();
+                level_change = portal_jump.1;
                 if p2 {
                     // Can't go out from starting level
                     if level_change == -1 && cur.level == 0 {
                         continue;
                     }
                 }
-                next_pos = foo.0;
+                next_pos = portal_jump.0;
             }
 
             let next_level = cur.level + level_change;
@@ -102,11 +101,11 @@ pub fn run() -> (usize, usize) {
     let height = grid.len();
     let width = grid[0].len();
 
-    for r in 0..height {
+    for (r, row) in grid.iter().enumerate().take(height) {
         for c in 0..width - 1 {
-            if grid[r][c].is_alphabetic() && grid[r][c + 1].is_alphabetic() {
-                let portal_name = grid[r][c..=c + 1].iter().collect::<String>();
-                let portal_points = if c > 0 && grid[r][c - 1] == '.' {
+            if row[c].is_alphabetic() && row[c + 1].is_alphabetic() {
+                let portal_name = row[c..=c + 1].iter().collect::<String>();
+                let portal_points = if c > 0 && row[c - 1] == '.' {
                     let inner = c != width - 2;
                     PortalPair {
                         portal: (r, c),
@@ -131,7 +130,7 @@ pub fn run() -> (usize, usize) {
     for c in 0..width {
         for r in 0..height - 1 {
             if grid[r][c].is_alphabetic() && grid[r + 1][c].is_alphabetic() {
-                let portal_name = vec![grid[r][c], grid[r + 1][c]].iter().collect::<String>();
+                let portal_name = [grid[r][c], grid[r + 1][c]].iter().collect::<String>();
                 let portal_points = if r > 0 && grid[r - 1][c] == '.' {
                     let inner = r != height - 2;
                     PortalPair {

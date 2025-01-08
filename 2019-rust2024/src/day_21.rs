@@ -1,7 +1,7 @@
 use crate::ascii_code::{AsciiComputer, AsciiRetCode};
 
-fn run_prog(prog: &Vec<isize>, command: &str) -> Option<isize> {
-    let mut ascii_comp = AsciiComputer::new(&prog, command);
+fn run_prog(prog: &[isize], command: &str) -> Option<isize> {
+    let mut ascii_comp = AsciiComputer::new(prog, command);
     let (retcode, out) = ascii_comp.run();
 
     let res = if let AsciiRetCode::Halt(n) = retcode {

@@ -39,10 +39,10 @@ impl AsciiComputer {
         }
 
         let msg = outp.iter().collect();
-        return match last_code {
+        match last_code {
             RetCode::Done(_) => (AsciiRetCode::Halt(-1), msg),
             RetCode::Output(_) => (AsciiRetCode::Halt(ret), msg),
             RetCode::NeedInput => (AsciiRetCode::NeedInput, msg),
-        };
+        }
     }
 }

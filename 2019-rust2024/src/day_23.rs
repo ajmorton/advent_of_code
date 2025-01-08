@@ -32,7 +32,7 @@ pub fn run() -> (isize, isize) {
     'network: loop {
         if idle_count >= 2 {
             messages[0].push_back(nat_packet.unwrap());
-            if !last_sent_to_zero.is_none() && last_sent_to_zero.unwrap() == nat_packet.unwrap() {
+            if last_sent_to_zero.is_some() && last_sent_to_zero.unwrap() == nat_packet.unwrap() {
                 p2 = nat_packet.unwrap().y;
                 break 'network;
             }

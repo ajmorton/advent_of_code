@@ -32,18 +32,20 @@ pub fn run() -> (usize, isize) {
         }
     }
 
-let prog_input_ascii = r#"B,C,B,A,C,B,A,B,A,C
+    let prog_input_ascii = r#"B,C,B,A,C,B,A,B,A,C
 R,4,L,12,L,12,R,6
 L,12,L,8,L,8
 L,12,R,4,L,12,R,6
 n
 "#;
-    
+
     let mut mod_prog = prog.clone();
     mod_prog[0] = 2;
     let p2 = if let (AsciiRetCode::Halt(ret), _) = AsciiComputer::new(&mod_prog, prog_input_ascii).run() {
         ret
-    } else {panic!("")};
+    } else {
+        panic!("")
+    };
 
     (p1, p2)
 }
