@@ -1,4 +1,4 @@
-use crate::intcode::{IntComputer, RetCode};
+use crate::ascii_code::{AsciiComputer, AsciiRetCode};
 
 #[must_use]
 pub fn run() -> (usize, isize) {
@@ -8,19 +8,9 @@ pub fn run() -> (usize, isize) {
         .map(|n| n.parse().unwrap())
         .collect();
 
-    let mut grid: Vec<Vec<char>> = vec![];
-
-    let mut comp = IntComputer::new(&prog, vec![]);
-    let mut row = vec![];
-    while let RetCode::Output(out) = comp.run() {
-        let ascii = (out as u8) as char;
-        if ascii == '\n' {
-            grid.push(row.clone());
-            row.clear();
-        } else {
-            row.push(ascii);
-        }
-    }
+    let mut ascii_comp = AsciiComputer::new(&prog, "");
+    let (_, grid) = ascii_comp.run();
+    let mut grid: Vec<Vec<char>> = grid.lines().map(|line| line.chars().collect()).collect();
 
     // Double newline at end of output
     grid.pop();
@@ -42,29 +32,18 @@ pub fn run() -> (usize, isize) {
         }
     }
 
-    let prog_input: Vec<isize> = r#"B,C,B,A,C,B,A,B,A,C
+let prog_input_ascii = r#"B,C,B,A,C,B,A,B,A,C
 R,4,L,12,L,12,R,6
 L,12,L,8,L,8
 L,12,R,4,L,12,R,6
 n
-"#
-    .chars()
-    .map(|c| c as isize)
-    .collect();
-
+"#;
+    
     let mut mod_prog = prog.clone();
     mod_prog[0] = 2;
-    let mut computer = IntComputer::new(&mod_prog, prog_input);
-
-    let mut p2 = 0;
-    loop {
-        let res = computer.run();
-        match res {
-            RetCode::Output(out) => p2 = out,
-            RetCode::Done(_) => break,
-            RetCode::NeedInput => panic!("all input has been provided"),
-        }
-    }
+    let p2 = if let (AsciiRetCode::Halt(ret), _) = AsciiComputer::new(&mod_prog, prog_input_ascii).run() {
+        ret
+    } else {panic!("")};
 
     (p1, p2)
 }

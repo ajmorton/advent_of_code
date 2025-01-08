@@ -1,4 +1,5 @@
 mod intcode;
+mod ascii_code;
 
 pub mod day_01;
 pub mod day_02;
@@ -54,5 +55,5 @@ pub mod day_20;
 #[test] fn day_16() { assert_eq!(day_16::run(), (27229269, 26857164)); }
 #[test] fn day_17() { assert_eq!(day_17::run(), (6244, 1143523)); }
 #[test] fn day_18() { assert_eq!(day_18::run(), (6316, 1648)); }
-#[test] fn day_19() { assert_eq!(day_19::run(), (0, 0)); }
-#[test] fn day_20() { assert_eq!(day_20::run(), (458, 0)); }
+#[test] fn day_19() { assert_eq!(day_19::run(), (203, 8771057)); }
+#[test] fn day_20() { assert_eq!(day_20::run(), (458, 5502)); }
