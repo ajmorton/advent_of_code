@@ -105,3 +105,6 @@ Easier day to follow 18
 On the one hand, this problem is cool. On the other, this problem is proper effort.
 It's pretty cool I can just submit the first P2 result when the program compiles and it's the correct solution. Very flowy.  
 I reckon I can get this down to 10ms with some effort. I'm not seeing a path to sub 1ms.
+
+## Day 21: Springdroid Adventure
+Pretty much just guess and check today. You could do it programatically but not really worth the effort.
