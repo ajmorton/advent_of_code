@@ -100,3 +100,8 @@ Code is messy but don't want to fight with the IntComputer interface right now. 
 
 ## Day 19: Tractor Beam
 Easier day to follow 18
+
+## Day 20: Donut Maze
+On the one hand, this problem is cool. On the other, this problem is proper effort.
+It's pretty cool I can just submit the first P2 result when the program compiles and it's the correct solution. Very flowy.  
+I reckon I can get this down to 10ms with some effort. I'm not seeing a path to sub 1ms.

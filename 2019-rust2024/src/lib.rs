@@ -19,6 +19,7 @@ pub mod day_16;
 pub mod day_17;
 pub mod day_18;
 pub mod day_19;
+pub mod day_20;
 
 #[test] fn day_01() { assert_eq!(day_01::run(), (3125750, 4685788)); }
 #[test] fn day_02() { assert_eq!(day_02::run(), (4930687, 5335)); }
@@ -54,3 +55,4 @@ pub mod day_19;
 #[test] fn day_17() { assert_eq!(day_17::run(), (6244, 1143523)); }
 #[test] fn day_18() { assert_eq!(day_18::run(), (6316, 1648)); }
 #[test] fn day_19() { assert_eq!(day_19::run(), (0, 0)); }
+#[test] fn day_20() { assert_eq!(day_20::run(), (458, 0)); }
