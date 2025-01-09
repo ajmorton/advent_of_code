@@ -1,88 +1,89 @@
 use ahash::AHashSet;
 type Pos3D = (usize, usize, usize); // layer, r, c
 
-fn neighbours_p1(pos: Pos3D) -> Vec<Pos3D> {
-    let mut neighbours = vec![];
-    let (layer, r, c) = pos;
+fn neighbours_p1_count(pos: Pos3D, grid: &[[bool; 5]; 5]) -> usize {
+    let mut num_neighbours = 0;
+    let (_, r, c) = pos;
+
     // up
-    if r != 0 {
-        neighbours.push((layer, r - 1, c));
+    if r != 0 && grid[r-1][c] {
+        num_neighbours += 1;
     }
 
     // down
-    if r != 4 {
-        neighbours.push((layer, r + 1, c));
+    if r != 4 && grid[r+1][c] {
+        num_neighbours += 1;
     }
-
+    
     // left
-    if c != 0 {
-        neighbours.push((layer, r, c - 1));
+    if c != 0 && grid[r][c-1] {
+        num_neighbours += 1;
     }
 
     // right
-    if c != 4 {
-        neighbours.push((layer, r, c + 1));
+    if c != 4 && grid[r][c+1] {
+        num_neighbours += 1;
     }
 
-    neighbours
+    num_neighbours
 }
 
-fn neighbours_p2(pos: Pos3D) -> Vec<Pos3D> {
-    let mut neighbours = vec![];
+fn neighbours_p2_count(pos: Pos3D, grid: &[[[bool; 5];5];204]) -> usize {
+    let mut num_neighbours = 0;
     let (layer, r, c) = pos;
     // up
     if r == 0 {
-        neighbours.push((layer + 1, 1, 2));
+        num_neighbours += if grid[layer+1][1][2] {1} else {0};
     } else if r == 3 && c == 2 {
-        neighbours.push((layer - 1, 4, 0));
-        neighbours.push((layer - 1, 4, 1));
-        neighbours.push((layer - 1, 4, 2));
-        neighbours.push((layer - 1, 4, 3));
-        neighbours.push((layer - 1, 4, 4));
+        num_neighbours += if grid[layer - 1][4][0] {1} else {0};
+        num_neighbours += if grid[layer - 1][4][1] {1} else {0};
+        num_neighbours += if grid[layer - 1][4][2] {1} else {0};
+        num_neighbours += if grid[layer - 1][4][3] {1} else {0};
+        num_neighbours += if grid[layer - 1][4][4] {1} else {0};
     } else {
-        neighbours.push((layer, r - 1, c));
+        num_neighbours +=  if grid[layer][r-1][c] {1} else {0};
     }
 
     // down
     if r == 4 {
-        neighbours.push((layer + 1, 3, 2));
+        num_neighbours += if grid[layer + 1][3][2] {1} else {0};
     } else if r == 1 && c == 2 {
-        neighbours.push((layer - 1, 0, 0));
-        neighbours.push((layer - 1, 0, 1));
-        neighbours.push((layer - 1, 0, 2));
-        neighbours.push((layer - 1, 0, 3));
-        neighbours.push((layer - 1, 0, 4));
+        num_neighbours += if grid[layer - 1][0][0] {1} else {0};
+        num_neighbours += if grid[layer - 1][0][1] {1} else {0};
+        num_neighbours += if grid[layer - 1][0][2] {1} else {0};
+        num_neighbours += if grid[layer - 1][0][3] {1} else {0};
+        num_neighbours += if grid[layer - 1][0][4] {1} else {0};
     } else {
-        neighbours.push((layer, r + 1, c));
+        num_neighbours += if grid[layer][r + 1][c] {1} else {0};
     }
 
     // left
     if c == 0 {
-        neighbours.push((layer + 1, 2, 1));
+        num_neighbours += if grid[layer + 1][2][1] {1} else {0};
     } else if r == 2 && c == 3 {
-        neighbours.push((layer - 1, 0, 4));
-        neighbours.push((layer - 1, 1, 4));
-        neighbours.push((layer - 1, 2, 4));
-        neighbours.push((layer - 1, 3, 4));
-        neighbours.push((layer - 1, 4, 4));
+        num_neighbours += if grid[layer - 1][0][4] {1} else {0};
+        num_neighbours += if grid[layer - 1][1][4] {1} else {0};
+        num_neighbours += if grid[layer - 1][2][4] {1} else {0};
+        num_neighbours += if grid[layer - 1][3][4] {1} else {0};
+        num_neighbours += if grid[layer - 1][4][4] {1} else {0};
     } else {
-        neighbours.push((layer, r, c - 1));
+        num_neighbours += if grid[layer][r][c - 1] {1} else {0};
     }
 
     // right
     if c == 4 {
-        neighbours.push((layer + 1, 2, 3));
+        num_neighbours += if grid[layer + 1][2][3] {1} else {0};
     } else if r == 2 && c == 1 {
-        neighbours.push((layer - 1, 0, 0));
-        neighbours.push((layer - 1, 1, 0));
-        neighbours.push((layer - 1, 2, 0));
-        neighbours.push((layer - 1, 3, 0));
-        neighbours.push((layer - 1, 4, 0));
+        num_neighbours += if grid[layer - 1][0][0] {1} else {0};
+        num_neighbours += if grid[layer - 1][1][0] {1} else {0};
+        num_neighbours += if grid[layer - 1][2][0] {1} else {0};
+        num_neighbours += if grid[layer - 1][3][0] {1} else {0};
+        num_neighbours += if grid[layer - 1][4][0] {1} else {0};
     } else {
-        neighbours.push((layer, r, c + 1));
+        num_neighbours += if grid[layer][r][c + 1] {1} else {0};
     }
 
-    neighbours
+    num_neighbours
 }
 
 #[must_use]
@@ -97,14 +98,22 @@ pub fn run() -> (usize, usize) {
     let width = grid[0].len();
 
     let mut seen = AHashSet::new();
-    let mut grid_p1 = grid.clone();
+    let mut grid_p1 = [[false; 5]; 5];
+    for r in 0..5 {
+        for c in 0..5 {
+            if grid[r][c] == '#' {
+                grid_p1[r][c] = true;
+            }
+        }
+    }
+
     let p1;
     'p1: loop {
         let bio_score: usize = grid_p1
             .iter()
             .flatten()
             .enumerate()
-            .filter(|(_, cell)| **cell == '#')
+            .filter(|(_, cell)| **cell)
             .map(|(i, _)| 1 << i)
             .sum();
 
@@ -118,19 +127,14 @@ pub fn run() -> (usize, usize) {
         let mut new_grid = grid_p1.clone();
         for r in 0..height {
             for c in 0..width {
-                let mut num_neighbours = 0;
-                for neighbour in neighbours_p1((0, r, c)) {
-                    if grid_p1[neighbour.1][neighbour.2] == '#' {
-                        num_neighbours += 1;
-                    }
+                let num_neighbours = neighbours_p1_count((0, r, c), &grid_p1);
+
+                if grid_p1[r][c] && num_neighbours != 1 {
+                    new_grid[r][c] = false;
                 }
 
-                if grid_p1[r][c] == '#' && num_neighbours != 1 {
-                    new_grid[r][c] = '.';
-                }
-
-                if grid_p1[r][c] == '.' && (num_neighbours == 1 || num_neighbours == 2) {
-                    new_grid[r][c] = '#';
+                if grid_p1[r][c] == false && (num_neighbours == 1 || num_neighbours == 2) {
+                    new_grid[r][c] = true;
                 }
             }
         }
@@ -138,9 +142,11 @@ pub fn run() -> (usize, usize) {
     }
 
     // P2
-    // Hardcode 500. 200 minutes is at most 200 layers in each direction, and realistically less than 100
-    let mut grid_p2 = [[[false; 5]; 5]; 500];
-    let start_layer = 250;
+    // Hardcode 204 layers. 200 minutes is at most 100 layers in each direction (one to move to 
+    // a layer and then one to move adjacent to the next layer). Then add a buffer so we 
+    // don't need to think about bounds checking.
+    let mut grid_p2 = [[[false; 5]; 5]; 204];
+    let start_layer = 102;
     let mut min_layer = start_layer;
     let mut max_layer = start_layer;
 
@@ -160,12 +166,7 @@ pub fn run() -> (usize, usize) {
                     if r == 2 && c == 2 {
                         continue;
                     }
-                    let mut num_neighbours = 0;
-                    for n in neighbours_p2((layer, r, c)) {
-                        if grid_p2[n.0][n.1][n.2] {
-                            num_neighbours += 1;
-                        }
-                    }
+                    let num_neighbours = neighbours_p2_count((layer, r, c), &grid_p2);
 
                     if grid_p2[layer][r][c] && num_neighbours != 1 {
                         new_grid_p2[layer][r][c] = false;
@@ -183,15 +184,16 @@ pub fn run() -> (usize, usize) {
         grid_p2 = new_grid_p2;
     }
 
-    let p2 = grid_p2
-        .iter()
-        .map(|layer| {
-            layer
-                .iter()
-                .map(|row| row.iter().filter(|x| **x).count())
-                .sum::<usize>()
-        })
-        .sum();
+    let mut p2 = 0;
+    for layer in 0 .. 204 {
+        for r in 0 .. 5 {
+            for c in 0 .. 5 {
+                if grid_p2[layer][r][c] {
+                    p2 += 1;
+                }
+            }
+        }
+    }
 
     (p1, p2)
 }
