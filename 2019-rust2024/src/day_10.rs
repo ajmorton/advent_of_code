@@ -47,11 +47,7 @@ pub fn run() -> (usize, isize) {
         }
     }
 
-    let (best_ast_id, best_seen) = seen_from_ast
-        .iter()
-        .enumerate()
-        .max_by_key(|(_, seen)| seen.len())
-        .unwrap();
+    let (best_ast_id, best_seen) = seen_from_ast.iter().enumerate().max_by_key(|(_, seen)| seen.len()).unwrap();
 
     let best_ast2 = asteroids[best_ast_id];
     let mut most_visible = best_seen.clone();

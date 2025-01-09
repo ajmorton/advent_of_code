@@ -13,7 +13,7 @@ struct ExploreNode {
 }
 
 impl PartialOrd for ExploreNode {
-    fn partial_cmp(&self, other: &ExploreNode) -> Option<std::cmp::Ordering> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
@@ -27,15 +27,15 @@ impl Ord for ExploreNode {
     }
 }
 
+struct FloodNode {
+    pos: Pos,
+    dist: usize,
+}
+
 fn key_dists(grid: &[Vec<char>], pos: Pos, found_keys: &[bool; 26]) -> Vec<(char, usize, Pos)> {
     let mut seen = AHashSet::new();
     let mut to_explore = VecDeque::new();
     let mut key_dists = vec![];
-
-    struct FloodNode {
-        pos: Pos,
-        dist: usize,
-    }
 
     to_explore.push_back(FloodNode { dist: 0, pos });
     while let Some(cur) = to_explore.pop_front() {
@@ -64,10 +64,7 @@ fn key_dists(grid: &[Vec<char>], pos: Pos, found_keys: &[bool; 26]) -> Vec<(char
             }
 
             seen.insert(next_pos);
-            to_explore.push_back(FloodNode {
-                pos: next_pos,
-                dist: cur.dist + 1,
-            });
+            to_explore.push_back(FloodNode { pos: next_pos, dist: cur.dist + 1 });
         }
     }
 
@@ -95,15 +92,9 @@ fn find_keys(grid: &[Vec<char>], start_pos: Pos, num_keys: usize, p2: bool) -> i
         grid[start_pos.0 as usize][start_pos.1 as usize - 1] = '#';
         grid[start_pos.0 as usize][start_pos.1 as usize + 1] = '#';
 
-        ExploreNode {
-            dist: 0,
-            state: (positions, [false; 26]),
-        }
+        ExploreNode { dist: 0, state: (positions, [false; 26]) }
     } else {
-        ExploreNode {
-            dist: 0,
-            state: ([start_pos, (-1, -1), (-1, -1), (-1, -1)], [false; 26]),
-        }
+        ExploreNode { dist: 0, state: ([start_pos, (-1, -1), (-1, -1), (-1, -1)], [false; 26]) }
     };
 
     to_explore.push(start_node);
@@ -138,10 +129,7 @@ fn find_keys(grid: &[Vec<char>], start_pos: Pos, num_keys: usize, p2: bool) -> i
                 if (cur.dist + key_dist) < *xx {
                     *xx = cur.dist + key_dist;
                     // println!("pushing key {key} {}", cur.dist + key_dist);
-                    to_explore.push(ExploreNode {
-                        dist: cur.dist + key_dist,
-                        state: new_state,
-                    });
+                    to_explore.push(ExploreNode { dist: cur.dist + key_dist, state: new_state });
                 }
             }
         }
@@ -152,11 +140,8 @@ fn find_keys(grid: &[Vec<char>], start_pos: Pos, num_keys: usize, p2: bool) -> i
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let grid: Vec<Vec<char>> = include_str!("../input/day18.txt")
-        .trim_ascii()
-        .lines()
-        .map(|l| l.chars().collect())
-        .collect();
+    let grid: Vec<Vec<char>> =
+        include_str!("../input/day18.txt").trim_ascii().lines().map(|l| l.chars().collect()).collect();
 
     let mut num_keys = 0;
 

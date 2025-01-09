@@ -14,9 +14,7 @@ impl AsciiComputer {
     pub fn new(program: &[isize], input: &str) -> Self {
         let inp: Vec<isize> = input.chars().map(|c| c as isize).collect();
 
-        Self {
-            int_computer: IntComputer::new(program, inp),
-        }
+        Self { int_computer: IntComputer::new(program, inp) }
     }
 
     pub fn run(&mut self) -> (AsciiRetCode, String) {

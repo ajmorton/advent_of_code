@@ -24,16 +24,13 @@ fn run_fft(input: &[isize]) -> Vec<isize> {
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let num: Vec<isize> = include_str!("../input/day16.txt")
-        .trim_ascii()
-        .chars()
-        .map(|c| c.to_digit(10).unwrap() as isize)
-        .collect();
+    let num: Vec<isize> =
+        include_str!("../input/day16.txt").trim_ascii().chars().map(|c| c.to_digit(10).unwrap() as isize).collect();
     let p1_fft = run_fft(&num);
-    let p1 = p1_fft[0..8].iter().map(|n| n.to_string()).join("").parse().unwrap();
+    let p1 = p1_fft[0..8].iter().map(std::string::ToString::to_string).join("").parse().unwrap();
 
     // P2
-    let offset: usize = num[0..7].iter().map(|n| n.to_string()).join("").parse().unwrap();
+    let offset: usize = num[0..7].iter().map(std::string::ToString::to_string).join("").parse().unwrap();
     let mut p2_num = num.repeat(10_000);
     let lenn = p2_num.len();
 
@@ -49,11 +46,6 @@ pub fn run() -> (isize, isize) {
             }
         }
     }
-    let p2 = p2_num[offset..offset + 8]
-        .iter()
-        .map(|n| n.to_string())
-        .join("")
-        .parse()
-        .unwrap();
+    let p2 = p2_num[offset..offset + 8].iter().map(std::string::ToString::to_string).join("").parse().unwrap();
     (p1, p2)
 }

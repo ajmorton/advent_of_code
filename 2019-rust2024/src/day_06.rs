@@ -4,11 +4,7 @@ type Orbits = Vec<usize>;
 
 fn num_orbiting(body_id: usize, orbits_vec: &Orbits) -> usize {
     let parent = orbits_vec[body_id];
-    if parent != 0 {
-        1 + num_orbiting(parent, orbits_vec)
-    } else {
-        0
-    }
+    if parent != 0 { 1 + num_orbiting(parent, orbits_vec) } else { 0 }
 }
 
 fn path_to_com(body: usize, orbits_vec: &Orbits) -> Vec<usize> {
@@ -55,11 +51,7 @@ pub fn run() -> (usize, usize) {
     let you_path = path_to_com(planet_id["YOU"], &orbit_vec);
     let san_path = path_to_com(planet_id["SAN"], &orbit_vec);
 
-    let common_path_len = you_path
-        .iter()
-        .zip(san_path.iter())
-        .take_while(|(x, y)| **x == **y)
-        .count();
+    let common_path_len = you_path.iter().zip(san_path.iter()).take_while(|(x, y)| **x == **y).count();
 
     // Removing the common path to COM yields the paths from YOU to COMMON_PARENT and SAN to COMMON_PARENT.
     // By extension the sum of these paths is the path from YOU to SAN.

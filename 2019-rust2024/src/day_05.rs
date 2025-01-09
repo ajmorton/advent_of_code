@@ -2,11 +2,8 @@ use crate::intcode::{IntComputer, RetCode};
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day05.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day05.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let mut intcomputer = IntComputer::new(&prog, vec![1]);
 

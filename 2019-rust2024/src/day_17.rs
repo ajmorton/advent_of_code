@@ -2,11 +2,8 @@ use crate::ascii_code::{AsciiComputer, AsciiRetCode};
 
 #[must_use]
 pub fn run() -> (usize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day17.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day17.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let mut ascii_comp = AsciiComputer::new(&prog, "");
     let (_, grid) = ascii_comp.run();
@@ -39,13 +36,9 @@ L,12,R,4,L,12,R,6
 n
 "#;
 
-    let mut mod_prog = prog.clone();
+    let mut mod_prog = prog;
     mod_prog[0] = 2;
-    let p2 = if let (AsciiRetCode::Halt(ret), _) = AsciiComputer::new(&mod_prog, prog_input_ascii).run() {
-        ret
-    } else {
-        panic!("")
-    };
+    let (AsciiRetCode::Halt(p2), _) = AsciiComputer::new(&mod_prog, prog_input_ascii).run() else { panic!("") };
 
     (p1, p2)
 }

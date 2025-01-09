@@ -1,8 +1,8 @@
 use crate::ascii_code::AsciiComputer;
 use std::io;
 
-fn run_text_adventure(prog: &Vec<isize>, input: &str) {
-    let mut ascii_comp = AsciiComputer::new(prog, &input);
+fn run_text_adventure(prog: &[isize], input: &str) {
+    let mut ascii_comp = AsciiComputer::new(prog, input);
 
     let mut user_input = String::new();
     loop {
@@ -21,21 +21,17 @@ fn run_text_adventure(prog: &Vec<isize>, input: &str) {
         {
             println!("{user_input:?}");
             ascii_comp.input(&user_input);
-            user_input.clear();
         } else {
             println!("invalid command");
-            user_input.clear();
         }
+        user_input.clear();
     }
 }
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day25.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day25.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let input = "south\ntake fuel cell\nnorth\nwest\ntake mutex\nsouth\nsouth\ntake coin\nnorth\neast\ntake cake\nnorth\nwest\nsouth\nwest\n";
 

@@ -11,11 +11,8 @@ fn poll(prog: &[isize], y: isize, x: isize) -> bool {
 
 #[must_use]
 pub fn run() -> (usize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day19.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day19.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let mut num_cells = 0;
     for y in 0..50 {

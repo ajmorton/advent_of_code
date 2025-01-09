@@ -64,11 +64,8 @@ fn run_robut_run(prog: &[isize], start_colour: Colour) -> AHashMap<(isize, isize
 
 #[must_use]
 pub fn run() -> (usize, String) {
-    let prog: Vec<isize> = include_str!("../input/day11.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day11.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let p1 = run_robut_run(&prog, Colour::Black);
     let p2 = run_robut_run(&prog, Colour::White);

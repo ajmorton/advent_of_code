@@ -81,20 +81,14 @@ fn print_screen(screen: &Screen, score: isize) {
 
 #[must_use]
 pub fn run() -> (usize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day13.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day13.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let mut screen: Screen = [[Tile::Empty; 36]; 21];
 
     let mut computer = IntComputer::new(&prog, vec![]);
     let (_, _, _, _) = process_frame(&mut computer, &mut screen);
-    let p1 = screen
-        .iter()
-        .map(|row| row.iter().filter(|t| **t == Tile::Block).count())
-        .sum();
+    let p1 = screen.iter().map(|row| row.iter().filter(|t| **t == Tile::Block).count()).sum();
 
     // P2
     let p2;
@@ -104,8 +98,8 @@ pub fn run() -> (usize, isize) {
     let mut computer_p2 = IntComputer::new(&piracy, vec![]);
     loop {
         let (frame_score, game_done, ball_x, paddle_x) = process_frame(&mut computer_p2, &mut screen);
-        if let Some(sscore) = frame_score {
-            score = sscore;
+        if frame_score.is_some() {
+            score = frame_score.unwrap();
         }
 
         // print_screen(&screen, score);

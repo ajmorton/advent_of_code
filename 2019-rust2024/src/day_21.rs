@@ -4,27 +4,22 @@ fn run_prog(prog: &[isize], command: &str) -> Option<isize> {
     let mut ascii_comp = AsciiComputer::new(prog, command);
     let (retcode, out) = ascii_comp.run();
 
-    let res = if let AsciiRetCode::Halt(n) = retcode {
-        n
-    } else {
+    let AsciiRetCode::Halt(res) = retcode else {
         panic!("");
     };
 
-    if res != -1 {
-        Some(res)
-    } else {
+    if res == -1 {
         println!("{out}");
         None
+    } else {
+        Some(res)
     }
 }
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day21.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day21.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let command = r#"OR A T
 AND B T

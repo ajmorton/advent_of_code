@@ -3,11 +3,8 @@ use itertools::Itertools;
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day07.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day07.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let config_p1 = [0, 1, 2, 3, 4];
     let permutations_p1: Vec<Vec<_>> = config_p1.iter().permutations(5).collect();
@@ -18,11 +15,10 @@ pub fn run() -> (isize, isize) {
         for param in perm.iter().take(5) {
             let mut intcomp = IntComputer::new(&prog, vec![**param, output]);
             let res = intcomp.run();
-            if let RetCode::Output(out) = res {
-                output = out;
-            } else {
+            let RetCode::Output(out) = res else {
                 panic!("Unexpected item in the intcode area: {res:?}");
-            }
+            };
+            output = out;
         }
         p1 = std::cmp::max(p1, output);
     }
@@ -46,15 +42,16 @@ pub fn run() -> (isize, isize) {
             for (i, computer) in chain.iter_mut().enumerate() {
                 computer.input(signal);
                 let res = computer.run();
-                if let RetCode::Output(out) = res {
-                    signal = out;
-                    if i == 4 {
-                        last_ext_sig = signal;
+
+                match res {
+                    RetCode::Output(out) => {
+                        signal = out;
+                        if i == 4 {
+                            last_ext_sig = signal;
+                        }
                     }
-                } else if let RetCode::Done(_) = res {
-                    break 'feedback;
-                } else {
-                    panic!("Unexpected item in the intcode area: {res:?}");
+                    RetCode::Done(_) => break 'feedback,
+                    _ => panic!("Unexpected item in the intcode area: {res:?}"),
                 }
             }
         }

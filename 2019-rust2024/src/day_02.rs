@@ -2,12 +2,8 @@ use crate::intcode::{IntComputer, RetCode};
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let input: Vec<isize> = include_str!("../input/day02.txt")
-        .strip_suffix("\n")
-        .unwrap()
-        .split(',')
-        .map(|x| x.parse().unwrap())
-        .collect();
+    let input: Vec<isize> =
+        include_str!("../input/day02.txt").strip_suffix("\n").unwrap().split(',').map(|x| x.parse().unwrap()).collect();
 
     let mut p1 = 0;
     let mut p2 = 0;

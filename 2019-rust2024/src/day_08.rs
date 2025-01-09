@@ -19,13 +19,11 @@ pub fn run() -> (usize, String) {
         }
 
         decoded_message = zip(&layer, decoded_message)
-            .map(|(layer_pix, decoded_pix)| {
-                if decoded_pix.is_none() && *layer_pix != '2' {
-                    Some(*layer_pix)
-                } else {
-                    decoded_pix
-                }
-            })
+            .map(
+                |(layer_pix, decoded_pix)| {
+                    if decoded_pix.is_none() && *layer_pix != '2' { Some(*layer_pix) } else { decoded_pix }
+                },
+            )
             .collect();
 
         let num_zeros = layer.iter().filter(|c| **c == '0').count();

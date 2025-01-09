@@ -21,10 +21,7 @@ fn build_grid(prog: &[isize]) -> (Grid, Pos) {
     let mut oxy_pos = None;
 
     let mut to_explore = VecDeque::new();
-    to_explore.push_back(BuildNode {
-        computer: IntComputer::new(prog, vec![]),
-        pos: (0, 0),
-    });
+    to_explore.push_back(BuildNode { computer: IntComputer::new(prog, vec![]), pos: (0, 0) });
 
     while let Some(cur) = to_explore.pop_front() {
         // N S W E
@@ -63,10 +60,7 @@ fn build_grid(prog: &[isize]) -> (Grid, Pos) {
                     oxy_pos = Some(next_pos);
                 }
 
-                to_explore.push_back(BuildNode {
-                    computer: new_comp,
-                    pos: next_pos,
-                });
+                to_explore.push_back(BuildNode { computer: new_comp, pos: next_pos });
             } else {
                 panic!("unexpected res {res:?}");
             }
@@ -85,10 +79,7 @@ fn bfs(grid: &Grid, start_pos: Pos) -> Pos {
     let mut seen = AHashSet::<Pos>::new();
     let mut to_explore = VecDeque::new();
 
-    to_explore.push_back(ExploreNode {
-        pos: start_pos,
-        dist: 0,
-    });
+    to_explore.push_back(ExploreNode { pos: start_pos, dist: 0 });
 
     let mut oxy_dist = 0;
     let mut max_dist = 0;
@@ -104,10 +95,7 @@ fn bfs(grid: &Grid, start_pos: Pos) -> Pos {
                         continue;
                     } else {
                         seen.insert(next_pos);
-                        to_explore.push_back(ExploreNode {
-                            pos: next_pos,
-                            dist: cur.dist + 1,
-                        });
+                        to_explore.push_back(ExploreNode { pos: next_pos, dist: cur.dist + 1 });
                         max_dist = cur.dist + 1;
                     }
                 }
@@ -120,11 +108,8 @@ fn bfs(grid: &Grid, start_pos: Pos) -> Pos {
 use crate::intcode::{IntComputer, RetCode};
 #[must_use]
 pub fn run() -> Pos {
-    let prog: Vec<isize> = include_str!("../input/day15.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day15.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let (grid, oxy_pos) = build_grid(&prog);
     let (p1, _) = bfs(&grid, (0, 0));

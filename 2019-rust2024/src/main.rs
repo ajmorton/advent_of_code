@@ -3,11 +3,8 @@ use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let to_run = &args
-        .get(1)
-        .expect("No day provided! Call using cargo run {DAY}. e.g. cargo run 2")
-        .parse::<usize>()
-        .unwrap();
+    let to_run =
+        &args.get(1).expect("No day provided! Call using cargo run {DAY}. e.g. cargo run 2").parse::<usize>().unwrap();
     run(*to_run);
 }
 

@@ -4,11 +4,7 @@ const fn fuel_cost(weight: isize) -> isize {
 
 fn fuel_cost_rec(weight: isize) -> isize {
     let fuel_weight = weight / 3 - 2;
-    if fuel_weight <= 0 {
-        0
-    } else {
-        fuel_weight + fuel_cost_rec(fuel_weight)
-    }
+    if fuel_weight <= 0 { 0 } else { fuel_weight + fuel_cost_rec(fuel_weight) }
 }
 
 #[must_use]

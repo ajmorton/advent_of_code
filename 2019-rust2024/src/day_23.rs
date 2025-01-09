@@ -10,11 +10,8 @@ struct Packet {
 
 #[must_use]
 pub fn run() -> (isize, isize) {
-    let prog: Vec<isize> = include_str!("../input/day23.txt")
-        .trim_ascii()
-        .split(',')
-        .map(|n| n.parse().unwrap())
-        .collect();
+    let prog: Vec<isize> =
+        include_str!("../input/day23.txt").trim_ascii().split(',').map(|n| n.parse().unwrap()).collect();
 
     let mut nics = vec![];
     let mut messages: Vec<VecDeque<Packet>> = vec![];
@@ -44,9 +41,8 @@ pub fn run() -> (isize, isize) {
         for i in 0..50 {
             let res = nics[i].run();
             match res {
-                RetCode::Done(_) => {
-                    println!("        nic {i} halted")
-                }
+                RetCode::Done(_) =>
+                    println!("        nic {i} halted"),
                 RetCode::NeedInput => {
                     if let Some(packet) = messages[i].pop_front() {
                         nics[i].input(packet.x);
@@ -56,17 +52,8 @@ pub fn run() -> (isize, isize) {
                     }
                 }
                 RetCode::Output(dest) => {
-                    let out_x = if let RetCode::Output(out) = nics[i].run() {
-                        out
-                    } else {
-                        panic!("a")
-                    };
-
-                    let out_y = if let RetCode::Output(out) = nics[i].run() {
-                        out
-                    } else {
-                        panic!("a")
-                    };
+                    let RetCode::Output(out_x) = nics[i].run() else { panic!("a") };
+                    let RetCode::Output(out_y) = nics[i].run() else { panic!("a") };
 
                     idle_count = 0;
                     if dest == 255 {

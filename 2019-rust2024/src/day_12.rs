@@ -31,11 +31,7 @@ pub fn run() -> (isize, usize) {
             let y: isize = pos[2].parse().unwrap();
             let z: isize = pos[3].parse().unwrap();
 
-            Moon {
-                x: Kine { pos: x, vel: 0 },
-                y: Kine { pos: y, vel: 0 },
-                z: Kine { pos: z, vel: 0 },
-            }
+            Moon { x: Kine { pos: x, vel: 0 }, y: Kine { pos: y, vel: 0 }, z: Kine { pos: z, vel: 0 } }
         })
         .collect();
 

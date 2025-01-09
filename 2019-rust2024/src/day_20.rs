@@ -16,28 +16,17 @@ struct ExploreNode {
 }
 
 fn find_shortest(
-    grid: &[Vec<char>],
-    jump_to: &AHashMap<Pos, (Pos, isize)>,
-    start_pos: Pos,
-    end_pos: Pos,
-    p2: bool,
+    grid: &[Vec<char>], jump_to: &AHashMap<Pos, (Pos, isize)>, start_pos: Pos, end_pos: Pos, p2: bool,
 ) -> usize {
     let mut seen = AHashSet::new();
     let mut to_explore = VecDeque::new();
 
-    to_explore.push_back(ExploreNode {
-        dist: 0,
-        pos: start_pos,
-        level: 0,
-    });
+    to_explore.push_back(ExploreNode { dist: 0, pos: start_pos, level: 0 });
     let mut shortest_dist = usize::MAX;
 
     'search: while let Some(cur) = to_explore.pop_front() {
         for travel in [(1, 0), (-1, 0), (0, 1), (0, -1)] {
-            let mut next_pos = (
-                (cur.pos.0 as isize + travel.0) as usize,
-                (cur.pos.1 as isize + travel.1) as usize,
-            );
+            let mut next_pos = ((cur.pos.0 as isize + travel.0) as usize, (cur.pos.1 as isize + travel.1) as usize);
             let mut level_change = 0;
 
             if next_pos == end_pos {
@@ -78,11 +67,7 @@ fn find_shortest(
             }
 
             seen.insert((next_pos, next_level));
-            to_explore.push_back(ExploreNode {
-                dist: cur.dist + 1,
-                pos: next_pos,
-                level: next_level,
-            });
+            to_explore.push_back(ExploreNode { dist: cur.dist + 1, pos: next_pos, level: next_level });
         }
     }
 
@@ -91,10 +76,7 @@ fn find_shortest(
 
 #[must_use]
 pub fn run() -> (usize, usize) {
-    let grid: Vec<Vec<char>> = include_str!("../input/day20.txt")
-        .lines()
-        .map(|l| l.chars().collect())
-        .collect();
+    let grid: Vec<Vec<char>> = include_str!("../input/day20.txt").lines().map(|l| l.chars().collect()).collect();
 
     let mut portals = AHashMap::new();
 
@@ -107,18 +89,10 @@ pub fn run() -> (usize, usize) {
                 let portal_name = row[c..=c + 1].iter().collect::<String>();
                 let portal_points = if c > 0 && row[c - 1] == '.' {
                     let inner = c != width - 2;
-                    PortalPair {
-                        portal: (r, c),
-                        maze_entry: (r, c - 1),
-                        inner,
-                    }
+                    PortalPair { portal: (r, c), maze_entry: (r, c - 1), inner }
                 } else if c + 2 < width && grid[r][c + 2] == '.' {
                     let inner = c != 0;
-                    PortalPair {
-                        portal: (r, c + 1),
-                        maze_entry: (r, c + 2),
-                        inner,
-                    }
+                    PortalPair { portal: (r, c + 1), maze_entry: (r, c + 2), inner }
                 } else {
                     unreachable!();
                 };
@@ -133,18 +107,10 @@ pub fn run() -> (usize, usize) {
                 let portal_name = [grid[r][c], grid[r + 1][c]].iter().collect::<String>();
                 let portal_points = if r > 0 && grid[r - 1][c] == '.' {
                     let inner = r != height - 2;
-                    PortalPair {
-                        portal: (r, c),
-                        maze_entry: (r - 1, c),
-                        inner,
-                    }
+                    PortalPair { portal: (r, c), maze_entry: (r - 1, c), inner }
                 } else if r + 2 < width && grid[r + 2][c] == '.' {
                     let inner = r != 0;
-                    PortalPair {
-                        portal: (r + 1, c),
-                        maze_entry: (r + 2, c),
-                        inner,
-                    }
+                    PortalPair { portal: (r + 1, c), maze_entry: (r + 2, c), inner }
                 } else {
                     unreachable!();
                 };

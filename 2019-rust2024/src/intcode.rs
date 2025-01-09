@@ -71,12 +71,7 @@ fn get_modes(mut param: isize, num_args: isize) -> [Param; 4] {
 
 impl IntComputer {
     pub fn new(program: &[isize], input: Vec<isize>) -> Self {
-        Self {
-            memory: program.to_owned(),
-            pc: 0,
-            input: VecDeque::from(input),
-            relative_base: 0,
-        }
+        Self { memory: program.to_owned(), pc: 0, input: VecDeque::from(input), relative_base: 0 }
     }
 
     pub fn input(&mut self, inp: isize) {
