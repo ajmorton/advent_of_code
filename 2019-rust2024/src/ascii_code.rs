@@ -45,4 +45,11 @@ impl AsciiComputer {
             RetCode::NeedInput => (AsciiRetCode::NeedInput, msg),
         }
     }
+
+    pub fn input(&mut self, input: &str) {
+        let inp: Vec<_> = input.chars().map(|c| c as isize).collect();
+        for i in inp {
+            self.int_computer.input(i);
+        }
+    }
 }

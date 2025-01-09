@@ -142,3 +142,8 @@ It's dubious that this is clearer in its intent
 
 ## Day 24: Planet of Discord
 This manual listing of neighbours in vecs is slow. I can move the counting logic inside the subfunc and that should be better. But this code feels ugly. At least we've avoided a hashmap.
+
+## Day 25: Cryostasis
+And that's all folks! At least on the problem solving side. Total runtime is 0.62 seconds so a lot of room for improvement. I said 50ms so that's only (only) a 12x improvement. That's almost entirely day 18 (and a dishonourable mention to day 16). I think 100ms is doable, 50ms will be a stretch.
+
+This repo is now firmly a Rust repo too. 31.8% according to github. We can get that line count down. cargo fmt doesn't exactly optimise for compact code.
