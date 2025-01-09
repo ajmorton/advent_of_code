@@ -139,3 +139,6 @@ changing to
 for (r, <item>) in grid.iter().enumerate().take(height) {
 ```
 It's dubious that this is clearer in its intent
+
+## Day 24: Planet of Discord
+This manual listing of neighbours in vecs is slow. I can move the counting logic inside the subfunc and that should be better. But this code feels ugly. At least we've avoided a hashmap.
